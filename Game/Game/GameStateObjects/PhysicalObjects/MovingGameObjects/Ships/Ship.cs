@@ -12,26 +12,26 @@ using MyGame.GameClient;
 
 namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships
 {
-    abstract public class Ship : MovingGameObject 
+    abstract public class Ship : CompositePhysicalObject 
     {
         private IntegerGameObjectMember health;
         private FloatGameObjectMember maxSpeed;
-        private FloatGameObjectMember maxAgularSpeed;
+        private InterpolatedVector2GameObjectMember targetPosition;
 
         public Ship(Game1 game)
             : base(game)
         {
             health = new IntegerGameObjectMember(this, 40);
             maxSpeed = new FloatGameObjectMember(this, 300);
-            maxAgularSpeed = new FloatGameObjectMember(this, 0.5f);
+            targetPosition = new InterpolatedVector2GameObjectMember(this, new Vector2(0));
         }
 
         public static void ServerInitialize(Ship ship, Vector2 position, Vector2 velocity, float direction, int health, float maxSpeed, float acceleration, float maxAgularSpeed)
         {
-            MovingGameObject.ServerInitialize(ship, position, new Vector2(0), direction, 0, 0);
+            CompositePhysicalObject.ServerInitialize(ship, position, direction);
             ship.health.Value = health;
             ship.maxSpeed.Value = maxSpeed;
-            ship.maxAgularSpeed.Value = maxAgularSpeed;
+            ship.targetPosition.Value = position;
         }
 
         public static float MaxRadius
@@ -46,9 +46,16 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships
             get { return health.Value; }
         }
 
+        public Vector2 TargetPosition
+        {
+            set
+            {
+                this.targetPosition.Value = value;
+            }
+        }
+
         public override void MoveOutsideWorld(Vector2 position, Vector2 movePosition)
         {
-            Velocity = new Vector2(0);
         }
 
         public override void ServerOnlyUpdate(float seconds)
@@ -60,6 +67,8 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships
         public override void SubclassUpdate(float seconds)
         {
             base.SubclassUpdate(seconds);
+            this.Position = Utils.PhysicsUtils.MoveTowardBounded(this.Position, this.targetPosition.Value, maxSpeed.Value * seconds);
+
         }
 
         public override void SimulationStateOnlyUpdate(float seconds)

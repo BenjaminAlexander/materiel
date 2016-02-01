@@ -8,6 +8,7 @@ using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework;
 using MyGame.GameServer;
 using MyGame.GameStateObjects;
+using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
 
 namespace MyGame.materiel
 {
@@ -21,6 +22,8 @@ namespace MyGame.materiel
                 return collidable;
             }
         }
+
+        private float timeTillSpawn = 5;
 
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
 
@@ -41,6 +44,23 @@ namespace MyGame.materiel
             : base(game)
         {
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
+        }
+
+        public override void ServerOnlyUpdate(float secondsElapsed)
+        {
+            base.ServerOnlyUpdate(secondsElapsed);
+            if (controllingPlayer.Value != null)
+            {
+                timeTillSpawn = timeTillSpawn - secondsElapsed;
+                if (timeTillSpawn < 0)
+                {
+                    timeTillSpawn = 5;
+                    SmallShip ship = new SmallShip(this.Game);
+                    SmallShip.ServerInitialize(ship, this.Position, 0);
+                    this.Game.GameObjectCollection.Add(ship);
+                    ship.TargetPosition = Utils.RandomUtils.RandomVector2(new Vector2(4000));
+                }
+            }
         }
 
         public override void Draw(Microsoft.Xna.Framework.GameTime gameTime, DrawingUtils.MyGraphicsClass graphics)
