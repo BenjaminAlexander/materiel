@@ -7,7 +7,6 @@ using MyGame;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects;
 using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
-using MyGame.PlayerControllers;
 using MyGame.Utils;
 using MyGame.GameServer;
 using System.Net;
@@ -32,23 +31,9 @@ namespace MyGame.GameClient
             base.Initialize();
         }
 
-        public Ship GetLocalPlayerFocus()
-        {
-            Ship focus = null;
-            List<ControllerFocusObject> controllerFocusList = this.GameObjectCollection.GetMasterList().GetList<ControllerFocusObject>();
-            if (controllerFocusList.Count > 0)
-            {
-                ControllerFocusObject controllerFocus = controllerFocusList[0];
-                focus = controllerFocus.GetFocus(serverConnection.Id);
-            }
-            return focus;
-        }
-
         protected override void Update(GameTime gameTime)
         {
             float secondsElapsed = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
-
-            this.serverConnection.UpdateControlState(gameTime);
 
             //haddle all available messages.  this is done again after the gameObject updates but before draw
             Queue<GameObjectUpdate> messageQueue = this.serverConnection.DequeueAllIncomingUDP();
@@ -62,8 +47,7 @@ namespace MyGame.GameClient
             this.GameObjectCollection.ClientUpdate(gameTime);
 
             GameObjectField.SetModeDraw();
-            Ship focus = this.GetLocalPlayerFocus();
-            this.Camera.Update(focus, secondsElapsed);
+            this.Camera.Update(secondsElapsed);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -74,15 +58,6 @@ namespace MyGame.GameClient
             GameObjectField.SetModeSimulation();
 
             this.GraphicsObject.Begin(Matrix.Identity);
-
-            Ship focus = this.GetLocalPlayerFocus();
-
-            if (focus != null)
-            {
-                this.GraphicsObject.DrawDebugFont("Health: " + focus.Health.ToString(), new Vector2(0), 1);
-                this.GraphicsObject.DrawDebugFont("Kills: " + focus.Kills().ToString(), new Vector2(0, 30), 1);
-                this.GraphicsObject.DrawDebugFont("Towers Left: " + this.GameObjectCollection.GetMasterList().GetList<Tower>().Count, new Vector2(0, 60), 1);
-            }
 
             this.GraphicsObject.End();
             

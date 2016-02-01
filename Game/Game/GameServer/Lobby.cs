@@ -113,14 +113,5 @@ namespace MyGame.GameServer
             }
             catch (Exception) { /*Just let the listener thread end*/ }
         }
-
-        public void Update()
-        {
-            foreach (Player client in clients)
-            {
-                client.UpdateControlState();
-            }
-        }
-
     }
 }

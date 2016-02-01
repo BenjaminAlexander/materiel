@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using MyGame.PlayerControllers;
 using MyGame.GameStateObjects.PhysicalObjects;
 using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
 using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Bullets;

@@ -11,11 +11,18 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MyGame.GameStateObjects;
 using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
+using MyGame.IO;
+using MyGame.IO.Events;
 
 namespace MyGame
 {
-    public class Camera
+    public class Camera : IOObserver
     {
+        private IOEvent up;
+        private IOEvent down;
+        private IOEvent left;
+        private IOEvent right;
+
         private GraphicsDeviceManager graphics;
         private Vector2 position = new Vector2(0);
         private Vector2 positionRelativeToFocus = new Vector2(0);
@@ -29,54 +36,45 @@ namespace MyGame
         private float maxZoom = 3;
         private float minZoom = (float).1;
 
-        public Camera(Vector2 position, float zoom, float rotation, GraphicsDeviceManager graphics)
+        public Camera(Vector2 position, float zoom, float rotation, GraphicsDeviceManager graphics, InputManager ioManager)
         {
+            this.graphics = graphics;
             this.position = position;
             this.zoom = zoom;
             this.rotation = rotation;
-            this.graphics = graphics;
+
+            up = new KeyDown(Keys.W);
+            down = new KeyDown(Keys.S);
+            left = new KeyDown(Keys.A);
+            right = new KeyDown(Keys.D);
+
+            ioManager.Register(up, this);
+            ioManager.Register(down, this);
+            ioManager.Register(left, this);
+            ioManager.Register(right, this);
         }
 
-        public void Update(Ship focus, float seconds)
+        public void Update(float seconds)
         {
-            if (focus != null)
+            int delta = IO.IOState.MouseWheelDelta;
+            if (delta != 0)
             {
-                int delta = IO.IOState.MouseWheelDelta;
-                if (delta != 0)
+                targetZoom = targetZoom + targetZoom * zoomIncrement * IOState.MouseWheelDelta;
+                currentZoomInterpolationTime = 0;
+
+                if (targetZoom < minZoom)
                 {
-                    targetZoom = targetZoom + targetZoom * zoomIncrement * IO.IOState.MouseWheelDelta;
-                    currentZoomInterpolationTime = 0;
-
-                    if (targetZoom < minZoom)
-                    {
-                        targetZoom = minZoom;
-                    }
-                    if (targetZoom > maxZoom)
-                    {
-                        targetZoom = maxZoom;
-                    }
-
+                    targetZoom = minZoom;
                 }
-                currentZoomInterpolationTime = currentZoomInterpolationTime + seconds;
-
-                zoom = MathHelper.Lerp(zoom, targetZoom, currentZoomInterpolationTime / zoomInterpolationTime);
-
-                float minScreenSide = Math.Min(graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
-                float maxDistanceFromFocus = (minScreenSide/2 - 100)/zoom;
-                //Vector2 mousePos = this.ScreenToWorldPosition(IO.IOState.MouseScreenPosition());
-
-                this.position = focus.DrawPosition;// (mousePos + focus.Position) / 2;
-
-                if (Vector2.Distance(this.position, focus.DrawPosition) > maxDistanceFromFocus)
+                if (targetZoom > maxZoom)
                 {
-                    Vector2 normal = (this.position - focus.DrawPosition);
-                    normal.Normalize();
-                    normal = normal * (maxDistanceFromFocus);
-                    this.positionRelativeToFocus = normal;
-                    this.position = normal + focus.DrawPosition;
-
+                    targetZoom = maxZoom;
                 }
+
             }
+            currentZoomInterpolationTime = currentZoomInterpolationTime + seconds;
+
+            zoom = MathHelper.Lerp(zoom, targetZoom, currentZoomInterpolationTime / zoomInterpolationTime);
         }
 
         public Vector2 Position
@@ -88,7 +86,8 @@ namespace MyGame
                 Vector2 viewSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight) / zoom;
                 Vector2 cornerPosition = value - (viewSize / 2);
 
-                position = cornerPosition + (viewSize / 2); 
+                position = cornerPosition + (viewSize / 2);
+
             }
         }
 
@@ -133,19 +132,32 @@ namespace MyGame
 
         public Vector2 ScreenToWorldPosition(Vector2 vector)
         {
-            //we need to account for a difference of size between the viewport and the actual window
-            //TODO: I don't know if this is the most general way to do this
-            Viewport vp = this.graphics.GraphicsDevice.Viewport;
-            DisplayMode dm = this.graphics.GraphicsDevice.DisplayMode;
-            float yScale = ((float)vp.Height) / dm.Height;
-            float xScale = ((float)vp.Width) / dm.Width;
-            vector = new Vector2((float)(vector.X * xScale), (float)(vector.Y * yScale));
             return Vector2.Transform(vector, GetScreenToWorldTransformation());
         }
 
         public Vector2 WorldToScreenPosition(Vector2 vector)
         {
             return Vector2.Transform(vector, GetWorldToScreenTransformation());
+        }
+
+        public void UpdateWithIOEvent(IOEvent ioEvent)
+        {
+            if (ioEvent.Equals(up))
+            {
+                this.position = this.position + new Vector2(0, -10) / zoom;
+            }
+            else if (ioEvent.Equals(down))
+            {
+                this.position = this.position + new Vector2(0, 10) / zoom;
+            }
+            else if (ioEvent.Equals(left))
+            {
+                this.position = this.position + new Vector2(-10, 0) / zoom;
+            }
+            else if (ioEvent.Equals(right))
+            {
+                this.position = this.position + new Vector2(10, 0) / zoom;
+            }
         }
     }
 }

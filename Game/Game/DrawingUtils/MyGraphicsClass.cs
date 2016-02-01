@@ -124,6 +124,11 @@ namespace MyGame.DrawingUtils
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, matrix); // greater on top
         }
 
+        public void Begin()
+        {
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, null); // greater on top
+        }
+
         public void End()
         {
             spriteBatch.End();

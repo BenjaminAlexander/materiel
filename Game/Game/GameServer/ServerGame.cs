@@ -13,7 +13,7 @@ namespace MyGame.GameServer
 {
     public class ServerGame : Game1
     {
-        private static Vector2 worldSize = new Vector2(20000);
+        private static Vector2 worldSize = new Vector2(8000, 8000);
         private Lobby lobby;
         private ServerLogic serverLogic = null;
 
@@ -37,21 +37,11 @@ namespace MyGame.GameServer
         protected override void Update(GameTime gameTime)
         {
             float secondsElapsed = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
-            lobby.Update();
-            serverLogic.Update(secondsElapsed);
 
             base.Update(gameTime);
 
             this.GameObjectCollection.ServerUpdate(lobby, gameTime);
-
-            //TODO: probably remove this
-            List<BigShip> list = this.GameObjectCollection.GetMasterList().GetList<BigShip>();
-            if (list.Count != 0)
-            {
-                this.Camera.Update(list[0], secondsElapsed);
-            }
-            //
-            
+            this.Camera.Update(secondsElapsed);
         }
     }
 }

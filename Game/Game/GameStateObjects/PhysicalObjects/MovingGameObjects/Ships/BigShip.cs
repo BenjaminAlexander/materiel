@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using MyGame.PlayerControllers;
 using MyGame.DrawingUtils;
 using MyGame.GameStateObjects.PhysicalObjects.MemberPhysicalObjects;
 using MyGame.GameServer;
@@ -25,17 +24,17 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships
         {
         }
 
-        public void BigShipInit(Vector2 position, Vector2 velocity, ControlState controller1, ControlState controller2, ControlState controller3, ControlState controller4)
+        public void BigShipInit(Vector2 position, Vector2 velocity)
         {
-            Ship.ServerInitialize(this, position, velocity, 0, 4000, 600, 300, 0.5f, controller1);
+            Ship.ServerInitialize(this, position, velocity, 0, 4000, 600, 300, 0.5f);
             Turret t = new Turret(this.Game);
-            Turret.ServerInitialize(t, this, new Vector2(119, 95) - TextureLoader.GetTexture("Ship").CenterOfMass, (float)(Math.PI / 2), (float)(Math.PI / 3), controller2);
+            Turret.ServerInitialize(t, this, new Vector2(119, 95) - TextureLoader.GetTexture("Ship").CenterOfMass, (float)(Math.PI / 2), (float)(Math.PI / 3));
             Turret t2 = new Turret(this.Game);
-            Turret.ServerInitialize(t2, this, new Vector2(119, 5) - TextureLoader.GetTexture("Ship").CenterOfMass, (float)(-Math.PI / 2), (float)(Math.PI / 3), controller3);
+            Turret.ServerInitialize(t2, this, new Vector2(119, 5) - TextureLoader.GetTexture("Ship").CenterOfMass, (float)(-Math.PI / 2), (float)(Math.PI / 3));
             Turret t3 = new Turret(this.Game);
-            Turret.ServerInitialize(t3, this, new Vector2(145, 50) - TextureLoader.GetTexture("Ship").CenterOfMass, (float)(0), (float)(Math.PI / 3), controller4);
+            Turret.ServerInitialize(t3, this, new Vector2(145, 50) - TextureLoader.GetTexture("Ship").CenterOfMass, (float)(0), (float)(Math.PI / 3));
             Turret t4 = new Turret(this.Game);
-            Turret.ServerInitialize(t4, this, new Vector2(20, 50) - TextureLoader.GetTexture("Ship").CenterOfMass, (float)(-Math.PI), (float)(Math.PI/3), controller4);
+            Turret.ServerInitialize(t4, this, new Vector2(20, 50) - TextureLoader.GetTexture("Ship").CenterOfMass, (float)(-Math.PI), (float)(Math.PI/3));
             this.Game.GameObjectCollection.Add(t);
             this.Game.GameObjectCollection.Add(t2);
             this.Game.GameObjectCollection.Add(t3);

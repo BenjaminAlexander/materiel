@@ -9,32 +9,23 @@ using MyGame.Utils;
 using MyGame.GameServer;
 using MyGame.GameStateObjects;
 using System.Threading;
-using MyGame.PlayerControllers;
 using Microsoft.Xna.Framework;
 
 namespace MyGame.GameClient
 {
     //TODO: name this class better
     //maybe combine with local player
-    public class ServerConnection : BasePlayer<GameObjectUpdate, ControlStateUpdate>
+    public class ServerConnection : BasePlayer<GameObjectUpdate, UdpMessage>
     {
-        private LocalPlayerController controller;
 
         public ServerConnection(IPAddress serverAddress, ClientGame game) : base(serverAddress)
         {
-            controller = new LocalPlayerController(game);
         }
 
 
         public override GameObjectUpdate GetUDPMessage(UdpTcpPair client)
         {
             return new GameObjectUpdate(client);
-        }
-
-        public void UpdateControlState(GameTime gameTime)
-        {
-            controller.Update();
-            this.SendUDP(controller.GetStateMessage(gameTime));
         }
     }
 }

@@ -50,14 +50,6 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Bullets
 
         }
 
-        public void Hit()
-        {
-            if (owner.Value != null)
-            {
-                owner.Value.AddKill();
-            }
-        }
-
         protected override float SecondsBetweenUpdateMessage
         {
             get

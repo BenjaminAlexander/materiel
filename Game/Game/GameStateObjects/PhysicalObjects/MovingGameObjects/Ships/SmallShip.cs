@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using MyGame.PlayerControllers;
 using MyGame.DrawingUtils;
 using MyGame.GameStateObjects.PhysicalObjects.MemberPhysicalObjects;
 using MyGame.GameServer;
@@ -13,11 +12,11 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships
 {
     class SmallShip : Ship
     {
-        public static void ServerInitialize(SmallShip smallShip, Vector2 position, Vector2 velocity, ControlState controller1, ControlState controller4)
+        public static void ServerInitialize(SmallShip smallShip, Vector2 position, Vector2 velocity)
         {
-            Ship.ServerInitialize(smallShip, position, velocity, 0, 40, 800, 1800, 1f, controller1);
+            Ship.ServerInitialize(smallShip, position, velocity, 0, 40, 800, 1800, 1f);
             Turret t3 = new Turret(smallShip.Game);
-            Turret.ServerInitialize(t3, smallShip, new Vector2(25, 25) - TextureLoader.GetTexture("Enemy").CenterOfMass, (float)(0), (float)(Math.PI * 3), controller4);
+            Turret.ServerInitialize(t3, smallShip, new Vector2(25, 25) - TextureLoader.GetTexture("Enemy").CenterOfMass, (float)(0), (float)(Math.PI * 3));
 
             smallShip.Game.GameObjectCollection.Add(t3);
         }

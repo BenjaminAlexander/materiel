@@ -5,7 +5,6 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using MyGame.Utils;
 using MyGame.DrawingUtils;
-using MyGame.PlayerControllers;
 using MyGame.GameStateObjects.PhysicalObjects;
 using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
 using MyGame.GameServer;
@@ -16,7 +15,6 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MemberPhysicalObjects
     public class Turret : MemberPhysicalObject
     {
         private static Collidable collidable = new Collidable(TextureLoader.GetTexture("Gun"), Color.White, new Vector2(13, TextureLoader.GetTexture("Gun").Texture.Height / 2), 1);
-        private ControlState controller;
 
         private GameObjectReferenceListField<Gun> gunList;
         private InterpolatedAngleGameObjectMember turretDirectionRelativeToSelf;
@@ -48,21 +46,14 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MemberPhysicalObjects
             }
         }
 
-        public static void ServerInitialize(Turret obj, PhysicalObject parent, Vector2 position, float direction, float range, ControlState controller)
+        public static void ServerInitialize(Turret obj, PhysicalObject parent, Vector2 position, float direction, float range)
         {
             MemberPhysicalObject.ServerInitialize(obj, parent, position, direction);
             obj.Range = range;
 
-            obj.controller = controller;
-
             Gun gun = new Gun(obj.Game);
             Gun.ServerInitialize(gun, obj, new Vector2(37, 0), 0);
             obj.Game.GameObjectCollection.Add(gun);
-        }
-
-        public ControlState GetController()
-        {
-            return controller;
         }
 
         public override float WorldDirection()
@@ -94,18 +85,8 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MemberPhysicalObjects
         public override void ServerOnlyUpdate(float seconds)
         {
             base.ServerOnlyUpdate(seconds);
-            ControlState controller = this.GetController();
 
             Ship rootShip = (Ship)(this.Root());
-            if (controller != null && rootShip != null)
-            {
-                this.Target = controller.Aimpoint + rootShip.Position; 
-
-                if (controller.Fire)
-                {
-                    this.Fire();
-                }
-            }
             //TODO: we need to standardize how controller ultimatly effect the game
             this.TurnTowards(seconds, this.Target);
         }

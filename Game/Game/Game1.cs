@@ -24,7 +24,6 @@ namespace MyGame
         private MyGraphicsClass myGraphicsObject;
         private Camera camera;
         private InputManager inputManager;
-        private BackGround backGround;
         private GameObjectCollection gameObjectCollection;
         private Vector2 worldSize;
 
@@ -58,14 +57,19 @@ namespace MyGame
             this.graphics = new GraphicsDeviceManager(this);
             this.graphics.HardwareModeSwitch = false;
             this.graphics.IsFullScreen = false;
-            this.graphics.PreferredBackBufferWidth = 1920;
-            this.graphics.PreferredBackBufferHeight = 1080;
+
+            //TODO: correctly set these
+            this.graphics.PreferredBackBufferWidth = 1300;
+            this.graphics.PreferredBackBufferHeight = 700;
+
             this.Window.IsBorderless = false;
             this.Window.AllowUserResizing = false;
             this.InactiveSleepTime = new TimeSpan(0);
             this.IsFixedTimeStep = false;
             this.IsMouseVisible = true;
             this.graphics.ApplyChanges();
+
+
         }
 
         /// <summary>
@@ -77,12 +81,11 @@ namespace MyGame
         protected override void Initialize()
         {
             base.Initialize();
-            this.camera = new Camera(new Vector2(0), 1f, 0, this.graphics);
+            this.camera = new Camera(new Vector2(0), 1f, 0, this.graphics, inputManager);
 
             SpriteBatch spriteBatch = new SpriteBatch(GraphicsDevice);
             myGraphicsObject = new DrawingUtils.MyGraphicsClass(this.graphics, spriteBatch, this.camera);
 
-            backGround = new BackGround(worldSize);
             gameObjectCollection = new GameObjectCollection(worldSize);
         }
 
@@ -128,13 +131,8 @@ namespace MyGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Wheat);
-
-            myGraphicsObject.BeginWorld();
-            backGround.Draw(gameTime, myGraphicsObject);
-            myGraphicsObject.End();
-
-            this.GameObjectCollection.Draw(gameTime, this.GraphicsObject);
+            GraphicsDevice.Clear(Color.White);
+            this.GameObjectCollection.Draw(gameTime, this.GraphicsObject, this.camera);
         }
     }
 }

@@ -8,6 +8,12 @@ using MyGame.Utils;
 using MyGame.GameStateObjects.PhysicalObjects;
 using MyGame.DrawingUtils;
 using MyGame.GameServer;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace MyGame.GameStateObjects.DataStuctures
 {
@@ -139,7 +145,7 @@ namespace MyGame.GameStateObjects.DataStuctures
             }
         }
 
-        public void Draw(GameTime gameTime, MyGraphicsClass graphics)
+        public void Draw(GameTime gameTime, MyGraphicsClass graphics, Camera camera)
         {
             graphics.BeginWorld();
             foreach (GameObject obj in listManager.GetList<GameObject>())
@@ -147,6 +153,13 @@ namespace MyGame.GameStateObjects.DataStuctures
                 obj.Draw(gameTime, graphics);
             }
             graphics.EndWorld();
+
+            graphics.Begin();            
+            graphics.DrawRectangle(camera.WorldToScreenPosition(new Vector2(0)),
+                camera.WorldToScreenPosition(this.worldRectangle.Size) - camera.WorldToScreenPosition(new Vector2(0))
+                , new Vector2(0), 0, Color.Black, 1);
+
+            graphics.End();
         }
     }
 }
