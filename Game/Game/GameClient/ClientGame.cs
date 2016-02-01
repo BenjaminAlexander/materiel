@@ -15,12 +15,12 @@ namespace MyGame.GameClient
 {
     public class ClientGame : Game1
     {
-        private ServerConnection serverConnection;
+        private LocalPlayer serverConnection;
 
         public ClientGame(IPAddress serverAddress)
             : base()
         {
-            this.serverConnection = new ServerConnection(serverAddress, this);
+            this.serverConnection = new LocalPlayer(serverAddress, this);
 
             SetWorldSize m = serverConnection.GetSetWorldSize();
             this.SetWorldSize(m.WorldSize);

@@ -15,10 +15,10 @@ namespace MyGame.GameClient
 {
     //TODO: name this class better
     //maybe combine with local player
-    public class ServerConnection : BasePlayer<GameObjectUpdate, UdpMessage>
+    public class LocalPlayer : BasePlayer<GameObjectUpdate, UdpMessage>
     {
 
-        public ServerConnection(IPAddress serverAddress, ClientGame game) : base(serverAddress)
+        public LocalPlayer(IPAddress serverAddress, ClientGame game) : base(serverAddress)
         {
         }
 

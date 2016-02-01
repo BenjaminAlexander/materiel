@@ -66,9 +66,9 @@
     <Compile Include="DrawingUtils\TextureLoader.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameClient\Program.cs" />
-    <Compile Include="GameClient\ServerConnection.cs" />
-    <Compile Include="GameServer\BasePlayer.cs" />
+    <Compile Include="GameClient\LocalPlayer.cs" />
     <Compile Include="GameServer\Player.cs" />
+    <Compile Include="GameServer\RemotePlayer.cs" />
     <Compile Include="GameServer\Program.cs" />
     <Compile Include="GameStateObjects\GenericGameObjectField.cs" />
     <Compile Include="GameStateObjects\FloatGameObjectMember.cs" />
@@ -113,6 +113,7 @@
     <Compile Include="IO\IOState.cs" />
     <Compile Include="IO\Events\KeyPressEvent.cs" />
     <Compile Include="materiel\Base.cs" />
+    <Compile Include="materiel\PlayerGameObject.cs" />
     <Compile Include="Networking\TcpMessage.cs" />
     <Compile Include="Networking\UdpMessage.cs" />
     <Compile Include="Networking\UdpTcpPair.cs" />

@@ -7,6 +7,7 @@ using MyGame.GameStateObjects.PhysicalObjects;
 using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework;
 using MyGame.GameServer;
+using MyGame.GameStateObjects;
 
 namespace MyGame.materiel
 {
@@ -20,6 +21,8 @@ namespace MyGame.materiel
                 return collidable;
             }
         }
+
+        private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
 
         public static Base BaseFactory(ServerGame game, Vector2 position)
         {
@@ -37,11 +40,36 @@ namespace MyGame.materiel
         public Base(Game1 game)
             : base(game)
         {
+            controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
+        }
+
+        public override void Draw(Microsoft.Xna.Framework.GameTime gameTime, DrawingUtils.MyGraphicsClass graphics)
+        {
+            if (controllingPlayer.Value == null)
+            {
+                this.Collidable.Draw(graphics, this.Position, this.Direction);
+            }
+            else
+            {
+                this.Collidable.Draw(graphics, this.Position, this.Direction, controllingPlayer.Value.Color);
+            }
         }
     
         public override void MoveOutsideWorld(Microsoft.Xna.Framework.Vector2 position, Microsoft.Xna.Framework.Vector2 movePosition)
         {
  	        throw new NotImplementedException();
+        }
+
+        public void SetPlayerInControll(RemotePlayer player)
+        {
+            if (player == null)
+            {
+                controllingPlayer.Value = null;
+            }
+            else
+            {
+                controllingPlayer.Value = player.GameObject;
+            }
         }
     }
 }

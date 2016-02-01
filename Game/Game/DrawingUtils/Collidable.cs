@@ -84,6 +84,11 @@ namespace MyGame.DrawingUtils
             graphics.getSpriteBatch().Draw(loadedTexture.Texture, position, null, color, rotation, origin, 1, SpriteEffects.None, depth);
         }
 
+        public void Draw(MyGraphicsClass graphics, Vector2 position, float rotation, Color color)
+        {
+            graphics.getSpriteBatch().Draw(loadedTexture.Texture, position, null, color, rotation, origin, 1, SpriteEffects.None, depth);
+        }
+
         public Color[] GetColorData()
         {
             return loadedTexture.Data;

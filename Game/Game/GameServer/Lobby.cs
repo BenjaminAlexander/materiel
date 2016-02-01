@@ -18,10 +18,10 @@ namespace MyGame.GameServer
     public class Lobby
     {
         private volatile bool clientsLocked = false;
-        private List<Player> clients = new List<Player>();
+        private List<RemotePlayer> clients = new List<RemotePlayer>();
         private Mutex clientsMutex = new Mutex(false);
 
-        public List<Player> Clients
+        public List<RemotePlayer> Clients
         {
             get
             {
@@ -30,7 +30,7 @@ namespace MyGame.GameServer
         }
 
         // Adds a client to the current clientlist. Returns true if the client is added, returns false if the clients are locked.
-        private bool AddClient(Player client)
+        private bool AddClient(RemotePlayer client)
         {
             bool added = false;
             clientsMutex.WaitOne();
@@ -66,7 +66,7 @@ namespace MyGame.GameServer
             game.Run();
 
             //the game has finished
-            foreach (Player c in clients)
+            foreach (RemotePlayer c in clients)
             {
                 c.Disconnect();
             }
@@ -78,7 +78,7 @@ namespace MyGame.GameServer
 
         public void BroadcastUDP(GameObjectUpdate message)
         {
-            foreach (Player client in clients)
+            foreach (RemotePlayer client in clients)
             {
                 client.SendUDP(message);
             }
@@ -86,7 +86,7 @@ namespace MyGame.GameServer
 
         public void BroadcastUDP(Queue<GameObjectUpdate> messages)
         {
-            foreach (Player client in clients)
+            foreach (RemotePlayer client in clients)
             {
                 client.SendUDP(messages);
             }
@@ -94,7 +94,7 @@ namespace MyGame.GameServer
 
         public void BroadcastTCP(TcpMessage message)
         {
-            foreach (Player client in clients)
+            foreach (RemotePlayer client in clients)
             {
                 client.SendTCP(message);
             }
@@ -107,7 +107,7 @@ namespace MyGame.GameServer
             {
                 while (true)
                 {
-                    Player clientobj = new Player();
+                    RemotePlayer clientobj = new RemotePlayer();
                     this.AddClient(clientobj);
                 }
             }
