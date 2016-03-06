@@ -74,7 +74,7 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships
         public override void SimulationStateOnlyUpdate(float seconds)
         {
             base.SimulationStateOnlyUpdate(seconds);
-
+            /*
             foreach (GameObject obj in this.Game.GameObjectCollection.Tree.GetObjectsInCircle(this.WorldPosition(), Ship.MaxRadius + Bullet.MaxRadius))
             {
                 if (obj is Bullet)
@@ -86,7 +86,7 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships
                         bullet.Destroy();
                     }
                 }
-            }
+            }*/
 
             if (this.Health <= 0)
             {

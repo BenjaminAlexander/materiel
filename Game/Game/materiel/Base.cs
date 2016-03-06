@@ -24,6 +24,27 @@ namespace MyGame.materiel
         }
 
         private float timeTillSpawn = 5;
+        private int count = 0;
+        private static Vector2 MaterielYard(Vector2 start, int index)
+        {
+            int spacing = 12;
+            int sideLength = (int)Math.Sqrt(index);
+            int remaining = index - sideLength * sideLength;
+            Vector2 rtn = start + new Vector2(sideLength * spacing, 0);
+            while (remaining > 0 && sideLength > 0)
+            {
+                rtn = rtn + new Vector2(0, spacing);
+                remaining--;
+                sideLength--;
+            }
+
+            while (remaining > 0)
+            {
+                rtn = rtn + new Vector2(-spacing, 0);
+                remaining--;
+            }
+            return rtn;
+        }
 
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
 
@@ -54,11 +75,12 @@ namespace MyGame.materiel
                 timeTillSpawn = timeTillSpawn - secondsElapsed;
                 if (timeTillSpawn < 0)
                 {
-                    timeTillSpawn = 5;
-                    SmallShip ship = new SmallShip(this.Game);
-                    SmallShip.ServerInitialize(ship, this.Position, 0);
-                    this.Game.GameObjectCollection.Add(ship);
-                    ship.TargetPosition = Utils.RandomUtils.RandomVector2(new Vector2(4000));
+                    timeTillSpawn = .1f;
+                    Vector2 pos = MaterielYard(this.Position + new Vector2(50), count);//Utils.RandomUtils.RandomVector2(new Vector2(4000));
+                    count++;
+
+                    Tricon.TriconFactory(this.Game, pos, controllingPlayer.Value);
+                    
                 }
             }
         }

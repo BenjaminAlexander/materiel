@@ -101,6 +101,17 @@
 /processorParam:TextureFormat=Color
 /build:Mine.png
 
+#begin Moon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:TextureFormat=Color
+/build:Moon.png
+
 #begin point.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -134,13 +145,7 @@
 /processorParam:TextureFormat=Color
 /build:Star.png
 
-#begin SpriteFont1.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:TextureFormat=Compressed
-/build:SpriteFont1.spritefont
-
-#begin Moon.png
+#begin Tricon.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -149,5 +154,11 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:Moon.png
+/build:Tricon.png
+
+#begin SpriteFont1.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:SpriteFont1.spritefont
 

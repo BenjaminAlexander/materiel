@@ -113,6 +113,7 @@
     <Compile Include="IO\Events\KeyPressEvent.cs" />
     <Compile Include="materiel\Base.cs" />
     <Compile Include="materiel\PlayerGameObject.cs" />
+    <Compile Include="materiel\Tricon.cs" />
     <Compile Include="Networking\TcpMessage.cs" />
     <Compile Include="Networking\UdpMessage.cs" />
     <Compile Include="Networking\UdpTcpPair.cs" />
@@ -213,6 +214,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Star.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Tricon.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
