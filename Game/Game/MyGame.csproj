@@ -114,6 +114,7 @@
     <Compile Include="materiel\Base.cs" />
     <Compile Include="materiel\PlayerGameObject.cs" />
     <Compile Include="materiel\Tricon.cs" />
+    <Compile Include="materiel\Vehicle.cs" />
     <Compile Include="Networking\TcpMessage.cs" />
     <Compile Include="Networking\UdpMessage.cs" />
     <Compile Include="Networking\UdpTcpPair.cs" />

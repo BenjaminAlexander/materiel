@@ -24,7 +24,7 @@ namespace MyGame.materiel
         }
 
         private float timeTillSpawn = 5;
-        private float materiel = 0;
+        private FloatGameObjectMember materiel;
 
 
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
@@ -45,6 +45,7 @@ namespace MyGame.materiel
         public Base(Game1 game)
             : base(game)
         {
+            materiel = new FloatGameObjectMember(this, 0);
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
         }
 
@@ -57,7 +58,7 @@ namespace MyGame.materiel
                 if (timeTillSpawn < 0)
                 {
                     timeTillSpawn = 5f;
-                    materiel = materiel + 1f;
+                    materiel.Value = materiel + 1f;
                 }
             }
         }
@@ -72,7 +73,7 @@ namespace MyGame.materiel
             {
                 this.Collidable.Draw(graphics, this.Position, this.Direction, controllingPlayer.Value.Color);
             }
-            graphics.DrawDebugFont(materiel.ToString(), this.Position + new Vector2(25, 0) , 1f);
+            graphics.DrawDebugFont(materiel.Value.ToString(), this.Position + new Vector2(25, 0) , 1f);
         }
     
         public override void MoveOutsideWorld(Microsoft.Xna.Framework.Vector2 position, Microsoft.Xna.Framework.Vector2 movePosition)
