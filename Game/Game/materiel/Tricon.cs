@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -69,4 +69,4 @@ namespace MyGame.materiel
             graphics.DrawSolidRectangle(this.Position, new Vector2(10), new Vector2(0), 0, Color.Black, .5);
         }
     }
-}
+}*/

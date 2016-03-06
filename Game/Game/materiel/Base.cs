@@ -24,27 +24,8 @@ namespace MyGame.materiel
         }
 
         private float timeTillSpawn = 5;
-        private int count = 0;
-        private static Vector2 MaterielYard(Vector2 start, int index)
-        {
-            int spacing = 12;
-            int sideLength = (int)Math.Sqrt(index);
-            int remaining = index - sideLength * sideLength;
-            Vector2 rtn = start + new Vector2(sideLength * spacing, 0);
-            while (remaining > 0 && sideLength > 0)
-            {
-                rtn = rtn + new Vector2(0, spacing);
-                remaining--;
-                sideLength--;
-            }
+        private float materiel = 0;
 
-            while (remaining > 0)
-            {
-                rtn = rtn + new Vector2(-spacing, 0);
-                remaining--;
-            }
-            return rtn;
-        }
 
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
 
@@ -75,12 +56,8 @@ namespace MyGame.materiel
                 timeTillSpawn = timeTillSpawn - secondsElapsed;
                 if (timeTillSpawn < 0)
                 {
-                    timeTillSpawn = .1f;
-                    Vector2 pos = MaterielYard(this.Position + new Vector2(50), count);//Utils.RandomUtils.RandomVector2(new Vector2(4000));
-                    count++;
-
-                    Tricon.TriconFactory(this.Game, pos, controllingPlayer.Value);
-                    
+                    timeTillSpawn = 5f;
+                    materiel = materiel + 1f;
                 }
             }
         }
@@ -95,6 +72,7 @@ namespace MyGame.materiel
             {
                 this.Collidable.Draw(graphics, this.Position, this.Direction, controllingPlayer.Value.Color);
             }
+            graphics.DrawDebugFont(materiel.ToString(), this.Position + new Vector2(25, 0) , 1f);
         }
     
         public override void MoveOutsideWorld(Microsoft.Xna.Framework.Vector2 position, Microsoft.Xna.Framework.Vector2 movePosition)
