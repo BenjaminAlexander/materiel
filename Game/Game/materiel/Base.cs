@@ -67,7 +67,7 @@ namespace MyGame.materiel
                     if (buildQueue.Value.Count > 0)
                     {
                         buildQueue.Value.Dequeue();
-                        Vehicle.VehicleFactory((ServerGame)this.Game, Utils.RandomUtils.RandomVector2(new Vector2(100)) + this.Position);
+                        Vehicle.VehicleFactory((ServerGame)this.Game, this.controllingPlayer.Value, Utils.RandomUtils.RandomVector2(new Vector2(100)) + this.Position);
                     }
                     else
                     {

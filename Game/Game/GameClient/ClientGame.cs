@@ -60,6 +60,11 @@ namespace MyGame.GameClient
             this.GraphicsObject.BeginWorld();
             this.serverConnection.Draw(gameTime, this.GraphicsObject);
             this.GraphicsObject.End();
+
+            this.GraphicsObject.Begin();
+            this.serverConnection.DrawHud(gameTime, this.GraphicsObject);
+            this.GraphicsObject.End();
+
             GameObjectField.SetModeSimulation();            
         }
 

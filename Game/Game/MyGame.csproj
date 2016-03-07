@@ -70,7 +70,9 @@
     <Compile Include="GameServer\Player.cs" />
     <Compile Include="GameServer\RemotePlayer.cs" />
     <Compile Include="GameServer\Program.cs" />
+    <Compile Include="materiel\Company.cs" />
     <Compile Include="RtsCommands\BuildCombatVehicle.cs" />
+    <Compile Include="RtsCommands\CreateCompany.cs" />
     <Compile Include="RtsCommands\RtsCommand.cs" />
     <Compile Include="GameStateObjects\GenericGameObjectField.cs" />
     <Compile Include="GameStateObjects\FloatGameObjectMember.cs" />

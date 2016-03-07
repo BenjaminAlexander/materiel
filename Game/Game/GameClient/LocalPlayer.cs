@@ -29,8 +29,10 @@ namespace MyGame.GameClient
         private IOEvent leftMousePress = new LeftMousePressed();
         private IOEvent leftMouseRelease = new LeftMouseReleased();
         private IOEvent constructCombat = new KeyPressEvent(Keys.C);
+        private IOEvent createCompany = new KeyPressEvent(Keys.Z);
 
         private Base selectedBase = null;
+        private Company selectedCompany = null;
 
         public LocalPlayer(IPAddress serverAddress, ClientGame game) : base(serverAddress)
         {
@@ -39,6 +41,7 @@ namespace MyGame.GameClient
             this.game.InputManager.Register(leftMousePress, this);
             this.game.InputManager.Register(leftMouseRelease, this);
             this.game.InputManager.Register(constructCombat, this);
+            this.game.InputManager.Register(createCompany, this);
         }
 
         public void Update(GameTime gameTime)
@@ -54,6 +57,15 @@ namespace MyGame.GameClient
             }
         }
 
+        public void DrawHud(GameTime gameTime, MyGraphicsClass graphics)
+        {
+            PlayerGameObject obj = this.GameObject;
+            if (obj != null)
+            {
+                obj.DrawHud(gameTime, graphics, selectedCompany);
+            }
+        }
+
         public override GameObjectUpdate GetUDPMessage(UdpTcpPair client)
         {
             return new GameObjectUpdate(client);
@@ -64,17 +76,42 @@ namespace MyGame.GameClient
             return new SetWorldSize(client);
         }
 
+        public PlayerGameObject GameObject
+        {
+            get
+            {
+                List<PlayerGameObject> playerList = this.game.GameObjectCollection.GetMasterList().GetList<PlayerGameObject>();
+                foreach (PlayerGameObject player in playerList)
+                {
+                    if (player.PlayerID == this.Id)
+                    {
+                        return player;
+                    }
+                }
+                return null;
+            }
+        }
+
         public void UpdateWithIOEvent(IOEvent ioEvent)
         {
             if (ioEvent.Equals(leftMousePress))
             {
-                Vector2 sceenPosition = IOState.MouseScreenPosition();
-                Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
+                selectedCompany = null;
+                selectedBase = null;
 
-                List<CompositePhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
-                if (clickList.Count > 0 && clickList[0] is Base)
+                Vector2 sceenPosition = IOState.MouseScreenPosition();
+
+                selectedCompany = this.GameObject.ClickCompany(sceenPosition);
+
+                if (selectedCompany == null)
                 {
-                    selectedBase = (Base)clickList[0];
+                    Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
+
+                    List<CompositePhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
+                    if (clickList.Count > 0 && clickList[0] is Base)
+                    {
+                        selectedBase = (Base)clickList[0];
+                    }
                 }
             }
             else if (ioEvent.Equals(constructCombat))
@@ -83,6 +120,10 @@ namespace MyGame.GameClient
                 {
                     RtsCommand command = new BuildCombatVehicle(this, selectedBase);
                 }
+            }
+            else if (ioEvent.Equals(createCompany))
+            {
+                RtsCommand command = new CreateCompany(this);
             }
         }
     }

@@ -10,7 +10,7 @@ using MyGame.GameClient;
 
 namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships
 {
-    class SmallShip : Ship
+    public class SmallShip : Ship
     {
         public static void ServerInitialize(SmallShip smallShip, Vector2 position, Vector2 velocity)
         {

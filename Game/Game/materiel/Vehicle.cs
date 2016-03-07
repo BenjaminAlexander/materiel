@@ -10,25 +10,28 @@ using MyGame.GameServer;
 
 namespace MyGame.materiel
 {
-    class Vehicle : SmallShip
+    public class Vehicle : SmallShip
     {
         private FloatGameObjectMember materiel;
+        private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
 
         public Vehicle(Game1 game)
             : base(game)
         {
+            controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
             materiel = new FloatGameObjectMember(this, 0);
         }
 
-        public static void ServerInitialize(Vehicle vic, Vector2 position)
+        public static void ServerInitialize(Vehicle vic, PlayerGameObject controllingPlayer, Vector2 position)
         {
-            ServerInitialize(vic, position, new Vector2(0));
+            vic.controllingPlayer.Value = controllingPlayer;
+            SmallShip.ServerInitialize(vic, position, new Vector2(0));
         }
 
-        public static Vehicle VehicleFactory(ServerGame game, Vector2 position)
+        public static Vehicle VehicleFactory(ServerGame game, PlayerGameObject controllingPlayer, Vector2 position)
         {
             Vehicle vehicle = new Vehicle(game);
-            Vehicle.ServerInitialize(vehicle, position);
+            Vehicle.ServerInitialize(vehicle, controllingPlayer, position);
             game.GameObjectCollection.Add(vehicle);
             return vehicle;
         }
