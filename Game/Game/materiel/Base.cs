@@ -25,7 +25,7 @@ namespace MyGame.materiel
 
         private float timeTillSpawn = 5;
         private FloatGameObjectMember materiel;
-
+        private IntegerQueueGameObjectField buildQueue;
 
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
 
@@ -47,6 +47,12 @@ namespace MyGame.materiel
         {
             materiel = new FloatGameObjectMember(this, 0);
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
+            buildQueue = new IntegerQueueGameObjectField(this);
+        }
+
+        public void BuildCombatVehicle()
+        {
+            buildQueue.Value.Enqueue(0);
         }
 
         public override void ServerOnlyUpdate(float secondsElapsed)
@@ -58,7 +64,15 @@ namespace MyGame.materiel
                 if (timeTillSpawn < 0)
                 {
                     timeTillSpawn = 5f;
-                    materiel.Value = materiel + 1f;
+                    if (buildQueue.Value.Count > 0)
+                    {
+                        buildQueue.Value.Dequeue();
+                        Vehicle.VehicleFactory((ServerGame)this.Game, Utils.RandomUtils.RandomVector2(new Vector2(100)) + this.Position);
+                    }
+                    else
+                    {
+                        materiel.Value = materiel + 1f;
+                    }
                 }
             }
         }

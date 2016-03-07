@@ -11,6 +11,7 @@ using MyGame.GameClient;
 using MyGame.Utils;
 using MyGame.GameStateObjects;
 using MyGame.materiel;
+using MyGame.RtsCommands;
 
 namespace MyGame.GameServer
 {
@@ -18,8 +19,13 @@ namespace MyGame.GameServer
     {
         private PlayerGameObject playerGameObject = null;
 
+        private ThreadSafeQueue<RtsCommandMessage> rtsCommandMessageQueue = new ThreadSafeQueue<RtsCommandMessage>();
+        private Thread rtsCommandMessageReader;
+
         public RemotePlayer() : base()
         {
+            this.rtsCommandMessageReader = new Thread(new ThreadStart(RtsCommandMessageReader));
+            this.rtsCommandMessageReader.Start();
         }
 
         public void CreatPlayerGameObject(ServerGame game)
@@ -38,6 +44,27 @@ namespace MyGame.GameServer
         public override UdpMessage GetUDPMessage(UdpTcpPair client)
         {
             throw new NotImplementedException();
+        }
+
+        public Queue<RtsCommandMessage> DequeueAllRtsCommandMessages()
+        {
+            return rtsCommandMessageQueue.DequeueAll();
+        }
+
+        private void RtsCommandMessageReader()
+        {
+            try
+            {
+                while (true)
+                {
+                    RtsCommandMessage m = this.GetRtsCommandMessage();
+                    rtsCommandMessageQueue.Enqueue(m);
+                }
+            }
+            catch (Exception)
+            {
+                //TODO: close the client game
+            }
         }
     }
 }

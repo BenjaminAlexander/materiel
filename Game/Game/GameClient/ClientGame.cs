@@ -43,6 +43,9 @@ namespace MyGame.GameClient
                 m.Apply(this, gameTime);
             }
 
+            this.serverConnection.Update(gameTime);
+
+
             base.Update(gameTime);
             this.GameObjectCollection.ClientUpdate(gameTime);
 
@@ -54,13 +57,10 @@ namespace MyGame.GameClient
         {
             GameObjectField.SetModeDraw();
             base.Draw(gameTime);
-
-            GameObjectField.SetModeSimulation();
-
-            this.GraphicsObject.Begin(Matrix.Identity);
-
+            this.GraphicsObject.BeginWorld();
+            this.serverConnection.Draw(gameTime, this.GraphicsObject);
             this.GraphicsObject.End();
-            
+            GameObjectField.SetModeSimulation();            
         }
 
         protected override void OnExiting(object sender, EventArgs args)

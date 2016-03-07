@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MyGame.IO.Events
 {
-    class LeftMouseDown : IOEvent
+    class LeftMousePressed : IOEvent
     {
         public override bool hasOccured()
         {
-            return IOState.leftButtonDown();
+            return IOState.leftButtonPressed();
         }
 
         public override bool Equals(object obj)

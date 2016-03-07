@@ -8,12 +8,13 @@ using MyGame.Utils;
 using System.Threading;
 using System.Net;
 using MyGame.GameClient;
+using MyGame.RtsCommands;
 
 namespace MyGame.GameServer
 {
     public abstract class BasePlayer<InUDP, OutUDP> where InUDP : UdpMessage where OutUDP : UdpMessage
     {
-        public UdpTcpPair client;
+        private UdpTcpPair client;
 
         private ThreadSafeQueue<OutUDP> outgoingUDPQueue = new ThreadSafeQueue<OutUDP>();
         private ThreadSafeQueue<InUDP> incomingUDPQueue = new ThreadSafeQueue<InUDP>();
@@ -138,6 +139,11 @@ namespace MyGame.GameServer
         public SetWorldSize GetSetWorldSize()
         {
             return new SetWorldSize(this.client);
+        }
+
+        public RtsCommandMessage GetRtsCommandMessage()
+        {
+            return new RtsCommandMessage(this.client);
         }
     }
 }

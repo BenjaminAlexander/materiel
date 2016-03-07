@@ -70,11 +70,14 @@
     <Compile Include="GameServer\Player.cs" />
     <Compile Include="GameServer\RemotePlayer.cs" />
     <Compile Include="GameServer\Program.cs" />
+    <Compile Include="RtsCommands\BuildCombatVehicle.cs" />
+    <Compile Include="RtsCommands\RtsCommand.cs" />
     <Compile Include="GameStateObjects\GenericGameObjectField.cs" />
     <Compile Include="GameStateObjects\FloatGameObjectMember.cs" />
     <Compile Include="GameStateObjects\GameObjectReferenceField.cs" />
     <Compile Include="GameStateObjects\GameObjectField.cs" />
     <Compile Include="GameStateObjects\IntegerGameObjectMember.cs" />
+    <Compile Include="GameStateObjects\IntegerQueueGameObjectField.cs" />
     <Compile Include="GameStateObjects\InterpolatedAngleGameObjectMember.cs" />
     <Compile Include="GameStateObjects\InterpolatedVector2GameObjectMember.cs" />
     <Compile Include="GameStateObjects\GameObjectReferenceListField.cs" />
@@ -107,6 +110,8 @@
     <Compile Include="Geometry\Utils.cs" />
     <Compile Include="IO\Events\KeyDown.cs" />
     <Compile Include="IO\Events\LeftMouseDown.cs" />
+    <Compile Include="IO\Events\LeftMousePressed.cs" />
+    <Compile Include="IO\Events\LeftMouseReleased.cs" />
     <Compile Include="IO\IOEvent.cs" />
     <Compile Include="IO\IOObserver.cs" />
     <Compile Include="IO\IOState.cs" />
@@ -119,6 +124,7 @@
     <Compile Include="Networking\UdpMessage.cs" />
     <Compile Include="Networking\UdpTcpPair.cs" />
     <Compile Include="GameStateObjects\GameObjectUpdate.cs" />
+    <Compile Include="RtsCommands\RtsCommandMessage.cs" />
     <Compile Include="Utils\NetUtils.cs" />
     <Compile Include="Utils\RollingAverage.cs" />
     <Compile Include="GameClient\SetWorldSize.cs" />

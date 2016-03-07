@@ -22,19 +22,34 @@ namespace MyGame.Networking
 
         private static Type[] messageTypeArray;
 
+        public static Type MessageType(int i)
+        {
+            return messageTypeArray[i];
+        }
+
+        public static int TypeID(Type t)
+        {
+            if (!t.IsSubclassOf(typeof(GameMessage)))
+            {
+                throw new Exception("Type is not a subclass of GameMessage");
+            }
+
+            for (int i = 0; i < messageTypeArray.Length; i++)
+            {
+                if (messageTypeArray[i] == t)
+                {
+                    return i;
+                }
+            }
+            throw new Exception("Type not found");
+        }
+
         private readonly byte[] buff = new byte[BUFF_MAX_SIZE];
         private int readerSpot;
 
         protected internal GameMessage(GameTime currentGameTime)
         {
-            int typeID = 0;
-            for (int i = 0; i < messageTypeArray.Length; i++)
-            {
-                if (messageTypeArray[i] == this.GetType())
-                {
-                    typeID = i;
-                }
-            }
+            int typeID = GameMessage.TypeID(this.GetType());
 
             this.Type = typeID;
             this.TimeStamp = currentGameTime.TotalGameTime.Ticks;
@@ -123,6 +138,8 @@ namespace MyGame.Networking
                     .Where(t => t.IsSubclassOf(typeof (GameMessage)));
             types = types.OrderBy(t => t.Name);
             messageTypeArray = types.ToArray();
+
+            RtsCommands.RtsCommand.Initialize();
         }
 
         // Every other append method should boil down to calling one.

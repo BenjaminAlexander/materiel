@@ -12,6 +12,7 @@ using MyGame.Networking;
 using MyGame.GameClient;
 using MyGame.Utils;
 using MyGame.GameStateObjects;
+using MyGame.RtsCommands;
 
 namespace MyGame.GameServer
 {
@@ -97,6 +98,20 @@ namespace MyGame.GameServer
             foreach (RemotePlayer client in clients)
             {
                 client.SendTCP(message);
+            }
+        }
+
+        public void HandleAllRtsCommandMessages(ServerGame game)
+        {
+            foreach (RemotePlayer client in clients)
+            {
+                Queue<RtsCommandMessage> queue = client.DequeueAllRtsCommandMessages();
+                while (queue.Count > 0)
+                {
+                    RtsCommandMessage message = queue.Dequeue();
+                    RtsCommand command = message.Command;
+                    command.Execute(game);
+                }
             }
         }
 

@@ -74,7 +74,7 @@ namespace MyGame.IO
 
         public static bool leftButtonPressed()
         {
-            return previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Released;
+            return previousMouseState.LeftButton == ButtonState.Released && currentMouseState.LeftButton == ButtonState.Pressed;
         }
 
         public static bool rightButtonReleased()
@@ -84,7 +84,7 @@ namespace MyGame.IO
 
         public static bool rightButtonPressed()
         {
-            return previousMouseState.RightButton == ButtonState.Released && currentMouseState.RightButton == ButtonState.Released;
+            return previousMouseState.RightButton == ButtonState.Released && currentMouseState.RightButton == ButtonState.Pressed;
         }
 
         public static bool isKeyPressed(Keys key)

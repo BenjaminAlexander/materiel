@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
 using MyGame.GameStateObjects;
 using Microsoft.Xna.Framework;
+using MyGame.GameServer;
+
 namespace MyGame.materiel
 {
     class Vehicle : SmallShip
@@ -21,6 +23,14 @@ namespace MyGame.materiel
         public static void ServerInitialize(Vehicle vic, Vector2 position)
         {
             ServerInitialize(vic, position, new Vector2(0));
+        }
+
+        public static Vehicle VehicleFactory(ServerGame game, Vector2 position)
+        {
+            Vehicle vehicle = new Vehicle(game);
+            Vehicle.ServerInitialize(vehicle, position);
+            game.GameObjectCollection.Add(vehicle);
+            return vehicle;
         }
     }
 }
