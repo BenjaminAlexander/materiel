@@ -22,7 +22,7 @@ namespace MyGame.GameClient
 {
     //TODO: name this class better
     //maybe combine with local player
-    public class LocalPlayer : BasePlayer<GameObjectUpdate, UdpMessage>, IOObserver
+    public class LocalPlayer : BasePlayer<GameObjectUpdate, SetWorldSize>, IOObserver
     {
         private ClientGame game;
 
@@ -59,6 +59,11 @@ namespace MyGame.GameClient
             return new GameObjectUpdate(client);
         }
 
+        public override SetWorldSize GetTCPMessage(UdpTcpPair client)
+        {
+            return new SetWorldSize(client);
+        }
+
         public void UpdateWithIOEvent(IOEvent ioEvent)
         {
             if (ioEvent.Equals(leftMousePress))
@@ -76,8 +81,7 @@ namespace MyGame.GameClient
             {
                 if (selectedBase != null)
                 {
-                    RtsCommand command = new BuildCombatVehicle(selectedBase);
-                    this.SendTCP(command.GetMessage());
+                    RtsCommand command = new BuildCombatVehicle(this, selectedBase);
                 }
             }
         }

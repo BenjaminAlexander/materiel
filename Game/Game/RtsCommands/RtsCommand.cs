@@ -32,28 +32,6 @@ namespace MyGame.RtsCommands
             }
         }
 
-        public static Type CommandType(int i)
-        {
-            return commandTypeArray[i];
-        }
-
-        public static int TypeID(Type t)
-        {
-            if (!t.IsSubclassOf(typeof(RtsCommand)))
-            {
-                throw new Exception("Type is not a subclass of RtsCommand");
-            }
-
-            for (int i = 0; i < commandTypeArray.Length; i++)
-            {
-                if (commandTypeArray[i] == t)
-                {
-                    return i;
-                }
-            }
-            throw new Exception("Type not found");
-        }
-
         public static RtsCommand ConstructCommand(int typeID, RtsCommandMessage message)
         {
             var constuctorParams = new object[1];
@@ -65,10 +43,15 @@ namespace MyGame.RtsCommands
 
         public int TypeID()
         {
-            return RtsCommand.TypeID(this.GetType());
+            for (int i = 0; i < commandTypeArray.Length; i++)
+            {
+                if (commandTypeArray[i] == this.GetType())
+                {
+                    return i;
+                }
+            }
+            throw new Exception("Type not found");
         }
-
-        public abstract RtsCommandMessage GetMessage();
 
         public abstract void Execute(ServerGame game);
 

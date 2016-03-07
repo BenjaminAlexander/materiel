@@ -15,17 +15,12 @@ using MyGame.RtsCommands;
 
 namespace MyGame.GameServer
 {
-    public class RemotePlayer : BasePlayer<UdpMessage, GameObjectUpdate>
+    public class RemotePlayer : BasePlayer<UdpMessage, RtsCommandMessage>
     {
         private PlayerGameObject playerGameObject = null;
 
-        private ThreadSafeQueue<RtsCommandMessage> rtsCommandMessageQueue = new ThreadSafeQueue<RtsCommandMessage>();
-        private Thread rtsCommandMessageReader;
-
         public RemotePlayer() : base()
         {
-            this.rtsCommandMessageReader = new Thread(new ThreadStart(RtsCommandMessageReader));
-            this.rtsCommandMessageReader.Start();
         }
 
         public void CreatPlayerGameObject(ServerGame game)
@@ -46,24 +41,18 @@ namespace MyGame.GameServer
             throw new NotImplementedException();
         }
 
-        public Queue<RtsCommandMessage> DequeueAllRtsCommandMessages()
+        public override RtsCommandMessage GetTCPMessage(UdpTcpPair client)
         {
-            return rtsCommandMessageQueue.DequeueAll();
+            return new RtsCommandMessage(client);
         }
 
-        private void RtsCommandMessageReader()
+        public void HandleAllTCPMessages(ServerGame game)
         {
-            try
+            Queue<RtsCommandMessage> queue = this.DequeueAllIncomingTCP();
+            while (queue.Count > 0)
             {
-                while (true)
-                {
-                    RtsCommandMessage m = this.GetRtsCommandMessage();
-                    rtsCommandMessageQueue.Enqueue(m);
-                }
-            }
-            catch (Exception)
-            {
-                //TODO: close the client game
+                RtsCommandMessage message = queue.Dequeue();
+                message.Execute(game);
             }
         }
     }

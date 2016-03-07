@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MyGame.GameServer;
 using MyGame.materiel;
 using MyGame.GameStateObjects;
+using MyGame.GameClient;
 
 namespace MyGame.RtsCommands
 {
@@ -13,21 +14,18 @@ namespace MyGame.RtsCommands
     {
         private int baseObjID;
 
-        public BuildCombatVehicle(Base baseObj)
+        public BuildCombatVehicle(LocalPlayer player, Base baseObj)
         {
             this.baseObjID = baseObj.ID;
+
+            RtsCommandMessage message = new RtsCommandMessage(this);
+            message.Append(baseObjID);
+            player.SendTCP(message);
         }
 
         public BuildCombatVehicle(RtsCommandMessage message)
         {
             this.baseObjID = message.ReadInt();
-        }
-
-        public override RtsCommandMessage GetMessage()
-        {
-            RtsCommandMessage message = new RtsCommandMessage(this);
-            message.Append(baseObjID);
-            return message;
         }
 
         public override void Execute(ServerGame game)

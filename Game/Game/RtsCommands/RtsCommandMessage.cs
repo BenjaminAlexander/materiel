@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MyGame.Networking;
 using Microsoft.Xna.Framework;
+using MyGame.GameServer;
 
 namespace MyGame.RtsCommands
 {
@@ -12,12 +13,9 @@ namespace MyGame.RtsCommands
     {
         private RtsCommand command;
 
-        public RtsCommand Command
+        public void Execute(ServerGame game)
         {
-            get
-            {
-                return command;
-            }
+            command.Execute(game);
         }
 
         public RtsCommandMessage(RtsCommand command)

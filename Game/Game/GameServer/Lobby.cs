@@ -85,7 +85,7 @@ namespace MyGame.GameServer
             }
         }
 
-        public void BroadcastUDP(Queue<GameObjectUpdate> messages)
+        public void BroadcastUDP(Queue<UdpMessage> messages)
         {
             foreach (RemotePlayer client in clients)
             {
@@ -101,17 +101,11 @@ namespace MyGame.GameServer
             }
         }
 
-        public void HandleAllRtsCommandMessages(ServerGame game)
+        public void HandleAllTCPMessages(ServerGame game)
         {
             foreach (RemotePlayer client in clients)
             {
-                Queue<RtsCommandMessage> queue = client.DequeueAllRtsCommandMessages();
-                while (queue.Count > 0)
-                {
-                    RtsCommandMessage message = queue.Dequeue();
-                    RtsCommand command = message.Command;
-                    command.Execute(game);
-                }
+                client.HandleAllTCPMessages(game);
             }
         }
 

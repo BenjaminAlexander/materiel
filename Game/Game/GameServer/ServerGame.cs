@@ -39,7 +39,7 @@ namespace MyGame.GameServer
             float secondsElapsed = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
 
             base.Update(gameTime);
-            this.lobby.HandleAllRtsCommandMessages(this);
+            this.lobby.HandleAllTCPMessages(this);
             this.GameObjectCollection.ServerUpdate(lobby, gameTime);
             this.Camera.Update(secondsElapsed);
         }

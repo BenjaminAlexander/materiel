@@ -22,7 +22,7 @@ namespace MyGame.GameClient
         {
             this.serverConnection = new LocalPlayer(serverAddress, this);
 
-            SetWorldSize m = serverConnection.GetSetWorldSize();
+            SetWorldSize m = serverConnection.DequeueIncomingTCP();
             this.SetWorldSize(m.WorldSize);
         }
 

@@ -12,19 +12,23 @@ using MyGame.RtsCommands;
 
 namespace MyGame.GameServer
 {
-    public abstract class BasePlayer<InUDP, OutUDP> where InUDP : UdpMessage where OutUDP : UdpMessage
+    public abstract class BasePlayer<InUDP, InTCP>
+        where InUDP : UdpMessage
+        where InTCP : TcpMessage
     {
         private UdpTcpPair client;
 
-        private ThreadSafeQueue<OutUDP> outgoingUDPQueue = new ThreadSafeQueue<OutUDP>();
+        private ThreadSafeQueue<UdpMessage> outgoingUDPQueue = new ThreadSafeQueue<UdpMessage>();
         private ThreadSafeQueue<InUDP> incomingUDPQueue = new ThreadSafeQueue<InUDP>();
 
         private ThreadSafeQueue<TcpMessage> outgoingTCPQueue = new ThreadSafeQueue<TcpMessage>();
+        private ThreadSafeQueue<InTCP> incomingTCPQueue = new ThreadSafeQueue<InTCP>();
 
         private Thread outboundUDPSenderThread;
         private Thread inboundUDPReaderThread;
 
         private Thread outboundTCPSenderThread;
+        private Thread inboundTCPReaderThread;
 
         public BasePlayer()
         {
@@ -48,22 +52,26 @@ namespace MyGame.GameServer
 
             this.outboundTCPSenderThread = new Thread(new ThreadStart(OutboundTCPSender));
             this.outboundTCPSenderThread.Start();
+
+            this.inboundTCPReaderThread = new Thread(new ThreadStart(InboundTCPReader));
+            this.inboundTCPReaderThread.Start();
         }
 
         public virtual void Disconnect()
         {
-            outboundUDPSenderThread.Abort();
-            inboundUDPReaderThread.Abort();
-            outboundTCPSenderThread.Abort();
-            client.Disconnect();
+            this.outboundUDPSenderThread.Abort();
+            this.inboundUDPReaderThread.Abort();
+            this.outboundTCPSenderThread.Abort();
+            this.inboundTCPReaderThread.Abort();
+            this.client.Disconnect();
         }
 
-        public void SendUDP(OutUDP message)
+        public void SendUDP(UdpMessage message)
         {
             outgoingUDPQueue.Enqueue(message);
         }
 
-        public void SendUDP(Queue<OutUDP> messages)
+        public void SendUDP(Queue<UdpMessage> messages)
         {
             outgoingUDPQueue.EnqueueAll(messages);
         }
@@ -79,7 +87,7 @@ namespace MyGame.GameServer
             {
                 while (true)
                 {
-                    OutUDP m = outgoingUDPQueue.Dequeue();
+                    UdpMessage m = outgoingUDPQueue.Dequeue();
                     m.Send(this.client);
                 }
             }
@@ -110,6 +118,16 @@ namespace MyGame.GameServer
             outgoingTCPQueue.Enqueue(message);
         }
 
+        public InTCP DequeueIncomingTCP()
+        {
+            return incomingTCPQueue.Dequeue();
+        }
+
+        public Queue<InTCP> DequeueAllIncomingTCP()
+        {
+            return incomingTCPQueue.DequeueAll();
+        }
+
         private void OutboundTCPSender()
         {
             try
@@ -118,6 +136,22 @@ namespace MyGame.GameServer
                 {
                     TcpMessage message = outgoingTCPQueue.Dequeue();
                     message.Send(client);
+                }
+            }
+            catch (Exception)
+            {
+                //TODO: close the client game
+            }
+        }
+
+        private void InboundTCPReader()
+        {
+            try
+            {
+                while (true)
+                {
+                    InTCP m = this.GetTCPMessage(this.client);
+                    incomingTCPQueue.Enqueue(m);
                 }
             }
             catch (Exception)
@@ -136,14 +170,6 @@ namespace MyGame.GameServer
 
         public abstract InUDP GetUDPMessage(UdpTcpPair client);
 
-        public SetWorldSize GetSetWorldSize()
-        {
-            return new SetWorldSize(this.client);
-        }
-
-        public RtsCommandMessage GetRtsCommandMessage()
-        {
-            return new RtsCommandMessage(this.client);
-        }
+        public abstract InTCP GetTCPMessage(UdpTcpPair client);
     }
 }
