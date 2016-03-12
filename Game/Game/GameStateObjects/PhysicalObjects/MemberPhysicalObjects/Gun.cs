@@ -48,7 +48,7 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MemberPhysicalObjects
                 this.CooldownTimer = COOLDOWN_TIME;
                 //FIRE
                 Bullet b = new Bullet(this.Game);
-                Bullet.ServerInitialize(b, (Ship)(this.Root()), this.WorldPosition(), this.WorldDirection());
+                Bullet.ServerInitialize(b, this.WorldPosition(), this.WorldDirection());
                 this.Game.GameObjectCollection.Add(b);
             }
             this.fire = false;

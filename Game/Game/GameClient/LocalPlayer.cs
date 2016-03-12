@@ -84,74 +84,66 @@ namespace MyGame.GameClient
 
         public void UpdateWithIOEvent(IOEvent ioEvent)
         {
-            if (ioEvent.Equals(leftMousePress))
+            if (playerGameObject != null)
             {
-                selectedCompany = null;
-                selectedBase = null;
-                selectedVehicle = null;
-
-                Vector2 sceenPosition = IOState.MouseScreenPosition();
-
-                selectedCompany = this.GameObject.ClickCompany(sceenPosition);
-
-                if (selectedCompany == null)
+                if (ioEvent.Equals(leftMousePress))
                 {
-                    Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
+                    selectedCompany = null;
+                    selectedBase = null;
+                    selectedVehicle = null;
 
-                    List<CompositePhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
-                    if (clickList.Count > 0 && clickList[0] is Base)
+                    Vector2 sceenPosition = IOState.MouseScreenPosition();
+
+                    selectedCompany = this.playerGameObject.ClickCompany(sceenPosition);
+
+                    if (selectedCompany == null)
                     {
-                        selectedBase = (Base)clickList[0];
+                        Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
+
+                        List<CompositePhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
+                        if (clickList.Count > 0 && clickList[0] is Base)
+                        {
+                            selectedBase = (Base)clickList[0];
+                        }
+                    }
+
+                    if (selectedBase == null)
+                    {
+                        Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
+
+                        List<CompositePhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
+                        if (clickList.Count > 0 && clickList[0] is Vehicle)
+                        {
+                            selectedVehicle = (Vehicle)clickList[0];
+                        }
                     }
                 }
-
-                if (selectedBase == null)
+                else if (ioEvent.Equals(constructCombat))
                 {
-                    Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
-
-                    List<CompositePhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
-                    if (clickList.Count > 0 && clickList[0] is Vehicle)
+                    if (selectedBase != null)
                     {
-                        selectedVehicle = (Vehicle)clickList[0];
+                        RtsCommand command = new BuildCombatVehicle(this, selectedBase);
                     }
                 }
-            }
-            else if (ioEvent.Equals(constructCombat))
-            {
-                if (selectedBase != null)
+                else if (ioEvent.Equals(createCompany))
                 {
-                    RtsCommand command = new BuildCombatVehicle(this, selectedBase);
+                    RtsCommand command = new CreateCompany(this);
                 }
-            }
-            else if (ioEvent.Equals(createCompany))
-            {
-                RtsCommand command = new CreateCompany(this);
-            }
-            else if (ioEvent.Equals(rightMousePress))
-            {
-                Vector2 sceenPosition = IOState.MouseScreenPosition();
-                Company rightClickCompany = this.GameObject.ClickCompany(sceenPosition);
-
-                if (rightClickCompany != null && selectedVehicle != null)
+                else if (ioEvent.Equals(rightMousePress))
                 {
-                    RtsCommand command = new AddVehicleToCompany(this, rightClickCompany, selectedVehicle);
-                }
-            }
-        }
+                    Vector2 sceenPosition = IOState.MouseScreenPosition();
+                    Company rightClickCompany = this.playerGameObject.ClickCompany(sceenPosition);
 
-        public PlayerGameObject GameObject
-        {
-            get
-            {
-                List<PlayerGameObject> playerList = this.game.GameObjectCollection.GetMasterList().GetList<PlayerGameObject>();
-                foreach (PlayerGameObject player in playerList)
-                {
-                    if (player.PlayerID == this.Id)
+                    if (rightClickCompany != null && selectedVehicle != null)
                     {
-                        return player;
+                        RtsCommand command = new AddVehicleToCompany(this, rightClickCompany, selectedVehicle);
+                    }
+                    else if (selectedCompany != null)
+                    {
+                        Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
+                        RtsCommand command = new MoveCompany(this, selectedCompany, worldPosition);
                     }
                 }
-                return null;
             }
         }
 

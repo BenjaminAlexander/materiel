@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using MyGame.GameServer;
 using MyGame.GameStateObjects;
 using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
+using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Bullets;
 
 namespace MyGame.materiel
 {

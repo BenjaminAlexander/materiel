@@ -21,7 +21,7 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Bullets
             get { return collidable; }
         }
 
-        private static float speed = 2000;
+        private static float speed = 100;
         public static float MaxRadius
         {
             get { return 50;}
@@ -30,7 +30,6 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Bullets
         private IntegerGameObjectMember damage;
         private Vector2GameObjectMember start;
         private FloatGameObjectMember range;
-        private GameObjectReferenceField<Ship> owner;
 
         public Bullet(Game1 game)
             : base(game)
@@ -38,14 +37,12 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Bullets
             damage = new IntegerGameObjectMember(this, 10);
             start = new Vector2GameObjectMember(this, new Vector2(0));
             range = new FloatGameObjectMember(this, 3000);
-            owner = new GameObjectReferenceField<Ship>(this);
         }
 
-        public static void ServerInitialize(Bullet obj, Ship owner, Vector2 position, float direction)
+        public static void ServerInitialize(Bullet obj, Vector2 position, float direction)
         {
             MovingGameObject.ServerInitialize(obj, position, Utils.Vector2Utils.ConstructVectorFromPolar(speed, direction) /*+ owner.Velocity*/, direction);
 
-            obj.owner.Value = owner;
             obj.start.Value = position;
 
         }
@@ -74,7 +71,7 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Bullets
             {
                 return false;
             }
-            return owner.Value == obj;
+            return false;
         }
 
         public override void SubclassUpdate(float seconds)

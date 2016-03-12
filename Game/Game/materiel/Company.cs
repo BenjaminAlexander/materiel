@@ -45,7 +45,17 @@ namespace MyGame.materiel
         {
             vehicles.RemoveAllReferences(vic);
         }
-        
+
+        public void Move(Vector2 position)
+        {
+            int count = 0;
+            foreach (Vehicle vic in this.vehicles.Value)
+            {
+                vic.TargetPosition = position + new Vector2(count * 50, 0);
+                count++;
+            }
+        }
+
         public string GetHudText()
         {
             return this.ID.ToString() + " AR CO - " + this.vehicles.Value.Count.ToString();

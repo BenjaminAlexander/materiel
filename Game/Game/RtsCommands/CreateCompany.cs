@@ -16,7 +16,7 @@ namespace MyGame.RtsCommands
 
         public CreateCompany(LocalPlayer player)
         {
-            this.playerObjId = player.GameObject.ID;
+            this.playerObjId = player.Id;
 
             RtsCommandMessage message = new RtsCommandMessage(this);
             message.Append(this.playerObjId);

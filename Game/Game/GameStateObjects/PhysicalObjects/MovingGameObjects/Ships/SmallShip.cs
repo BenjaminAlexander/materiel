@@ -14,7 +14,7 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships
     {
         public static void ServerInitialize(SmallShip smallShip, Vector2 position, Vector2 velocity)
         {
-            Ship.ServerInitialize(smallShip, position, velocity, 0, 40, 800, 1800, 1f);
+            Ship.ServerInitialize(smallShip, position, velocity, 0, 40, 100, 1800, 1f);
             Turret t3 = new Turret(smallShip.Game);
             Turret.ServerInitialize(t3, smallShip, new Vector2(25, 25) - TextureLoader.GetTexture("Enemy").CenterOfMass, (float)(0), (float)(Math.PI * 3));
 

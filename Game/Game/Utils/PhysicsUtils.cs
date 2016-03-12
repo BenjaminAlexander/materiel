@@ -18,6 +18,10 @@ namespace MyGame.Utils
             {
                 return target;
             }
+
+            float totalDistance = Vector2.Distance(position, target);
+            return Vector2.Lerp(position, target, maxDistance / totalDistance);
+
             Vector2 travel = target - position;
             travel.Normalize();
             travel = travel * maxDistance;
