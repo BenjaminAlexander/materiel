@@ -145,6 +145,8 @@ namespace MyGame.GameStateObjects
             }
         }
 
+        public virtual void OnClientInitialization(ClientGame game) { }
+
         //Update methods are called in the order of ServerOnly, Subclass, SimulationOnly
         public virtual void ServerOnlyUpdate(float secondsElapsed) { }
 

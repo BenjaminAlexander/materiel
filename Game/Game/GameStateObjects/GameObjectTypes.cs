@@ -60,6 +60,7 @@ namespace MyGame.GameStateObjects
             constuctorParams[0] = game;
             GameObject obj = (GameObject)constructorDictionary[type].Invoke(constuctorParams);
             obj.ID = id;
+            game.GameObjectCollection.Add(obj);
             return obj;
         }
     }

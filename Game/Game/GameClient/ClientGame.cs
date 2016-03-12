@@ -10,12 +10,21 @@ using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
 using MyGame.Utils;
 using MyGame.GameServer;
 using System.Net;
+using MyGame.materiel;
 
 namespace MyGame.GameClient
 {
     public class ClientGame : Game1
     {
         private LocalPlayer serverConnection;
+
+        public LocalPlayer LocalPlayer
+        {
+            get
+            {
+                return serverConnection;
+            }
+        }
 
         public ClientGame(IPAddress serverAddress)
             : base()
@@ -35,7 +44,6 @@ namespace MyGame.GameClient
         {
             float secondsElapsed = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
 
-            //haddle all available messages.  this is done again after the gameObject updates but before draw
             Queue<GameObjectUpdate> messageQueue = this.serverConnection.DequeueAllIncomingUDP();
             while (messageQueue.Count > 0)
             {
@@ -43,10 +51,8 @@ namespace MyGame.GameClient
                 m.Apply(this, gameTime);
             }
 
-            this.serverConnection.Update(gameTime);
-
-
             base.Update(gameTime);
+
             this.GameObjectCollection.ClientUpdate(gameTime);
 
             GameObjectField.SetModeDraw();

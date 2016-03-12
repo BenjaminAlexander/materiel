@@ -39,10 +39,10 @@ namespace MyGame.materiel
         {
             vehicles.Value.Add(vic);
         }
-
-        public void DrawHud(Vector2 screenPosition, MyGraphicsClass graphics)
+        
+        public string GetHudText()
         {
-            graphics.DrawDebugFont(this.vehicles.Value.Count.ToString(), screenPosition, 1);
+            return this.ID.ToString() + " AR CO - " + this.vehicles.Value.Count.ToString();
         }
     }
 }

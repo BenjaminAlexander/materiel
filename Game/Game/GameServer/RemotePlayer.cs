@@ -23,17 +23,17 @@ namespace MyGame.GameServer
         {
         }
 
-        public void CreatPlayerGameObject(ServerGame game)
-        {
-            playerGameObject = PlayerGameObject.Factory(game, this);
-        }
-
         public PlayerGameObject GameObject
         {
             get
             {
                 return playerGameObject;
             }
+        }
+
+        public void CreatPlayerGameObject(ServerGame game)
+        {
+            playerGameObject = PlayerGameObject.Factory(game, this);
         }
 
         public override UdpMessage GetUDPMessage(UdpTcpPair client)

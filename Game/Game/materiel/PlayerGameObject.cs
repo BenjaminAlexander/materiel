@@ -7,11 +7,15 @@ using MyGame.GameStateObjects;
 using MyGame.GameServer;
 using Microsoft.Xna.Framework;
 using MyGame.DrawingUtils;
+using MyGame.GameClient;
 
 namespace MyGame.materiel
 {
     public class PlayerGameObject : GameObject
     {
+        private ClientGame clientGame = null;
+        private LocalPlayer localPlayer = null;
+
         private static int nextColor = 0;
         private static Color[] colors = {Color.Blue, Color.Red, Color.Purple, Color.Orange };
 
@@ -43,6 +47,18 @@ namespace MyGame.materiel
             return obj;
         }
 
+        public override void OnClientInitialization(ClientGame game)
+        {
+            base.OnClientInitialization(game);
+            this.clientGame = game;
+
+            if (this.clientGame.LocalPlayer.Id == this.playerID.Value)
+            {
+                this.localPlayer = this.clientGame.LocalPlayer;
+                this.clientGame.LocalPlayer.SetPlayerGameObject(this);
+            }
+        }
+
         public Color Color
         {
             get
@@ -66,19 +82,20 @@ namespace MyGame.materiel
             return co;
         }
 
-        public void DrawHud(GameTime gameTime, MyGraphicsClass graphics, Company selected)
+        public void DrawHud(GameTime gameTime, MyGraphicsClass myGraphicsClass, Company selectedCo)
         {
             int count = 0;
             foreach (Company co in this.companies.Value)
             {
                 if (co != null)
                 {
-                    co.DrawHud(new Vector2(0, count * 15), graphics);
-                    if (co == selected)
+                    Vector2 textSize = MyGraphicsClass.Font.MeasureString(co.GetHudText());
+                    myGraphicsClass.DrawDebugFont(co.GetHudText(), new Vector2(0, count), 1);
+                    if (co == selectedCo)
                     {
-                        graphics.DrawRectangle(new Vector2(0, count * 15), new Vector2(15), new Vector2(0), 0, Color.Red, 1);
+                        myGraphicsClass.DrawRectangle(new Vector2(0, count), textSize, new Vector2(0), 0, Color.Red, 1);
                     }
-                    count++;
+                    count = count + (int)(textSize.Y);
                 }
             }
         }
@@ -90,12 +107,13 @@ namespace MyGame.materiel
             {
                 if (co != null)
                 {
-                    Rectangle rect = new Rectangle(0, count * 15, 15, 15);
+                    Vector2 textSize = MyGraphicsClass.Font.MeasureString(co.GetHudText());
+                    Rectangle rect = new Rectangle(0, count, (int)(textSize.X), (int)(textSize.Y));
                     if (rect.Contains(mouseScreen))
                     {
                         return co;
                     }
-                    count++;
+                    count = count + (int)(textSize.Y);
                 }
             }
             return null;

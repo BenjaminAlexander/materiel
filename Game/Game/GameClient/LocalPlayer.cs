@@ -31,6 +31,8 @@ namespace MyGame.GameClient
         private IOEvent constructCombat = new KeyPressEvent(Keys.C);
         private IOEvent createCompany = new KeyPressEvent(Keys.Z);
 
+        private PlayerGameObject playerGameObject = null;
+
         private Base selectedBase = null;
         private Company selectedCompany = null;
 
@@ -44,9 +46,12 @@ namespace MyGame.GameClient
             this.game.InputManager.Register(createCompany, this);
         }
 
-        public void Update(GameTime gameTime)
+        public void SetPlayerGameObject(PlayerGameObject obj)
         {
-            //Does this need to exist?
+            if (obj.PlayerID == this.Id)
+            {
+                this.playerGameObject = obj;
+            }
         }
 
         public void Draw(GameTime gameTime, MyGraphicsClass graphics)
@@ -56,7 +61,7 @@ namespace MyGame.GameClient
                 graphics.DrawCircle(selectedBase.Position, 50, Color.Red, 1);
             }
         }
-
+        /*
         public void DrawHud(GameTime gameTime, MyGraphicsClass graphics)
         {
             PlayerGameObject obj = this.GameObject;
@@ -64,7 +69,7 @@ namespace MyGame.GameClient
             {
                 obj.DrawHud(gameTime, graphics, selectedCompany);
             }
-        }
+        }*/
 
         public override GameObjectUpdate GetUDPMessage(UdpTcpPair client)
         {
@@ -74,22 +79,6 @@ namespace MyGame.GameClient
         public override SetWorldSize GetTCPMessage(UdpTcpPair client)
         {
             return new SetWorldSize(client);
-        }
-
-        public PlayerGameObject GameObject
-        {
-            get
-            {
-                List<PlayerGameObject> playerList = this.game.GameObjectCollection.GetMasterList().GetList<PlayerGameObject>();
-                foreach (PlayerGameObject player in playerList)
-                {
-                    if (player.PlayerID == this.Id)
-                    {
-                        return player;
-                    }
-                }
-                return null;
-            }
         }
 
         public void UpdateWithIOEvent(IOEvent ioEvent)
@@ -124,6 +113,30 @@ namespace MyGame.GameClient
             else if (ioEvent.Equals(createCompany))
             {
                 RtsCommand command = new CreateCompany(this);
+            }
+        }
+
+        public PlayerGameObject GameObject
+        {
+            get
+            {
+                List<PlayerGameObject> playerList = this.game.GameObjectCollection.GetMasterList().GetList<PlayerGameObject>();
+                foreach (PlayerGameObject player in playerList)
+                {
+                    if (player.PlayerID == this.Id)
+                    {
+                        return player;
+                    }
+                }
+                return null;
+            }
+        }
+
+        public void DrawHud(GameTime gameTime, MyGraphicsClass myGraphicsClass)
+        {
+            if (playerGameObject != null)
+            {
+                playerGameObject.DrawHud(gameTime, myGraphicsClass, selectedCompany);
             }
         }
     }

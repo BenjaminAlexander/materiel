@@ -9,6 +9,7 @@ using System.Threading;
 using System.Net;
 using MyGame.GameClient;
 using MyGame.RtsCommands;
+using MyGame.materiel;
 
 namespace MyGame.GameServer
 {

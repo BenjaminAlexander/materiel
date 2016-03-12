@@ -49,6 +49,18 @@ namespace MyGame.GameStateObjects
                 {
                     return;
                 }
+
+                if (!(obj.GetType() == typeFromMessage && obj.ID == idFromMessage))
+                {
+                    throw new Exception("this message does not belong to this object");
+                }
+
+                obj.IsDestroyed = isDesroyedFromMessage;
+                foreach (GameObjectField field in obj.Fields)
+                {
+                    field.ApplyMessage(this);
+                }
+                this.AssertMessageEnd();
             }
             else
             {
@@ -57,20 +69,21 @@ namespace MyGame.GameStateObjects
                     return;
                 }
                 obj = GameObjectTypes.Construct(typeFromMessage, game, idFromMessage);
-                collection.Add(obj);
-            }
 
-            if (!(obj.GetType() == typeFromMessage && obj.ID == idFromMessage))
-            {
-                throw new Exception("this message does not belong to this object");
-            }
+                if (!(obj.GetType() == typeFromMessage && obj.ID == idFromMessage))
+                {
+                    throw new Exception("this message does not belong to this object");
+                }
 
-            obj.IsDestroyed = isDesroyedFromMessage;
-            foreach (GameObjectField field in obj.Fields)
-            {
-                field.ApplyMessage(this);
+                obj.IsDestroyed = isDesroyedFromMessage;
+                foreach (GameObjectField field in obj.Fields)
+                {
+                    field.ApplyMessage(this);
+                }
+                this.AssertMessageEnd();
+
+                obj.OnClientInitialization(game);
             }
-            this.AssertMessageEnd();
 
             obj.LatencyAdjustment(gameTime, this.TimeStamp);
         }
