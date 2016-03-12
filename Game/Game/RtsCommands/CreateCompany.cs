@@ -10,7 +10,7 @@ using MyGame.GameClient;
 
 namespace MyGame.RtsCommands
 {
-    class CreateCompany: RtsCommand
+    class CreateCompany : RtsCommand
     {
         private int playerObjId;
 

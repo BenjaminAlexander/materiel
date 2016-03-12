@@ -76,6 +76,14 @@ namespace MyGame.GameStateObjects
             return hasDereferenced;
         }
 
+        public int ID
+        {
+            get
+            {
+                return id;
+            }
+        }
+
         public static implicit operator T(GameObjectReference<T> reference)
         {
             return reference.Dereference();

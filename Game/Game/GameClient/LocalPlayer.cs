@@ -28,6 +28,8 @@ namespace MyGame.GameClient
 
         private IOEvent leftMousePress = new LeftMousePressed();
         private IOEvent leftMouseRelease = new LeftMouseReleased();
+        private IOEvent rightMousePress = new RightMousePressed();
+        private IOEvent rightMouseRelease = new RightMouseReleased();
         private IOEvent constructCombat = new KeyPressEvent(Keys.C);
         private IOEvent createCompany = new KeyPressEvent(Keys.Z);
 
@@ -35,6 +37,7 @@ namespace MyGame.GameClient
 
         private Base selectedBase = null;
         private Company selectedCompany = null;
+        private Vehicle selectedVehicle = null;
 
         public LocalPlayer(IPAddress serverAddress, ClientGame game) : base(serverAddress)
         {
@@ -42,6 +45,8 @@ namespace MyGame.GameClient
 
             this.game.InputManager.Register(leftMousePress, this);
             this.game.InputManager.Register(leftMouseRelease, this);
+            this.game.InputManager.Register(rightMousePress, this);
+            this.game.InputManager.Register(rightMouseRelease, this);
             this.game.InputManager.Register(constructCombat, this);
             this.game.InputManager.Register(createCompany, this);
         }
@@ -60,16 +65,12 @@ namespace MyGame.GameClient
             {
                 graphics.DrawCircle(selectedBase.Position, 50, Color.Red, 1);
             }
-        }
-        /*
-        public void DrawHud(GameTime gameTime, MyGraphicsClass graphics)
-        {
-            PlayerGameObject obj = this.GameObject;
-            if (obj != null)
+
+            if (selectedVehicle != null)
             {
-                obj.DrawHud(gameTime, graphics, selectedCompany);
+                graphics.DrawCircle(selectedVehicle.Position, 50, Color.Red, 1);
             }
-        }*/
+        }
 
         public override GameObjectUpdate GetUDPMessage(UdpTcpPair client)
         {
@@ -87,6 +88,7 @@ namespace MyGame.GameClient
             {
                 selectedCompany = null;
                 selectedBase = null;
+                selectedVehicle = null;
 
                 Vector2 sceenPosition = IOState.MouseScreenPosition();
 
@@ -102,6 +104,17 @@ namespace MyGame.GameClient
                         selectedBase = (Base)clickList[0];
                     }
                 }
+
+                if (selectedBase == null)
+                {
+                    Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
+
+                    List<CompositePhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
+                    if (clickList.Count > 0 && clickList[0] is Vehicle)
+                    {
+                        selectedVehicle = (Vehicle)clickList[0];
+                    }
+                }
             }
             else if (ioEvent.Equals(constructCombat))
             {
@@ -113,6 +126,16 @@ namespace MyGame.GameClient
             else if (ioEvent.Equals(createCompany))
             {
                 RtsCommand command = new CreateCompany(this);
+            }
+            else if (ioEvent.Equals(rightMousePress))
+            {
+                Vector2 sceenPosition = IOState.MouseScreenPosition();
+                Company rightClickCompany = this.GameObject.ClickCompany(sceenPosition);
+
+                if (rightClickCompany != null && selectedVehicle != null)
+                {
+                    RtsCommand command = new AddVehicleToCompany(this, rightClickCompany, selectedVehicle);
+                }
             }
         }
 

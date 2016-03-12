@@ -37,7 +37,13 @@ namespace MyGame.materiel
 
         public void AddVehicle(Vehicle vic)
         {
+            vic.SetCompany(this);
             vehicles.Value.Add(vic);
+        }
+
+        public void RemoveVehicle(Vehicle vic)
+        {
+            vehicles.RemoveAllReferences(vic);
         }
         
         public string GetHudText()

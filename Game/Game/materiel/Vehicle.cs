@@ -13,12 +13,14 @@ namespace MyGame.materiel
     public class Vehicle : SmallShip
     {
         private FloatGameObjectMember materiel;
+        private GameObjectReferenceField<Company> company;
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
 
         public Vehicle(Game1 game)
             : base(game)
         {
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
+            company = new GameObjectReferenceField<Company>(this);
             materiel = new FloatGameObjectMember(this, 0);
         }
 
@@ -34,6 +36,15 @@ namespace MyGame.materiel
             Vehicle.ServerInitialize(vehicle, controllingPlayer, position);
             game.GameObjectCollection.Add(vehicle);
             return vehicle;
+        }
+
+        public void SetCompany(Company company)
+        {
+            if (this.company.Value != null)
+            {
+                this.company.Value.RemoveVehicle(this);
+            }
+            this.company.Value = company;
         }
     }
 }

@@ -48,5 +48,37 @@ namespace MyGame.GameStateObjects
                 return this.value;
             }
         }
+
+        public void RemoveAllReferences(T obj)
+        {
+            int index = 0;
+            while (index < value.Count)
+            {
+                if (value[index].ID == obj.ID)
+                {
+                    value.RemoveAt(index);
+                }
+                else
+                {
+                    index++;
+                }
+            }
+        }
+
+        public void RemoveAllReferences(GameObjectReference<T> objRef)
+        {
+            int index = 0;
+            while (index < value.Count)
+            {
+                if (value[index].ID == objRef.ID)
+                {
+                    value.RemoveAt(index);
+                }
+                else
+                {
+                    index++;
+                }
+            }
+        }
     }
 }
