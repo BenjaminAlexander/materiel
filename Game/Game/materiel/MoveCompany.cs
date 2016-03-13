@@ -10,14 +10,13 @@ using MyGame.RtsCommands;
 
 namespace MyGame.materiel
 {
-    class MoveCompany : RtsCommand
+    class MoveCompany : RtsCommandMessage
     {
-        public static void SendCommand(LocalPlayer player, Company co, Vector2 position)
+        public MoveCompany(LocalPlayer player, Company co, Vector2 position)
         {
-            RtsCommandMessage message = new RtsCommandMessage(typeof(MoveCompany));
-            message.Append(co.ID);
-            message.Append(position);
-            player.SendTCP(message);
+            this.Append(co.ID);
+            this.Append(position);
+            player.SendTCP(this);
         }
 
         public static void ExecuteCommand(RtsCommandMessage message, ServerGame game)

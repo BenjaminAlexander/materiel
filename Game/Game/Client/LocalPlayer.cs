@@ -121,12 +121,12 @@ namespace MyGame.Client
                 {
                     if (selectedBase != null)
                     {
-                        BuildCombatVehicle.SendCommand(this, selectedBase);
+                        new BuildCombatVehicle(this, selectedBase);
                     }
                 }
                 else if (ioEvent.Equals(createCompany))
                 {
-                    CreateCompany.SendCommand(this);
+                    new CreateCompany(this);
                 }
                 else if (ioEvent.Equals(rightMousePress))
                 {
@@ -135,12 +135,12 @@ namespace MyGame.Client
 
                     if (rightClickCompany != null && selectedVehicle != null)
                     {
-                        AddVehicleToCompany.SendCommand(this, rightClickCompany, selectedVehicle);
+                        new AddVehicleToCompany(this, rightClickCompany, selectedVehicle);
                     }
                     else if (selectedCompany != null)
                     {
                         Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
-                        MoveCompany.SendCommand(this, selectedCompany, worldPosition);
+                        new MoveCompany(this, selectedCompany, worldPosition);
                     }
                 }
             }

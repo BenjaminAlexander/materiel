@@ -9,13 +9,12 @@ using MyGame.RtsCommands;
 
 namespace MyGame.materiel
 {
-    class CreateCompany : RtsCommand
+    class CreateCompany : RtsCommandMessage
     {
-        public static void SendCommand(LocalPlayer player)
+        public CreateCompany(LocalPlayer player)
         {
-            RtsCommandMessage message = new RtsCommandMessage(typeof(CreateCompany));
-            message.Append(player.Id);
-            player.SendTCP(message);
+            this.Append(player.Id);
+            player.SendTCP(this);
         }
 
         public static void ExecuteCommand(RtsCommandMessage message, ServerGame game)

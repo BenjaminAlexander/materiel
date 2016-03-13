@@ -15,43 +15,15 @@ namespace MyGame.Networking
     {
         //TODO: this buffer might need to be thread safe
         private const int BUFF_MAX_SIZE = 1024;
-        private const int TYPE_POSITION = 0;
-        private const int TIME_STAMP_POSITION = 4;
-        public const int LENGTH_POSITION = 12;
-        public const int HEADER_SIZE = 16;
-
-        private static Type[] messageTypeArray;
-
-        public static Type MessageType(int i)
-        {
-            return messageTypeArray[i];
-        }
-
-        public static int TypeID(Type t)
-        {
-            if (!t.IsSubclassOf(typeof(GameMessage)))
-            {
-                throw new Exception("Type is not a subclass of GameMessage");
-            }
-
-            for (int i = 0; i < messageTypeArray.Length; i++)
-            {
-                if (messageTypeArray[i] == t)
-                {
-                    return i;
-                }
-            }
-            throw new Exception("Type not found");
-        }
+        private const int TIME_STAMP_POSITION = 0;
+        public const int LENGTH_POSITION = 8;
+        public const int HEADER_SIZE = 12;
 
         private readonly byte[] buff = new byte[BUFF_MAX_SIZE];
         private int readerSpot;
 
         protected internal GameMessage(GameTime currentGameTime)
         {
-            int typeID = GameMessage.TypeID(this.GetType());
-
-            this.Type = typeID;
             this.TimeStamp = currentGameTime.TotalGameTime.Ticks;
             this.Size = HEADER_SIZE;
         }
@@ -63,7 +35,6 @@ namespace MyGame.Networking
 
             this.ResetReader();
             this.AssertExactBufferSize();
-            this.AssertMessageType();
         }
 
         public GameMessage(NetworkStream networkStream)
@@ -80,20 +51,6 @@ namespace MyGame.Networking
 
             this.ResetReader();
             this.AssertExactBufferSize();
-            this.AssertMessageType();
-        }
-
-        private int Type
-        {
-            get
-            {
-                return BitConverter.ToInt32(buff, TYPE_POSITION);
-            }
-
-            set
-            {
-                BitConverter.GetBytes(value).CopyTo(buff, TYPE_POSITION);
-            }
         }
 
         public long TimeStamp
@@ -128,18 +85,6 @@ namespace MyGame.Networking
             {
                 return buff;
             }
-        }
-
-        internal static void Initialize()
-        {
-            IEnumerable<Type> types =
-                Assembly.GetAssembly(typeof (GameMessage))
-                    .GetTypes()
-                    .Where(t => t.IsSubclassOf(typeof (GameMessage)));
-            types = types.OrderBy(t => t.Name);
-            messageTypeArray = types.ToArray();
-
-            RtsCommands.RtsCommandMessage.InitializeRTS();
         }
 
         // Every other append method should boil down to calling one.
@@ -256,14 +201,6 @@ namespace MyGame.Networking
             if (readerSpot != this.Size)
             {
                 throw new Exception("Message end not reached");
-            }
-        }
-
-        public void AssertMessageType()
-        {
-            if (this.GetType() != messageTypeArray[this.Type])
-            {
-                throw new Exception("Incorrect message type");
             }
         }
 

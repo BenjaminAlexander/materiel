@@ -16,7 +16,7 @@ namespace MyGame.Networking
 
         public static void StartListener()
         {
-            GameMessage.Initialize();
+            RtsCommands.RtsCommandMessage.InitializeRTS();
             prelimListener = new TcpListener(IPAddress.Any, LISTEN_PORT);
             prelimListener.Start();
         }
@@ -66,7 +66,7 @@ namespace MyGame.Networking
         //this constructor blocks until the client is connected
         public UdpTcpPair(IPAddress serverIP)
         {
-            GameMessage.Initialize();
+            RtsCommands.RtsCommandMessage.InitializeRTS();
 
             //Connect to the server
             TcpClient prelimTcpClient = new TcpClient();

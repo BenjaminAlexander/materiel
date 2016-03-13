@@ -18,32 +18,22 @@ namespace MyGame.RtsCommands
 
         private static Type[] commandTypeArray;
         private static Dictionary<int, CommandDelegate> commandDelegates = new Dictionary<int, CommandDelegate>();
+        private static Dictionary<Type, int> commandIDs = new Dictionary<Type, int>();
 
         public static void InitializeRTS()
         {
             IEnumerable<Type> types =
-                Assembly.GetAssembly(typeof(RtsCommand))
+                Assembly.GetAssembly(typeof(RtsCommandMessage))
                     .GetTypes()
-                    .Where(t => t.IsSubclassOf(typeof(RtsCommand)));
+                    .Where(t => t.IsSubclassOf(typeof(RtsCommandMessage)));
             types = types.OrderBy(t => t.Name);
             commandTypeArray = types.ToArray();
 
             for (int i = 0; i < commandTypeArray.Length; i++)
             {
                 commandDelegates[i] = (CommandDelegate)Delegate.CreateDelegate(typeof(CommandDelegate), commandTypeArray[i].GetMethod("ExecuteCommand"));
+                commandIDs[commandTypeArray[i]] = i;
             }
-        }
-
-        public static int TypeID(Type t)
-        {
-            for (int i = 0; i < commandTypeArray.Length; i++)
-            {
-                if (commandTypeArray[i] == t)
-                {
-                    return i;
-                }
-            }
-            throw new Exception("Type not found");
         }
 
         public void Execute(ServerGame game)
@@ -53,10 +43,10 @@ namespace MyGame.RtsCommands
             commandDelegates[typeID](this, game);
         }
 
-        public RtsCommandMessage(Type t)
+        public RtsCommandMessage()
             : base(new GameTime())
         {
-            this.Append(RtsCommandMessage.TypeID(t));
+            this.Append(commandIDs[this.GetType()]);
         }
 
         public RtsCommandMessage(NetworkStream stream)

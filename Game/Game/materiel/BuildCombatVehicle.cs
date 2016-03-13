@@ -9,13 +9,12 @@ using MyGame.RtsCommands;
 
 namespace MyGame.materiel
 {
-    class BuildCombatVehicle : RtsCommand
+    class BuildCombatVehicle : RtsCommandMessage
     {
-        public static void SendCommand(LocalPlayer player, Base baseObj)
+        public BuildCombatVehicle(LocalPlayer player, Base baseObj)
         {
-            RtsCommandMessage message = new RtsCommandMessage(typeof(BuildCombatVehicle));
-            message.Append(baseObj.ID);
-            player.SendTCP(message);
+            this.Append(baseObj.ID);
+            player.SendTCP(this);
         }
 
         public static void ExecuteCommand(RtsCommandMessage message, ServerGame game)
