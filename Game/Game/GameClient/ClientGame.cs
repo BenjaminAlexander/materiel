@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 using MyGame;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects;
-using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
 using MyGame.Utils;
 using MyGame.GameServer;
 using System.Net;
-using MyGame.materiel;
 
 namespace MyGame.GameClient
 {
@@ -35,11 +33,6 @@ namespace MyGame.GameClient
             this.SetWorldSize(m.WorldSize);
         }
 
-        protected override void Initialize()
-        {
-            base.Initialize();
-        }
-
         protected override void Update(GameTime gameTime)
         {
             float secondsElapsed = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
@@ -52,7 +45,6 @@ namespace MyGame.GameClient
             }
 
             base.Update(gameTime);
-
             this.GameObjectCollection.ClientUpdate(gameTime);
 
             GameObjectField.SetModeDraw();

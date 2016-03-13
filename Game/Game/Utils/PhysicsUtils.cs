@@ -21,11 +21,6 @@ namespace MyGame.Utils
 
             float totalDistance = Vector2.Distance(position, target);
             return Vector2.Lerp(position, target, maxDistance / totalDistance);
-
-            Vector2 travel = target - position;
-            travel.Normalize();
-            travel = travel * maxDistance;
-            return position + travel;
         }
 
         public static float MoveTowardBounded(float position, float target, float maxDistance)

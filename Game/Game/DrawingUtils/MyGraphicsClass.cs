@@ -88,6 +88,24 @@ namespace MyGame.DrawingUtils
             DrawLine(point4, point1, color, depth);
         }
 
+        public void DrawRectangle(Rectangle rectangle, Vector2 offset, Color color, double depth)
+        {
+            Vector2 point1 = offset + new Vector2(rectangle.X, rectangle.Y);
+            Vector2 point2 = offset + new Vector2(rectangle.X, rectangle.Y) + new Vector2(rectangle.Width, 0);
+            Vector2 point3 = offset + new Vector2(rectangle.X, rectangle.Y) + new Vector2(rectangle.Width, rectangle.Height);
+            Vector2 point4 = offset + new Vector2(rectangle.X, rectangle.Y) + new Vector2(0, rectangle.Height);
+
+            DrawLine(point1, point2, color, depth);
+            DrawLine(point2, point3, color, depth);
+            DrawLine(point3, point4, color, depth);
+            DrawLine(point4, point1, color, depth);
+        }
+
+        public void DrawRectangle(Rectangle rectangle, Color color, double  depth)
+        {
+            DrawRectangle(rectangle, new Vector2(0), color, depth);
+        }
+
         public void DrawSolidRectangle(Vector2 position, Vector2 size, Vector2 center, double rotation, Color color, double depth)
         {
             Vector2 point1 = position + Vector2Utils.RotateVector2(-center, rotation);

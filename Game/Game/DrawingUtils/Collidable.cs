@@ -15,30 +15,7 @@ namespace MyGame.DrawingUtils
 {
     public class Collidable
     {
-        LoadedTexture loadedTexture;
-
-        public LoadedTexture LoadedTexture
-        {
-            get { return loadedTexture; }
-        }
-
-        public Color Color
-        {
-            set { color = value; }
-            get { return color; }
-        }
-
-        public Vector2 Origin
-        {
-            get { return origin; }
-        }
-
-        public float Depth
-        {
-            get { return depth; }
-            set { depth = value; }
-        }
-
+        private LoadedTexture loadedTexture;
         private Color color;
         private Vector2 origin;
         private float depth;
@@ -64,7 +41,7 @@ namespace MyGame.DrawingUtils
 
                 Color[] thisTextureData = loadedTexture.Data;
 
-                Color[] otherTextureData = other.LoadedTexture.Data;
+                Color[] otherTextureData = other.loadedTexture.Data;
 
                 if (MyIntersectPixels(this, other, position, rotation, otherPosition, otherRotation))
                 {
@@ -82,6 +59,10 @@ namespace MyGame.DrawingUtils
         public void Draw(MyGraphicsClass graphics, Vector2 position, float rotation)
         {
             graphics.getSpriteBatch().Draw(loadedTexture.Texture, position, null, color, rotation, origin, 1, SpriteEffects.None, depth);
+            //graphics.getSpriteBatch().Draw(loadedTexture.Texture, position, null, color, 0, new Vector2(0), 1, SpriteEffects.None, depth);
+
+            //graphics.DrawRectangle(loadedTexture.BoundingRectangle, position, Color.Red, 1);
+            //graphics.DrawCircle(position + loadedTexture.BoundingCircle.Center, loadedTexture.BoundingCircle.Radius, Color.Red, 1);
         }
 
         public void Draw(MyGraphicsClass graphics, Vector2 position, float rotation, Color color)
@@ -89,15 +70,10 @@ namespace MyGame.DrawingUtils
             graphics.getSpriteBatch().Draw(loadedTexture.Texture, position, null, color, rotation, origin, 1, SpriteEffects.None, depth);
         }
 
-        public Color[] GetColorData()
-        {
-            return loadedTexture.Data;
-        }
-
         // Returns a matrix tranformation that sends a texture into it's actual position in the game world.
         public Matrix GetWorldTransformation(Vector2 position, float rotation)
         {
-            Matrix originM = Matrix.CreateTranslation(-Origin.X, -Origin.Y, 0);
+            Matrix originM = Matrix.CreateTranslation(-this.origin.X, -this.origin.Y, 0);
             Matrix rotationM = Matrix.CreateRotationZ(rotation);
             Matrix positionM = Matrix.CreateTranslation(position.X, position.Y, 0);
 
@@ -159,8 +135,8 @@ namespace MyGame.DrawingUtils
             Matrix inversTransform1 = Matrix.Invert(d1.GetWorldTransformation(position1, rotation1));
             Matrix inversTransform2 = Matrix.Invert(d2.GetWorldTransformation(position2, rotation2));
 
-            Color[] data1 = d1.LoadedTexture.Data;
-            Color[] data2 = d2.LoadedTexture.Data;
+            Color[] data1 = d1.loadedTexture.Data;
+            Color[] data2 = d2.loadedTexture.Data;
 
             //randomly selecting a pixels to check instead of iterating through rows would improve performance
             for (int worldX = intersectArea.X; worldX < intersectArea.X + intersectArea.Width; worldX++)
@@ -179,13 +155,13 @@ namespace MyGame.DrawingUtils
                     int y2 = (int)Math.Round(texture2Pos.Y);
 
 
-                    if (0 <= x1 && x1 < d1.LoadedTexture.Texture.Width &&
-                        0 <= y1 && y1 < d1.LoadedTexture.Texture.Height &&
-                        0 <= x2 && x2 < d2.LoadedTexture.Texture.Width &&
-                        0 <= y2 && y2 < d2.LoadedTexture.Texture.Height)
+                    if (0 <= x1 && x1 < d1.loadedTexture.Texture.Width &&
+                        0 <= y1 && y1 < d1.loadedTexture.Texture.Height &&
+                        0 <= x2 && x2 < d2.loadedTexture.Texture.Width &&
+                        0 <= y2 && y2 < d2.loadedTexture.Texture.Height)
                     {
-                        Color color1 = data1[x1 + y1 * d1.LoadedTexture.Texture.Width];
-                        Color color2 = data2[x2 + y2 * d2.LoadedTexture.Texture.Width];
+                        Color color1 = data1[x1 + y1 * d1.loadedTexture.Texture.Width];
+                        Color color2 = data2[x2 + y2 * d2.loadedTexture.Texture.Width];
 
                         // If both pixels are not completely transparent,
                         if (color1.A != 0 && color2.A != 0)
@@ -205,16 +181,16 @@ namespace MyGame.DrawingUtils
             if (this.BoundingRectangle(position, rotation).Contains(new Point((int)(point.X), (int)(point.Y))))
             {
                 Matrix inversTransform = Matrix.Invert(this.GetWorldTransformation(position, rotation));
-                Color[] data = LoadedTexture.Data;
+                Color[] data = loadedTexture.Data;
 
                 Vector2 texturePos = Vector2.Transform(point, inversTransform);
                 int x = (int)Math.Round(texturePos.X);
                 int y = (int)Math.Round(texturePos.Y);
 
-                if (0 <= x && x < LoadedTexture.Texture.Width &&
-                        0 <= y && y < LoadedTexture.Texture.Height)
+                if (0 <= x && x < loadedTexture.Texture.Width &&
+                        0 <= y && y < loadedTexture.Texture.Height)
                 {
-                    Color color = data[x + y * LoadedTexture.Texture.Width];
+                    Color color = data[x + y * loadedTexture.Texture.Width];
                     if (color.A != 0 )
                     {
 
