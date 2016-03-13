@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using MyGame.GameStateObjects.PhysicalObjects;
+using MyGame.GameStateObjects;
 using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
@@ -24,7 +24,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override bool Add(PhysicalObject unit)
         {
-            if (this.Contains(unit.Position))
+            if (this.Contains(unit.SimulationPosition))
             {
                 unitList.Add(unit);
                 leafDictionary.SetLeaf(unit, this);
@@ -71,7 +71,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
                     foreach (PhysicalObject unit in unitList.GetList<PhysicalObject>())
                     {
-                        if (Vector2.Distance(unit.Position, center) <= radius)
+                        if (Vector2.Distance(unit.SimulationPosition, center) <= radius)
                         {
                             list.Add(unit);
                         }
@@ -94,7 +94,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             if(unitList.Contains(obj))
             {
-                if (!this.Contains(obj.Position))
+                if (!this.Contains(obj.SimulationPosition))
                 {
                     this.Remove(obj);
                     this.Parent.Move(obj);

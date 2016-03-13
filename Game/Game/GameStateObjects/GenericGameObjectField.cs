@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MyGame.GameStateObjects
 {
-    public abstract class GenericGameObjectField<T> : GameObjectField
+    abstract class GenericGameObjectField<T> : GameObjectField
     {
         private T simulationValue;
         internal T previousValue;
@@ -15,14 +15,14 @@ namespace MyGame.GameStateObjects
         private bool initialized = false;
         
         //TODO: make this clean
-        protected T SimulationValue
+        public T SimulationValue
         {
             get
             {
                 return simulationValue;
             }
 
-            set
+            protected set
             {
                 simulationValue = value;
                 if (!initialized)

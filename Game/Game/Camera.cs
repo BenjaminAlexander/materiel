@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MyGame.GameStateObjects;
-using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
 using MyGame.IO;
 using MyGame.IO.Events;
 

@@ -12,7 +12,6 @@ using System.Threading;
 using Microsoft.Xna.Framework;
 using MyGame.IO;
 using MyGame.IO.Events;
-using MyGame.GameStateObjects.PhysicalObjects;
 using MyGame.materiel;
 using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework.Input;

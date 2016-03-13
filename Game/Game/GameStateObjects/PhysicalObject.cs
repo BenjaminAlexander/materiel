@@ -8,11 +8,14 @@ using MyGame.DrawingUtils;
 using MyGame.Server;
 using MyGame.Client;
 
-namespace MyGame.GameStateObjects.PhysicalObjects
+namespace MyGame.GameStateObjects
 {
 
     public abstract class PhysicalObject : GameObject
     {
+        private InterpolatedVector2GameObjectMember position;
+        private InterpolatedAngleGameObjectMember direction;
+
         public static void ServerInitialize(PhysicalObject obj, Vector2 position, float direction)
         {
             obj.position.Value = position;
@@ -23,9 +26,6 @@ namespace MyGame.GameStateObjects.PhysicalObjects
         {
             get;
         }
-
-        private InterpolatedVector2GameObjectMember position;
-        private InterpolatedAngleGameObjectMember direction;
 
         public PhysicalObject(Game1 game)
             : base(game)
@@ -50,12 +50,11 @@ namespace MyGame.GameStateObjects.PhysicalObjects
             get { return this.position.Value; }
         }
 
-        public Vector2 DrawPosition
+        public Vector2 SimulationPosition
         {
             get
             {
-                Vector2 val = this.Position;
-                return val;
+                return this.position.SimulationValue;
             }
         }
 
@@ -70,25 +69,9 @@ namespace MyGame.GameStateObjects.PhysicalObjects
             this.Game.GameObjectCollection.Tree.Move(this);
         }
 
-        public PhysicalObject Root()
-        {
-            return this;
-        }
-
         public Boolean CollidesWith(PhysicalObject other)
         {
-            return this.Collidable.CollidesWith(this.WorldPosition(), this.WorldDirection(), other.Collidable, other.WorldPosition(), other.WorldDirection());
-        }
-
-        public Vector2 WorldPosition()
-        {
-            return this.Position;
-        }
-
-
-        public float WorldDirection()
-        {
-            return this.Direction;
+            return this.Collidable.CollidesWith(this.Position, this.Direction, other.Collidable, other.Position, other.Direction);
         }
 
         public abstract void MoveOutsideWorld(Vector2 position, Vector2 movePosition);

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MyGame.GameStateObjects
 {
-    public abstract class GameObjectField
+    abstract class GameObjectField
     {
         private enum Modes { Simulation, Previous, Draw };
         private static Modes mode = Modes.Simulation;

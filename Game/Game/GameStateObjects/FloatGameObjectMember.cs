@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MyGame.GameStateObjects
 {
-    public class FloatGameObjectMember : NonInterpolatedGameObjectMember<float>
+    class FloatGameObjectMember : NonInterpolatedGameObjectMember<float>
     {
         public FloatGameObjectMember(GameObject obj, float v)
             : base(obj, v)

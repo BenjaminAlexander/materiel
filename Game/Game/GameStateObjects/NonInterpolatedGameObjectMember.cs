@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MyGame.GameStateObjects
 {
-    public abstract class NonInterpolatedGameObjectMember<T> : GenericGameObjectField<T> where T : struct
+    abstract class NonInterpolatedGameObjectMember<T> : GenericGameObjectField<T> where T : struct
     {
         public NonInterpolatedGameObjectMember(GameObject obj, T v)
             : base(obj, v)

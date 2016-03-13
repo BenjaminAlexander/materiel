@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace MyGame.GameStateObjects
 {
-    public class Vector2GameObjectMember : NonInterpolatedGameObjectMember<Vector2>
+    class Vector2GameObjectMember : NonInterpolatedGameObjectMember<Vector2>
     {
         public Vector2GameObjectMember(GameObject obj, Vector2 v) : base(obj, v)
         {

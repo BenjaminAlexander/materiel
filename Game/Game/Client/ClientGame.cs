@@ -47,13 +47,11 @@ namespace MyGame.Client
             base.Update(gameTime);
             this.GameObjectCollection.ClientUpdate(gameTime);
 
-            GameObjectField.SetModeDraw();
             this.Camera.Update(secondsElapsed);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GameObjectField.SetModeDraw();
             base.Draw(gameTime);
             this.GraphicsObject.BeginWorld();
             this.serverConnection.Draw(gameTime, this.GraphicsObject);
@@ -61,9 +59,7 @@ namespace MyGame.Client
 
             this.GraphicsObject.Begin();
             this.serverConnection.DrawHud(gameTime, this.GraphicsObject);
-            this.GraphicsObject.End();
-
-            GameObjectField.SetModeSimulation();            
+            this.GraphicsObject.End();            
         }
 
         protected override void OnExiting(object sender, EventArgs args)

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MyGame.GameStateObjects.PhysicalObjects;
+using MyGame.GameStateObjects;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.GameStateObjects
 {
-    public class GameObjectReferenceListField<T> : GameObjectField where T : GameObject
+    class GameObjectReferenceListField<T> : GameObjectField where T : GameObject
     {
         private GameObjectCollection collection;
         private List<GameObjectReference<T>> value;

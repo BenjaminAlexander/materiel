@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects.QuadTreeUtils;
 using MyGame.Utils;
-using MyGame.GameStateObjects.PhysicalObjects;
+using MyGame.GameStateObjects;
 using MyGame.DrawingUtils;
 using MyGame.Server;
 using Microsoft.Xna.Framework.Audio;
@@ -34,14 +34,7 @@ namespace MyGame.GameStateObjects.DataStuctures
         {
             get 
             {
-                if (GameObjectField.IsModeSimulation())
-                {
-                    return quadTree;
-                }
-                else
-                {
-                    throw new Exception("Can only access quadtree in simulation mode");
-                }
+                return quadTree;
             }
         }
 

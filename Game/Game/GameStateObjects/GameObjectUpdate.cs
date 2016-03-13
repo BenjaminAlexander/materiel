@@ -34,6 +34,8 @@ namespace MyGame.GameStateObjects
 
         public void Apply(ClientGame game, GameTime gameTime)
         {
+            GameObjectField.SetModeSimulation();
+
             this.ResetReader();
             Type typeFromMessage = GameObjectTypes.GetType(this.ReadInt());
             int idFromMessage = this.ReadInt();
@@ -86,6 +88,7 @@ namespace MyGame.GameStateObjects
             }
 
             obj.LatencyAdjustment(gameTime, this.TimeStamp);
+            GameObjectField.SetModeDraw();
         }
     }
 }

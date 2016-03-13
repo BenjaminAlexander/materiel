@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MyGame.GameStateObjects.PhysicalObjects;
+using MyGame.GameStateObjects;
 using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework;
 using MyGame.Server;
-using MyGame.GameStateObjects;
-using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
-using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Bullets;
 
 namespace MyGame.materiel
 {

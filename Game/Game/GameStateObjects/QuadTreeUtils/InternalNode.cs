@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using MyGame.Geometry;
-using MyGame.GameStateObjects.PhysicalObjects;
+using MyGame.GameStateObjects;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
 {
@@ -43,7 +43,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override bool Add(PhysicalObject obj)
         {
-            if (this.Contains(obj.Position))
+            if (this.Contains(obj.SimulationPosition))
             {
                 foreach (Node child in new List<Node>(children))
                 {
@@ -65,7 +65,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override Leaf Remove(PhysicalObject obj)
         {
-            if (this.Contains(obj.Position))
+            if (this.Contains(obj.SimulationPosition))
             {
                 if (children.Count != 4)
                 {
@@ -182,7 +182,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         public override void Move(PhysicalObject obj)
         {
             unitCount--;
-            if (this.Contains(obj.Position))
+            if (this.Contains(obj.SimulationPosition))
             {
                 this.Add(obj);
             }

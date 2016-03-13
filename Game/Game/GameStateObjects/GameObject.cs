@@ -108,6 +108,8 @@ namespace MyGame.GameStateObjects
 
             GameObjectField.SetModeSimulation();
             this.Smooth(secondsElapsed);
+
+            GameObjectField.SetModeDraw();
         }
 
         public virtual void LatencyAdjustment(GameTime gameTime, long messageTimeStamp)
@@ -120,7 +122,6 @@ namespace MyGame.GameStateObjects
             float timeDeviation = (float)(deltaSpan.TotalSeconds) - averageLatency.AverageValue;
             if (timeDeviation > 0)
             {
-                GameObjectField.SetModeSimulation();
                 this.SubclassUpdate(timeDeviation);
                 this.SimulationStateOnlyUpdate(timeDeviation);
                 this.Smooth(timeDeviation);

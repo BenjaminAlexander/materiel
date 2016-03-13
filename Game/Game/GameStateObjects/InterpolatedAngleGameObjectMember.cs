@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace MyGame.GameStateObjects
 {
-    public class InterpolatedAngleGameObjectMember : GenericGameObjectField<float>
+    class InterpolatedAngleGameObjectMember : GenericGameObjectField<float>
     {
         public InterpolatedAngleGameObjectMember(GameObject obj, float v)
             : base(obj, v)
