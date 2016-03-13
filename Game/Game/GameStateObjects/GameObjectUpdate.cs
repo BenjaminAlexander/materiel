@@ -10,7 +10,7 @@ using MyGame.Networking;
 
 namespace MyGame.GameStateObjects
 {
-    public class GameObjectUpdate : UdpMessage
+    public class GameObjectUpdate : GameMessage
     {
         public GameObjectUpdate(GameTime currentGameTime, GameObject obj)
             : base(currentGameTime)
@@ -26,8 +26,8 @@ namespace MyGame.GameStateObjects
             }
         }
 
-        public GameObjectUpdate(UdpTcpPair pair)
-            : base(pair)
+        public GameObjectUpdate(UdpClient client)
+            : base(client)
         {
 
         }

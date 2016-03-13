@@ -5,10 +5,11 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using System.Net.Sockets;
 using MyGame.Networking;
+using System.Net.Sockets;
 
 namespace MyGame.Client
 {
-    public class SetWorldSize : TcpMessage
+    public class SetWorldSize : GameMessage
     {
         private Vector2 worldSize;
         public Vector2 WorldSize
@@ -23,8 +24,8 @@ namespace MyGame.Client
             this.Append(worldSize);
         }
 
-        public SetWorldSize(UdpTcpPair pair)
-            : base(pair)
+        public SetWorldSize(NetworkStream stream)
+            : base(stream)
         {
             this.ResetReader();
             worldSize = this.ReadVector2();

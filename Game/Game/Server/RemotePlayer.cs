@@ -14,7 +14,7 @@ using MyGame.RtsCommands;
 
 namespace MyGame.Server
 {
-    public class RemotePlayer : BasePlayer<UdpMessage, RtsCommandMessage>
+    public class RemotePlayer : BasePlayer<GameMessage, RtsCommandMessage>
     {
         private PlayerGameObject playerGameObject = null;
 

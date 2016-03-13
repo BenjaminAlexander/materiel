@@ -75,7 +75,7 @@ namespace MyGame.Server
             clientListenerThread.Join();
         }
 
-        public void BroadcastUDP(UdpMessage message)
+        public void BroadcastUDP(GameMessage message)
         {
             foreach (RemotePlayer client in clients)
             {
@@ -83,7 +83,7 @@ namespace MyGame.Server
             }
         }
 
-        public void BroadcastUDP(Queue<UdpMessage> messages)
+        public void BroadcastUDP(Queue<GameMessage> messages)
         {
             foreach (RemotePlayer client in clients)
             {
@@ -91,7 +91,7 @@ namespace MyGame.Server
             }
         }
 
-        public void BroadcastTCP(TcpMessage message)
+        public void BroadcastTCP(GameMessage message)
         {
             foreach (RemotePlayer client in clients)
             {

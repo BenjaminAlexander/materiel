@@ -10,22 +10,23 @@ using System.Net;
 using MyGame.RtsCommands;
 using MyGame.materiel;
 using System.Reflection;
+using System.Net.Sockets;
 
 namespace MyGame.Server
 {
     public abstract class BasePlayer<InUDP, InTCP>
-        where InUDP : UdpMessage
-        where InTCP : TcpMessage
+        where InUDP : GameMessage
+        where InTCP : GameMessage
     {
         private UdpTcpPair client;
 
         private ConstructorInfo udpConstructor;
         private ConstructorInfo tcpConstructor;
 
-        private ThreadSafeQueue<UdpMessage> outgoingUDPQueue = new ThreadSafeQueue<UdpMessage>();
+        private ThreadSafeQueue<GameMessage> outgoingUDPQueue = new ThreadSafeQueue<GameMessage>();
         private ThreadSafeQueue<InUDP> incomingUDPQueue = new ThreadSafeQueue<InUDP>();
 
-        private ThreadSafeQueue<TcpMessage> outgoingTCPQueue = new ThreadSafeQueue<TcpMessage>();
+        private ThreadSafeQueue<GameMessage> outgoingTCPQueue = new ThreadSafeQueue<GameMessage>();
         private ThreadSafeQueue<InTCP> incomingTCPQueue = new ThreadSafeQueue<InTCP>();
 
         private Thread outboundUDPSenderThread;
@@ -48,11 +49,14 @@ namespace MyGame.Server
 
         private void StartThreads()
         {
-            Type[] constuctorParamsTypes = new Type[1];
-            constuctorParamsTypes[0] = typeof(UdpTcpPair);
+            Type[] udpParams = new Type[1];
+            udpParams[0] = typeof(UdpClient);
 
-            udpConstructor = typeof(InUDP).GetConstructor(constuctorParamsTypes);
-            tcpConstructor = typeof(InTCP).GetConstructor(constuctorParamsTypes);
+            Type[] tcpParams = new Type[1];
+            tcpParams[0] = typeof(NetworkStream);
+
+            udpConstructor = typeof(InUDP).GetConstructor(udpParams);
+            tcpConstructor = typeof(InTCP).GetConstructor(tcpParams);
 
             if (udpConstructor == null || tcpConstructor == null)
             {
@@ -81,12 +85,12 @@ namespace MyGame.Server
             this.client.Disconnect();
         }
 
-        public void SendUDP(UdpMessage message)
+        public void SendUDP(GameMessage message)
         {
             outgoingUDPQueue.Enqueue(message);
         }
 
-        public void SendUDP(Queue<UdpMessage> messages)
+        public void SendUDP(Queue<GameMessage> messages)
         {
             outgoingUDPQueue.EnqueueAll(messages);
         }
@@ -102,8 +106,8 @@ namespace MyGame.Server
             {
                 while (true)
                 {
-                    UdpMessage m = outgoingUDPQueue.Dequeue();
-                    m.Send(this.client);
+                    GameMessage m = outgoingUDPQueue.Dequeue();
+                    m.SendUDP(this.client);
                 }
             }
             catch (Exception)
@@ -128,7 +132,7 @@ namespace MyGame.Server
             }
         }
 
-        public void SendTCP(TcpMessage message)
+        public void SendTCP(GameMessage message)
         {
             outgoingTCPQueue.Enqueue(message);
         }
@@ -149,8 +153,8 @@ namespace MyGame.Server
             {
                 while (true)
                 {
-                    TcpMessage message = outgoingTCPQueue.Dequeue();
-                    message.Send(client);
+                    GameMessage message = outgoingTCPQueue.Dequeue();
+                    message.SendTCP(client);
                 }
             }
             catch (Exception)
@@ -186,14 +190,14 @@ namespace MyGame.Server
         public InUDP GetUDPMessage(UdpTcpPair client)
         {
             object[] constuctorParams = new object[1];
-            constuctorParams[0] = client;
+            constuctorParams[0] = client.UdpClient;
             return (InUDP)udpConstructor.Invoke(constuctorParams);
         }
 
         public InTCP GetTCPMessage(UdpTcpPair client)
         {
             object[] constuctorParams = new object[1];
-            constuctorParams[0] = client;
+            constuctorParams[0] = client.ClientStream;
             return (InTCP)tcpConstructor.Invoke(constuctorParams);
         }
     }

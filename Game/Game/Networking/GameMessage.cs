@@ -11,7 +11,7 @@ using MyGame;
 
 namespace MyGame.Networking
 {
-    public abstract class GameMessage
+    public class GameMessage
     {
         //TODO: this buffer might need to be thread safe
         private const int BUFF_MAX_SIZE = 1024;
@@ -56,7 +56,7 @@ namespace MyGame.Networking
             this.Size = HEADER_SIZE;
         }
 
-        protected internal GameMessage(UdpClient udpClient)
+        public GameMessage(UdpClient udpClient)
         {
             IPEndPoint ep = (IPEndPoint)udpClient.Client.RemoteEndPoint;
             this.buff = udpClient.Receive(ref ep);
@@ -66,7 +66,7 @@ namespace MyGame.Networking
             this.AssertMessageType();
         }
 
-        protected internal GameMessage(NetworkStream networkStream)
+        public GameMessage(NetworkStream networkStream)
         {
             byte[] headerBuffer = new byte[GameMessage.HEADER_SIZE];
             networkStream.Read(headerBuffer, 0, GameMessage.HEADER_SIZE);
@@ -275,6 +275,15 @@ namespace MyGame.Networking
             }
         }
 
-        public abstract void Send(UdpTcpPair pair);
+        public void SendUDP(UdpTcpPair pair)
+        {
+            pair.UdpClient.Send(this.MessageBuffer, this.Size);
+        }
+
+        public void SendTCP(UdpTcpPair pair)
+        {
+            pair.ClientStream.Write(this.MessageBuffer, 0, this.Size);
+            pair.ClientStream.Flush();
+        }
     }
 }

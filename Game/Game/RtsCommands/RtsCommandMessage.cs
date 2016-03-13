@@ -7,12 +7,13 @@ using MyGame.Networking;
 using Microsoft.Xna.Framework;
 using MyGame.Server;
 using System.Reflection;
+using System.Net.Sockets;
 
 namespace MyGame.RtsCommands
 {
     public delegate void CommandDelegate(RtsCommandMessage message, ServerGame game);
 
-    public class RtsCommandMessage : TcpMessage
+    public class RtsCommandMessage : GameMessage
     {
 
         private static Type[] commandTypeArray;
@@ -58,8 +59,8 @@ namespace MyGame.RtsCommands
             this.Append(RtsCommandMessage.TypeID(t));
         }
 
-        public RtsCommandMessage(UdpTcpPair pair)
-            : base(pair)
+        public RtsCommandMessage(NetworkStream stream)
+            : base(stream)
         {
 
         }
