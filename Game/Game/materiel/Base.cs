@@ -7,6 +7,7 @@ using MyGame.GameStateObjects;
 using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework;
 using MyGame.Server;
+using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.materiel
 {
@@ -29,7 +30,7 @@ namespace MyGame.materiel
 
         public static Base BaseFactory(ServerGame game, Vector2 position)
         {
-            Base baseObj = new Base(game);
+            Base baseObj = new Base(game.GameObjectCollection);
             Base.ServerInitialize(baseObj, position);
             game.GameObjectCollection.Add(baseObj);
             return baseObj;
@@ -40,8 +41,8 @@ namespace MyGame.materiel
             PhysicalObject.ServerInitialize(obj, position, 0);
         }
 
-        public Base(Game1 game)
-            : base(game)
+        public Base(GameObjectCollection collection)
+            : base(collection)
         {
             materiel = new FloatGameObjectMember(this, 0);
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
@@ -65,7 +66,7 @@ namespace MyGame.materiel
                     if (buildQueue.Value.Count > 0)
                     {
                         buildQueue.Value.Dequeue();
-                        Vehicle.VehicleFactory((ServerGame)this.Game, this.controllingPlayer.Value, Utils.RandomUtils.RandomVector2(new Vector2(100)) + this.Position);
+                        Vehicle.VehicleFactory(this.Collection, this.controllingPlayer.Value, Utils.RandomUtils.RandomVector2(new Vector2(100)) + this.Position);
                     }
                     else
                     {

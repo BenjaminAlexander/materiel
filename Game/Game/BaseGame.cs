@@ -17,7 +17,7 @@ namespace MyGame
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game1 : Game
+    public class BaseGame : Game
     {
         protected GraphicsDeviceManager graphics;
         private MyGraphicsClass myGraphicsObject;
@@ -46,7 +46,7 @@ namespace MyGame
             get { return gameObjectCollection; }
         }
 
-        public Game1()
+        public BaseGame()
             : base()
         {
             GameObjectTypes.Initialize();

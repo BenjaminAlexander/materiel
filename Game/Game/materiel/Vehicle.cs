@@ -7,6 +7,7 @@ using MyGame.GameStateObjects;
 using Microsoft.Xna.Framework;
 using MyGame.Server;
 using MyGame.DrawingUtils;
+using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.materiel
 {
@@ -24,8 +25,8 @@ namespace MyGame.materiel
         private FloatGameObjectMember maxSpeed;
         private Vector2GameObjectMember targetPosition;
 
-        public Vehicle(Game1 game)
-            : base(game)
+        public Vehicle(GameObjectCollection collection)
+            : base(collection)
         {
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
             company = new GameObjectReferenceField<Company>(this);
@@ -43,11 +44,11 @@ namespace MyGame.materiel
 
         }
 
-        public static Vehicle VehicleFactory(ServerGame game, PlayerGameObject controllingPlayer, Vector2 position)
+        public static Vehicle VehicleFactory(GameObjectCollection collection, PlayerGameObject controllingPlayer, Vector2 position)
         {
-            Vehicle vehicle = new Vehicle(game);
+            Vehicle vehicle = new Vehicle(collection);
             Vehicle.ServerInitialize(vehicle, controllingPlayer, position);
-            game.GameObjectCollection.Add(vehicle);
+            collection.Add(vehicle);
             return vehicle;
         }
 

@@ -63,7 +63,7 @@ namespace MyGame.Server
             clientsMutex.ReleaseMutex();
 
             // Start up the game.
-            Game1 game = new ServerGame(this);
+            ServerGame game = new ServerGame(this);
             game.Run();
 
             //the game has finished

@@ -8,6 +8,7 @@ using MyGame.Server;
 using Microsoft.Xna.Framework;
 using MyGame.DrawingUtils;
 using MyGame.Client;
+using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.materiel
 {
@@ -24,8 +25,8 @@ namespace MyGame.materiel
 
         private GameObjectReferenceListField<Company> companies;
 
-        public PlayerGameObject(Game1 game)
-            : base(game)
+        public PlayerGameObject(GameObjectCollection collection)
+            : base(collection)
         {
             playerID = new IntegerGameObjectMember(this, 0);
             colorIndex = new IntegerGameObjectMember(this, 0);
@@ -41,7 +42,7 @@ namespace MyGame.materiel
 
         public static PlayerGameObject Factory(ServerGame game, RemotePlayer player)
         {
-            PlayerGameObject obj = new PlayerGameObject(game);
+            PlayerGameObject obj = new PlayerGameObject(game.GameObjectCollection);
             PlayerGameObject.ServerInitialize(obj, player.Id);
             game.GameObjectCollection.Add(obj);
             return obj;

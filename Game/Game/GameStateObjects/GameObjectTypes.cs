@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MyGame.Client;
+using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.GameStateObjects
 {
     static class GameObjectTypes
     {
         private static Type[] gameObjectTypeArray;
-        private static Dictionary<Type, System.Reflection.ConstructorInfo> constructorDictionary = new Dictionary<Type,System.Reflection.ConstructorInfo>();
+        public static Dictionary<Type, System.Reflection.ConstructorInfo> constructorDictionary = new Dictionary<Type,System.Reflection.ConstructorInfo>();
 
         public static void Initialize()
         {
@@ -21,7 +22,7 @@ namespace MyGame.GameStateObjects
             for (int i = 0; i < gameObjectTypeArray.Length; i++)
             {
                 Type[] constuctorParamsTypes = new Type[1];
-                constuctorParamsTypes[0] = typeof(Game1);
+                constuctorParamsTypes[0] = typeof(GameObjectCollection);
 
                 System.Reflection.ConstructorInfo constructor = gameObjectTypeArray[i].GetConstructor(constuctorParamsTypes);
                 if (constructor == null)
@@ -54,6 +55,7 @@ namespace MyGame.GameStateObjects
             return gameObjectTypeArray[id];
         }
 
+        /*
         public static GameObject Construct(Type type, ClientGame game, int id)
         {
             object[] constuctorParams = new object[1];
@@ -62,6 +64,6 @@ namespace MyGame.GameStateObjects
             obj.ID = id;
             game.GameObjectCollection.Add(obj);
             return obj;
-        }
+        }*/
     }
 }

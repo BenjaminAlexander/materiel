@@ -14,7 +14,8 @@ namespace MyGame.GameStateObjects
     {
         private int id;                     
         private Boolean destroy = false;
-        private Game1 game;
+        private GameObjectCollection collection;
+             
         private List<GameObjectField> fields = new List<GameObjectField>();
 
         //this is the time between the sending of each update method
@@ -25,9 +26,12 @@ namespace MyGame.GameStateObjects
         private RollingAverage averageLatency = new RollingAverage(100);  
         private float secondsUntilUpdateMessage = 0;
 
-        public Game1 Game
+        public GameObjectCollection Collection
         {
-            get { return game; } 
+            get
+            {
+                return collection;
+            }
         }
 
         public int ID
@@ -55,21 +59,25 @@ namespace MyGame.GameStateObjects
             get { return lastMessageTimeStamp; }
         }
 
-
         protected virtual float SecondsBetweenUpdateMessage
         {
             get { return secondsBetweenUpdateMessage; }
         }
 
-        public GameObject(Game1 game)
+        public static GameObject Construct(Type type, ClientGame game, int id)
         {
-            this.game = game;
-            //TODO: it doesn't seem right to check if the game is a server game
-            //but it seems better than having a seperate method for this
-            if (game is ServerGame)
-            {
-                this.id = game.GameObjectCollection.NextID;
-            }
+            object[] constuctorParams = new object[1];
+            constuctorParams[0] = game.GameObjectCollection;
+            GameObject obj = (GameObject)GameObjectTypes.constructorDictionary[type].Invoke(constuctorParams);
+            obj.id = id;
+            game.GameObjectCollection.Add(obj);
+            return obj;
+        }
+
+        public GameObject(GameObjectCollection collection)
+        {
+            this.collection = collection;
+            this.id = this.collection.NextID;
         }
 
         public virtual void Destroy()

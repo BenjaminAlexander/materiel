@@ -70,7 +70,7 @@ namespace MyGame.GameStateObjects
                 {
                     return;
                 }
-                obj = GameObjectTypes.Construct(typeFromMessage, game, idFromMessage);
+                obj = GameObject.Construct(typeFromMessage, game, idFromMessage);
 
                 if (!(obj.GetType() == typeFromMessage && obj.ID == idFromMessage))
                 {

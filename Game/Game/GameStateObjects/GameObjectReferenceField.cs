@@ -16,7 +16,7 @@ namespace MyGame.GameStateObjects
         public GameObjectReferenceField(GameObject obj)
             : base(obj)
         {
-            this.collection = obj.Game.GameObjectCollection;
+            this.collection = obj.Collection;
             this.value = null;
         }
 

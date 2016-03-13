@@ -12,7 +12,7 @@ using System.Net;
 
 namespace MyGame.Client
 {
-    public class ClientGame : Game1
+    public class ClientGame : BaseGame
     {
         private LocalPlayer serverConnection;
 

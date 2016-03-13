@@ -7,6 +7,7 @@ using MyGame.GameStateObjects;
 using MyGame.Server;
 using Microsoft.Xna.Framework;
 using MyGame.DrawingUtils;
+using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.materiel
 {
@@ -15,8 +16,8 @@ namespace MyGame.materiel
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
         private GameObjectReferenceListField<Vehicle> vehicles;
 
-        public Company(Game1 game)
-            : base(game)
+        public Company(GameObjectCollection collection)
+            : base(collection)
         {
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
             vehicles = new GameObjectReferenceListField<Vehicle>(this);
@@ -29,7 +30,7 @@ namespace MyGame.materiel
 
         public static Company Factory(ServerGame game, PlayerGameObject controllingPlayer)
         {
-            Company obj = new Company(game);
+            Company obj = new Company(game.GameObjectCollection);
             Company.ServerInitialize(obj, controllingPlayer);
             game.GameObjectCollection.Add(obj);
             return obj;

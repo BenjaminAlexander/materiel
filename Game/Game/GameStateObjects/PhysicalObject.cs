@@ -7,6 +7,7 @@ using MyGame.GameStateObjects.QuadTreeUtils;
 using MyGame.DrawingUtils;
 using MyGame.Server;
 using MyGame.Client;
+using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.GameStateObjects
 {
@@ -27,8 +28,8 @@ namespace MyGame.GameStateObjects
             get;
         }
 
-        public PhysicalObject(Game1 game)
-            : base(game)
+        public PhysicalObject(GameObjectCollection collection)
+            : base(collection)
         {
             position = new InterpolatedVector2GameObjectMember(this, new Vector2(0));
             direction = new InterpolatedAngleGameObjectMember(this, 0);
@@ -38,7 +39,7 @@ namespace MyGame.GameStateObjects
         {
             protected set
             {
-                if (!this.Game.GameObjectCollection.GetWorldRectangle().Contains(value))
+                if (!this.Collection.GetWorldRectangle().Contains(value))
                 {
                     this.MoveOutsideWorld(this.Position, value);
                 }
@@ -66,7 +67,7 @@ namespace MyGame.GameStateObjects
 
         public void MoveInTree()
         {
-            this.Game.GameObjectCollection.Tree.Move(this);
+            this.Collection.Tree.Move(this);
         }
 
         public Boolean CollidesWith(PhysicalObject other)

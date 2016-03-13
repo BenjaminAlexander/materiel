@@ -17,15 +17,15 @@ namespace MyGame.GameStateObjects
         {
             this.obj = obj;
             this.hasDereferenced = true;
+            this.collection = null;
             if (obj == null)
             {
                 this.id = 0;
-                this.collection = null;
+                
             }
             else
             {
                 this.id = obj.ID;
-                this.collection = obj.Game.GameObjectCollection;
             }
         }
 

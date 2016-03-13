@@ -10,7 +10,7 @@ using MyGame.Client;
 
 namespace MyGame.Server
 {
-    public class ServerGame : Game1
+    public class ServerGame : BaseGame
     {
         private static Vector2 worldSize = new Vector2(8000, 8000);
         private Lobby lobby;
