@@ -59,17 +59,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
-    <Compile Include="GameClient\ClientGame.cs" />
+    <Compile Include="Client\ClientGame.cs" />
     <Compile Include="DrawingUtils\Collidable.cs" />
     <Compile Include="DrawingUtils\LoadedTexture.cs" />
     <Compile Include="DrawingUtils\MyGraphicsClass.cs" />
     <Compile Include="DrawingUtils\TextureLoader.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="GameClient\Program.cs" />
-    <Compile Include="GameClient\LocalPlayer.cs" />
-    <Compile Include="GameServer\Player.cs" />
-    <Compile Include="GameServer\RemotePlayer.cs" />
-    <Compile Include="GameServer\Program.cs" />
+    <Compile Include="Client\Program.cs" />
+    <Compile Include="Client\LocalPlayer.cs" />
+    <Compile Include="Server\Player.cs" />
+    <Compile Include="Server\RemotePlayer.cs" />
+    <Compile Include="Server\Program.cs" />
     <Compile Include="Hud\HudManager.cs" />
     <Compile Include="Hud\HudObject.cs" />
     <Compile Include="IO\Events\RightMousePressed.cs" />
@@ -135,15 +135,15 @@
     <Compile Include="RtsCommands\RtsCommandMessage.cs" />
     <Compile Include="Utils\NetUtils.cs" />
     <Compile Include="Utils\RollingAverage.cs" />
-    <Compile Include="GameClient\SetWorldSize.cs" />
+    <Compile Include="Client\SetWorldSize.cs" />
     <Compile Include="Networking\GameMessage.cs" />
     <Compile Include="Utils\ThreadSafeQueue.cs" />
     <Compile Include="Utils\PhysicsUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IO\InputManager.cs" />
     <Compile Include="ServerLogic.cs" />
-    <Compile Include="GameServer\Lobby.cs" />
-    <Compile Include="GameServer\ServerGame.cs" />
+    <Compile Include="Server\Lobby.cs" />
+    <Compile Include="Server\ServerGame.cs" />
     <Compile Include="Utils\MathUtils.cs" />
     <Compile Include="Utils\RandomUtils.cs" />
     <Compile Include="Utils\RectangleF.cs" />

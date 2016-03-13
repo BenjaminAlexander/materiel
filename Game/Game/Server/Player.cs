@@ -7,11 +7,11 @@ using MyGame.Networking;
 using MyGame.Utils;
 using System.Threading;
 using System.Net;
-using MyGame.GameClient;
+using MyGame.Client;
 using MyGame.RtsCommands;
 using MyGame.materiel;
 
-namespace MyGame.GameServer
+namespace MyGame.Server
 {
     public abstract class BasePlayer<InUDP, InTCP>
         where InUDP : UdpMessage

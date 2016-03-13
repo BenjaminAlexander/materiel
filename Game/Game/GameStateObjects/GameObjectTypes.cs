@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MyGame.GameClient;
+using MyGame.Client;
 
 namespace MyGame.GameStateObjects
 {

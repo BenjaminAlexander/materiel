@@ -5,8 +5,8 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects.QuadTreeUtils;
 using MyGame.DrawingUtils;
-using MyGame.GameServer;
-using MyGame.GameClient;
+using MyGame.Server;
+using MyGame.Client;
 
 namespace MyGame.GameStateObjects.PhysicalObjects
 {

@@ -7,8 +7,8 @@ using MyGame.Utils;
 using MyGame.DrawingUtils;
 using MyGame.GameStateObjects.QuadTreeUtils;
 using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Bullets;
-using MyGame.GameServer;
-using MyGame.GameClient;
+using MyGame.Server;
+using MyGame.Client;
 
 namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships
 {

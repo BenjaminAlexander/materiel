@@ -4,7 +4,7 @@
     {
         static void Main()
         {
-            MyGame.GameServer.Program.ServerMain();
+            MyGame.Server.Program.ServerMain();
         }
     }
 }

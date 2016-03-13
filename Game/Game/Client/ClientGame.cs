@@ -7,10 +7,10 @@ using MyGame;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects;
 using MyGame.Utils;
-using MyGame.GameServer;
+using MyGame.Server;
 using System.Net;
 
-namespace MyGame.GameClient
+namespace MyGame.Client
 {
     public class ClientGame : Game1
     {

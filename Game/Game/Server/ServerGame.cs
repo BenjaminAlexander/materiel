@@ -7,9 +7,9 @@ using MyGame;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects;
 using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
-using MyGame.GameClient;
+using MyGame.Client;
 
-namespace MyGame.GameServer
+namespace MyGame.Server
 {
     public class ServerGame : Game1
     {

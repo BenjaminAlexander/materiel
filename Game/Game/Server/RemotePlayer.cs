@@ -7,13 +7,13 @@ using MyGame.Networking;
 using System.Net.Sockets;
 using System.Threading;
 using System.Net;
-using MyGame.GameClient;
+using MyGame.Client;
 using MyGame.Utils;
 using MyGame.GameStateObjects;
 using MyGame.materiel;
 using MyGame.RtsCommands;
 
-namespace MyGame.GameServer
+namespace MyGame.Server
 {
     public class RemotePlayer : BasePlayer<UdpMessage, RtsCommandMessage>
     {

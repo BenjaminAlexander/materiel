@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using MyGame.Utils;
-using MyGame.GameServer;
-using MyGame.GameClient;
+using MyGame.Server;
+using MyGame.Client;
 
 namespace MyGame.GameStateObjects.PhysicalObjects
 {

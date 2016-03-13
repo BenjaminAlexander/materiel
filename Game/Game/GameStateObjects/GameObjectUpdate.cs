@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects.DataStuctures;
-using MyGame.GameClient;
+using MyGame.Client;
 using System.Net.Sockets;
 using MyGame.Networking;
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MyGame.Networking;
 using System.Net;
 using MyGame.Utils;
-using MyGame.GameServer;
+using MyGame.Server;
 using MyGame.GameStateObjects;
 using System.Threading;
 using Microsoft.Xna.Framework;
@@ -18,7 +18,7 @@ using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework.Input;
 using MyGame.RtsCommands;
 
-namespace MyGame.GameClient
+namespace MyGame.Client
 {
     //TODO: name this class better
     //maybe combine with local player

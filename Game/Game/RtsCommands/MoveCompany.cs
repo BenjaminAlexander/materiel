@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MyGame.GameServer;
+using MyGame.Server;
 using MyGame.materiel;
 using MyGame.GameStateObjects;
-using MyGame.GameClient;
+using MyGame.Client;
 using Microsoft.Xna.Framework;
 
 namespace MyGame.RtsCommands

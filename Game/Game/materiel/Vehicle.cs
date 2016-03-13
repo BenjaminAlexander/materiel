@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
 using MyGame.GameStateObjects;
 using Microsoft.Xna.Framework;
-using MyGame.GameServer;
+using MyGame.Server;
 
 namespace MyGame.materiel
 {

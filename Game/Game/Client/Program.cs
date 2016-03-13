@@ -8,10 +8,10 @@ using System.Net.Sockets;
 using Microsoft.Xna.Framework;
 using Microsoft.VisualBasic;
 using MyGame.Utils;
-using MyGame.GameServer;
+using MyGame.Server;
 using MyGame.GameStateObjects;
 
-namespace MyGame.GameClient
+namespace MyGame.Client
 {
     /// <summary>
     /// The main class.

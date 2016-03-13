@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MyGame.Networking;
 using Microsoft.Xna.Framework;
-using MyGame.GameServer;
+using MyGame.Server;
 
 namespace MyGame.RtsCommands
 {

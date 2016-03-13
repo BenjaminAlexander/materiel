@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MyGame.GameStateObjects.PhysicalObjects;
 using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework;
-using MyGame.GameServer;
+using MyGame.Server;
 using MyGame.GameStateObjects;
 using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships;
 using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Bullets;

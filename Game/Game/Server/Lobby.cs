@@ -9,12 +9,12 @@ using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using MyGame;
 using MyGame.Networking;
-using MyGame.GameClient;
+using MyGame.Client;
 using MyGame.Utils;
 using MyGame.GameStateObjects;
 using MyGame.RtsCommands;
 
-namespace MyGame.GameServer
+namespace MyGame.Server
 {
     public class Lobby
     {

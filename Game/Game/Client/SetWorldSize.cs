@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using System.Net.Sockets;
 using MyGame.Networking;
 
-namespace MyGame.GameClient
+namespace MyGame.Client
 {
     public class SetWorldSize : TcpMessage
     {

@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Net;
 
-namespace MyGame.GameServer
+namespace MyGame.Server
 {
     public static class Program
     {
