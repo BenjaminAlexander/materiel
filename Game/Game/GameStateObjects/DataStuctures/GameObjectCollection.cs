@@ -89,13 +89,13 @@ namespace MyGame.GameStateObjects.DataStuctures
             }
         }
 
-        public GameObject Get(int id)
+        public T Get<T>(int id) where T : GameObject
         {
             if (id == 0)
             {
                 return null;
             }
-            return dictionary[id];
+            return (T)dictionary[id];
         }
 
         public GameObjectListManager GetMasterList()

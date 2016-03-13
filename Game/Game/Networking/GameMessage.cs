@@ -139,7 +139,7 @@ namespace MyGame.Networking
             types = types.OrderBy(t => t.Name);
             messageTypeArray = types.ToArray();
 
-            RtsCommands.RtsCommand.Initialize();
+            RtsCommands.RtsCommandMessage.InitializeRTS();
         }
 
         // Every other append method should boil down to calling one.

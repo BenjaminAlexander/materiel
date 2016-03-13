@@ -54,7 +54,7 @@ namespace MyGame.GameStateObjects
 
             if (this.collection.Contains(id))
             {
-                obj = (T)this.collection.Get(id);
+                obj = (T)this.collection.Get<T>(id);
                 hasDereferenced = true;
                 return obj;
             }

@@ -14,22 +14,22 @@ namespace MyGame.Client
 {
     public class ClientGame : BaseGame
     {
-        private LocalPlayer serverConnection;
+        private LocalPlayer localPlayer;
 
         public LocalPlayer LocalPlayer
         {
             get
             {
-                return serverConnection;
+                return localPlayer;
             }
         }
 
         public ClientGame(IPAddress serverAddress)
             : base()
         {
-            this.serverConnection = new LocalPlayer(serverAddress, this);
+            this.localPlayer = new LocalPlayer(serverAddress, this);
 
-            SetWorldSize m = serverConnection.DequeueIncomingTCP();
+            SetWorldSize m = localPlayer.DequeueIncomingTCP();
             this.SetWorldSize(m.WorldSize);
         }
 
@@ -37,7 +37,7 @@ namespace MyGame.Client
         {
             float secondsElapsed = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
 
-            Queue<GameObjectUpdate> messageQueue = this.serverConnection.DequeueAllIncomingUDP();
+            Queue<GameObjectUpdate> messageQueue = this.localPlayer.DequeueAllIncomingUDP();
             while (messageQueue.Count > 0)
             {
                 GameObjectUpdate m = messageQueue.Dequeue();
@@ -53,19 +53,13 @@ namespace MyGame.Client
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            this.GraphicsObject.BeginWorld();
-            this.serverConnection.Draw(gameTime, this.GraphicsObject);
-            this.GraphicsObject.End();
-
-            this.GraphicsObject.Begin();
-            this.serverConnection.DrawHud(gameTime, this.GraphicsObject);
-            this.GraphicsObject.End();            
+            this.localPlayer.Draw(gameTime, this.GraphicsObject);  
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
             base.OnExiting(sender, args);
-            serverConnection.Disconnect();
+            localPlayer.Disconnect();
         }
     }
 }

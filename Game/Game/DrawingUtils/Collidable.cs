@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MyGame.Utils;
 using MyGame.Geometry;
+
 namespace MyGame.DrawingUtils
 {
     public class Collidable

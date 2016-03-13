@@ -7,6 +7,7 @@ using MyGame.GameStateObjects.DataStuctures;
 using MyGame.Utils;
 using MyGame.Server;
 using MyGame.Client;
+using MyGame.DrawingUtils;
 
 namespace MyGame.GameStateObjects
 {
@@ -64,13 +65,13 @@ namespace MyGame.GameStateObjects
             get { return secondsBetweenUpdateMessage; }
         }
 
-        public static GameObject Construct(Type type, ClientGame game, int id)
+        public static GameObject Construct(Type type, GameObjectCollection collection, int id)
         {
             object[] constuctorParams = new object[1];
-            constuctorParams[0] = game.GameObjectCollection;
+            constuctorParams[0] = collection;
             GameObject obj = (GameObject)GameObjectTypes.constructorDictionary[type].Invoke(constuctorParams);
             obj.id = id;
-            game.GameObjectCollection.Add(obj);
+            collection.Add(obj);
             return obj;
         }
 
@@ -163,6 +164,6 @@ namespace MyGame.GameStateObjects
 
         public virtual void SimulationStateOnlyUpdate(float secondsElapsed) { }
 
-        public virtual void Draw(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics) { }
+        public virtual void Draw(GameTime gameTime, MyGraphicsClass graphics) { }
     }
 }

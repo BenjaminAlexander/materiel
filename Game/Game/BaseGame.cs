@@ -83,7 +83,7 @@ namespace MyGame
             this.camera = new Camera(new Vector2(0), 1f, 0, this.graphics, inputManager);
 
             SpriteBatch spriteBatch = new SpriteBatch(GraphicsDevice);
-            myGraphicsObject = new DrawingUtils.MyGraphicsClass(this.graphics, spriteBatch, this.camera);
+            myGraphicsObject = new MyGraphicsClass(this.graphics, spriteBatch, this.camera);
 
             gameObjectCollection = new GameObjectCollection(worldSize);
         }

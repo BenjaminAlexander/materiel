@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MyGame.Networking;
 using System.Net;
 using MyGame.Utils;
 using MyGame.Server;
@@ -60,6 +59,8 @@ namespace MyGame.Client
 
         public void Draw(GameTime gameTime, MyGraphicsClass graphics)
         {
+            graphics.BeginWorld();
+
             if(selectedBase != null)
             {
                 graphics.DrawCircle(selectedBase.Position, 50, Color.Red, 1);
@@ -69,16 +70,15 @@ namespace MyGame.Client
             {
                 graphics.DrawCircle(selectedVehicle.Position, 50, Color.Red, 1);
             }
-        }
 
-        public override GameObjectUpdate GetUDPMessage(UdpTcpPair client)
-        {
-            return new GameObjectUpdate(client);
-        }
+            graphics.End();
 
-        public override SetWorldSize GetTCPMessage(UdpTcpPair client)
-        {
-            return new SetWorldSize(client);
+            graphics.Begin();
+            if (playerGameObject != null)
+            {
+                playerGameObject.DrawHud(gameTime, graphics, selectedCompany);
+            }
+            graphics.End(); 
         }
 
         public void UpdateWithIOEvent(IOEvent ioEvent)
@@ -121,12 +121,12 @@ namespace MyGame.Client
                 {
                     if (selectedBase != null)
                     {
-                        RtsCommand command = new BuildCombatVehicle(this, selectedBase);
+                        BuildCombatVehicle.SendCommand(this, selectedBase);
                     }
                 }
                 else if (ioEvent.Equals(createCompany))
                 {
-                    RtsCommand command = new CreateCompany(this);
+                    CreateCompany.SendCommand(this);
                 }
                 else if (ioEvent.Equals(rightMousePress))
                 {
@@ -135,22 +135,14 @@ namespace MyGame.Client
 
                     if (rightClickCompany != null && selectedVehicle != null)
                     {
-                        RtsCommand command = new AddVehicleToCompany(this, rightClickCompany, selectedVehicle);
+                        AddVehicleToCompany.SendCommand(this, rightClickCompany, selectedVehicle);
                     }
                     else if (selectedCompany != null)
                     {
                         Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
-                        RtsCommand command = new MoveCompany(this, selectedCompany, worldPosition);
+                        MoveCompany.SendCommand(this, selectedCompany, worldPosition);
                     }
                 }
-            }
-        }
-
-        public void DrawHud(GameTime gameTime, MyGraphicsClass myGraphicsClass)
-        {
-            if (playerGameObject != null)
-            {
-                playerGameObject.DrawHud(gameTime, myGraphicsClass, selectedCompany);
             }
         }
     }

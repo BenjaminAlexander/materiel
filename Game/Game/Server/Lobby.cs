@@ -9,9 +9,7 @@ using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using MyGame;
 using MyGame.Networking;
-using MyGame.Client;
 using MyGame.Utils;
-using MyGame.GameStateObjects;
 using MyGame.RtsCommands;
 
 namespace MyGame.Server
@@ -77,7 +75,7 @@ namespace MyGame.Server
             clientListenerThread.Join();
         }
 
-        public void BroadcastUDP(GameObjectUpdate message)
+        public void BroadcastUDP(UdpMessage message)
         {
             foreach (RemotePlayer client in clients)
             {

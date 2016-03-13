@@ -7,7 +7,6 @@ using MyGame.Networking;
 using System.Net.Sockets;
 using System.Threading;
 using System.Net;
-using MyGame.Client;
 using MyGame.Utils;
 using MyGame.GameStateObjects;
 using MyGame.materiel;
@@ -34,16 +33,6 @@ namespace MyGame.Server
         public void CreatPlayerGameObject(ServerGame game)
         {
             playerGameObject = PlayerGameObject.Factory(game, this);
-        }
-
-        public override UdpMessage GetUDPMessage(UdpTcpPair client)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override RtsCommandMessage GetTCPMessage(UdpTcpPair client)
-        {
-            return new RtsCommandMessage(client);
         }
 
         public void HandleAllTCPMessages(ServerGame game)

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using MyGame.GameStateObjects;
 using MyGame.Server;
 using Microsoft.Xna.Framework;
-using MyGame.DrawingUtils;
 using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.materiel

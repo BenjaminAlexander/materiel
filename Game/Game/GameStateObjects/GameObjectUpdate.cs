@@ -46,7 +46,7 @@ namespace MyGame.GameStateObjects
             GameObject obj;
             if (collection.Contains(idFromMessage))
             {
-                obj = collection.Get(idFromMessage);
+                obj = collection.Get<GameObject>(idFromMessage);
                 if (obj.LastMessageTimeStamp > this.TimeStamp)
                 {
                     return;
@@ -70,7 +70,7 @@ namespace MyGame.GameStateObjects
                 {
                     return;
                 }
-                obj = GameObject.Construct(typeFromMessage, game, idFromMessage);
+                obj = GameObject.Construct(typeFromMessage, game.GameObjectCollection, idFromMessage);
 
                 if (!(obj.GetType() == typeFromMessage && obj.ID == idFromMessage))
                 {

@@ -11,7 +11,7 @@ using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.materiel
 {
-    class Base : PhysicalObject
+    public class Base : PhysicalObject
     {
         static Collidable collidable = new Collidable(TextureLoader.GetTexture("Star"), Color.Black, new Vector2(25), .1f);
         public override Collidable Collidable
@@ -76,7 +76,7 @@ namespace MyGame.materiel
             }
         }
 
-        public override void Draw(Microsoft.Xna.Framework.GameTime gameTime, DrawingUtils.MyGraphicsClass graphics)
+        public override void Draw(Microsoft.Xna.Framework.GameTime gameTime, MyGraphicsClass graphics)
         {
             if (controllingPlayer.Value == null)
             {

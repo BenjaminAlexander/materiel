@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.VisualBasic;
 using MyGame.Utils;
 using MyGame.Server;
-using MyGame.GameStateObjects;
 
 namespace MyGame.Client
 {

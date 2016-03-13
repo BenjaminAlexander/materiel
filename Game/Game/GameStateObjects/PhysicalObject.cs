@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects.QuadTreeUtils;
 using MyGame.DrawingUtils;
 using MyGame.Server;
-using MyGame.Client;
 using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.GameStateObjects
@@ -77,7 +76,7 @@ namespace MyGame.GameStateObjects
 
         public abstract void MoveOutsideWorld(Vector2 position, Vector2 movePosition);
 
-        public override void Draw(Microsoft.Xna.Framework.GameTime gameTime, DrawingUtils.MyGraphicsClass graphics)
+        public override void Draw(Microsoft.Xna.Framework.GameTime gameTime, MyGraphicsClass graphics)
         {
             base.Draw(gameTime, graphics);
             this.Collidable.Draw(graphics, this.Position, this.Direction);
