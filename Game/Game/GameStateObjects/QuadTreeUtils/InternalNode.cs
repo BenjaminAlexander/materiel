@@ -41,7 +41,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             children.Add(se);
         }
 
-        public override bool Add(CompositePhysicalObject obj)
+        public override bool Add(PhysicalObject obj)
         {
             if (this.Contains(obj.Position))
             {
@@ -63,7 +63,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return false;
         }
 
-        public override Leaf Remove(CompositePhysicalObject obj)
+        public override Leaf Remove(PhysicalObject obj)
         {
             if (this.Contains(obj.Position))
             {
@@ -115,7 +115,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
                         foreach (Leaf leaf in children)
                         {
-                            foreach (CompositePhysicalObject myObjects in leaf.CompleteList())
+                            foreach (PhysicalObject myObjects in leaf.CompleteList())
                             {
                                 this.Remove(myObjects);
                                 if (!newNode.Add(myObjects))
@@ -141,7 +141,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return Node.Contains(MapSpace, point);
         }
 
-        public override List<CompositePhysicalObject> GetObjectsInCircle(Vector2 center, float radius, List<CompositePhysicalObject> list)
+        public override List<PhysicalObject> GetObjectsInCircle(Vector2 center, float radius, List<PhysicalObject> list)
         {
             if ((new Circle(center, radius)).Contains(this.MapSpace))
             {
@@ -169,7 +169,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public override List<CompositePhysicalObject> CompleteList(ref List<CompositePhysicalObject> list)
+        public override List<PhysicalObject> CompleteList(ref List<PhysicalObject> list)
         {
 
             foreach (Node child in children)
@@ -179,7 +179,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return list;
         }
 
-        public override void Move(CompositePhysicalObject obj)
+        public override void Move(PhysicalObject obj)
         {
             unitCount--;
             if (this.Contains(obj.Position))

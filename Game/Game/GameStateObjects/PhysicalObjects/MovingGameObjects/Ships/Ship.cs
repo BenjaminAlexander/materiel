@@ -12,7 +12,7 @@ using MyGame.Client;
 
 namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships
 {
-    abstract public class Ship : CompositePhysicalObject 
+    abstract public class Ship : PhysicalObject 
     {
         private IntegerGameObjectMember health;
         private FloatGameObjectMember maxSpeed;
@@ -28,7 +28,7 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Ships
 
         public static void ServerInitialize(Ship ship, Vector2 position, Vector2 velocity, float direction, int health, float maxSpeed, float acceleration, float maxAgularSpeed)
         {
-            CompositePhysicalObject.ServerInitialize(ship, position, direction);
+            PhysicalObject.ServerInitialize(ship, position, direction);
             ship.health.Value = health;
             ship.maxSpeed.Value = maxSpeed;
             ship.targetPosition.Value = position;

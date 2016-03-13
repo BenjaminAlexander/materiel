@@ -9,14 +9,14 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
     class LeafDictionary
     {
         private QuadTree tree;
-        private Dictionary<CompositePhysicalObject, Leaf> leafDictionary = new Dictionary<CompositePhysicalObject, Leaf>();
+        private Dictionary<PhysicalObject, Leaf> leafDictionary = new Dictionary<PhysicalObject, Leaf>();
 
         public LeafDictionary(QuadTree tree)
         {
             this.tree = tree;
         }
 
-        public void SetLeaf(CompositePhysicalObject obj, Leaf leaf)
+        public void SetLeaf(PhysicalObject obj, Leaf leaf)
         {
             //this.Invariant();
             if (leaf != null)
@@ -33,7 +33,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
             //this.Invariant();
         }
-        public Leaf GetLeaf(CompositePhysicalObject obj)
+        public Leaf GetLeaf(PhysicalObject obj)
         {
             //this.Invariant();
             if (leafDictionary.ContainsKey(obj))
@@ -50,8 +50,8 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public void DestroyLeaf(Leaf l)
         {
-            Dictionary<CompositePhysicalObject, Leaf> copy = new Dictionary<CompositePhysicalObject, Leaf>(leafDictionary);
-            foreach (CompositePhysicalObject obj in copy.Keys)
+            Dictionary<PhysicalObject, Leaf> copy = new Dictionary<PhysicalObject, Leaf>(leafDictionary);
+            foreach (PhysicalObject obj in copy.Keys)
             {
                 if (copy[obj] == l)
                 {

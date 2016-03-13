@@ -11,7 +11,7 @@ using MyGame.Client;
 
 namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects
 {
-    public abstract class MovingGameObject : CompositePhysicalObject
+    public abstract class MovingGameObject : PhysicalObject
     {
         private InterpolatedVector2GameObjectMember velocity;
 
@@ -23,7 +23,7 @@ namespace MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects
 
         public static void ServerInitialize(MovingGameObject obj, Vector2 position, Vector2 velocity, float direction)
         {
-            CompositePhysicalObject.ServerInitialize(obj, position, direction);
+            PhysicalObject.ServerInitialize(obj, position, direction);
             obj.velocity.Value = velocity;
         }
 

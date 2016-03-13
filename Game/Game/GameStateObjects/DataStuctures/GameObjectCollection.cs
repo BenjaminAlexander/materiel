@@ -70,9 +70,9 @@ namespace MyGame.GameStateObjects.DataStuctures
         {
             if (!this.Contains(obj))
             {
-                if (obj is CompositePhysicalObject)
+                if (obj is PhysicalObject)
                 {
-                    if (quadTree.Add((CompositePhysicalObject)obj))
+                    if (quadTree.Add((PhysicalObject)obj))
                     {
                         dictionary.Add(obj.ID, obj);
                         listManager.Add(obj);
@@ -90,9 +90,9 @@ namespace MyGame.GameStateObjects.DataStuctures
         {
             listManager.Remove(obj);
             dictionary.Remove(obj.ID);
-            if (obj is CompositePhysicalObject)
+            if (obj is PhysicalObject)
             {
-                quadTree.Remove((CompositePhysicalObject)obj);
+                quadTree.Remove((PhysicalObject)obj);
             }
         }
 

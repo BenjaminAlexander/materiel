@@ -13,7 +13,7 @@ using MyGame.GameStateObjects.PhysicalObjects.MovingGameObjects.Bullets;
 
 namespace MyGame.materiel
 {
-    class Base : CompositePhysicalObject
+    class Base : PhysicalObject
     {
         static Collidable collidable = new Collidable(TextureLoader.GetTexture("Star"), Color.Black, new Vector2(25), .1f);
         public override Collidable Collidable
@@ -40,7 +40,7 @@ namespace MyGame.materiel
 
         public static void ServerInitialize(Base obj, Vector2 position)
         {
-            CompositePhysicalObject.ServerInitialize(obj, position, 0);
+            PhysicalObject.ServerInitialize(obj, position, 0);
         }
 
         public Base(Game1 game)

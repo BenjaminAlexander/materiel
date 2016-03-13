@@ -43,9 +43,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             parent = null;
         }
 
-        public abstract bool Add(CompositePhysicalObject unit);
+        public abstract bool Add(PhysicalObject unit);
 
-        public abstract Leaf Remove(CompositePhysicalObject unit);
+        public abstract Leaf Remove(PhysicalObject unit);
 
         public abstract bool Contains(Vector2 point);
 
@@ -57,22 +57,22 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 point.Y < rectangle.Y + rectangle.Height;
         }
 
-        public abstract List<CompositePhysicalObject> GetObjectsInCircle(Vector2 center, float radius, List<CompositePhysicalObject> list);
+        public abstract List<PhysicalObject> GetObjectsInCircle(Vector2 center, float radius, List<PhysicalObject> list);
 
-        public abstract List<CompositePhysicalObject> CompleteList(ref List<CompositePhysicalObject> list);
+        public abstract List<PhysicalObject> CompleteList(ref List<PhysicalObject> list);
 
-        public List<CompositePhysicalObject> CompleteList()
+        public List<PhysicalObject> CompleteList()
         {
-            List<CompositePhysicalObject> list = new List<CompositePhysicalObject>();
+            List<PhysicalObject> list = new List<PhysicalObject>();
             return this.CompleteList(ref list);
         }
 
-        public List<CompositePhysicalObject> GetObjectsInCircle(Vector2 center, float radius)
+        public List<PhysicalObject> GetObjectsInCircle(Vector2 center, float radius)
         {
-            List<CompositePhysicalObject> list = new List<CompositePhysicalObject>();
+            List<PhysicalObject> list = new List<PhysicalObject>();
             return this.GetObjectsInCircle(center, radius, list);
         }
 
-        public abstract void Move(CompositePhysicalObject obj);
+        public abstract void Move(PhysicalObject obj);
     }
 }

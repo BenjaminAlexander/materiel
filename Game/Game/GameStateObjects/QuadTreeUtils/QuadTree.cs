@@ -22,7 +22,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             root = new InternalNode(true, null, mapRectangle, leafDictionary);
         }
 
-        public bool Add(CompositePhysicalObject unit)
+        public bool Add(PhysicalObject unit)
         {
             if(root.Add(unit))
             {
@@ -35,12 +35,12 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public List<CompositePhysicalObject> GetObjectsInCircle(Vector2 center, float radius)
+        public List<PhysicalObject> GetObjectsInCircle(Vector2 center, float radius)
         {
             return root.GetObjectsInCircle(center, radius);
         }
 
-        public bool Remove(CompositePhysicalObject unit)
+        public bool Remove(PhysicalObject unit)
         {
             Leaf removeFrom = root.Remove(unit);
             if (removeFrom != null)
@@ -55,12 +55,12 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public List<CompositePhysicalObject> CompleteList()
+        public List<PhysicalObject> CompleteList()
         {
             return root.CompleteList();
         }
 
-        public void Move(CompositePhysicalObject obj)
+        public void Move(PhysicalObject obj)
         {
             leafDictionary.GetLeaf(obj).Move(obj);
         }

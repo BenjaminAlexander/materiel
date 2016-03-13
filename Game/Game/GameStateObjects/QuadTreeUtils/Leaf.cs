@@ -22,7 +22,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             unitList = new GameObjectListManager();
         }
 
-        public override bool Add(CompositePhysicalObject unit)
+        public override bool Add(PhysicalObject unit)
         {
             if (this.Contains(unit.Position))
             {
@@ -38,7 +38,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return false;
         }
 
-        public override Leaf Remove(CompositePhysicalObject unit)
+        public override Leaf Remove(PhysicalObject unit)
         {
             if (unitList.Contains(unit))
             {
@@ -59,7 +59,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return Node.Contains(MapSpace, point);
         }
 
-        public override List<CompositePhysicalObject> GetObjectsInCircle(Vector2 center, float radius, List<CompositePhysicalObject> list)
+        public override List<PhysicalObject> GetObjectsInCircle(Vector2 center, float radius, List<PhysicalObject> list)
         {
             if (ObjectCount() > 0)
             {
@@ -69,7 +69,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 if (Vector2.Distance(rectangleCenter, center) <= radius + rectangleRadius)
                 {
 
-                    foreach (CompositePhysicalObject unit in unitList.GetList<CompositePhysicalObject>())
+                    foreach (PhysicalObject unit in unitList.GetList<PhysicalObject>())
                     {
                         if (Vector2.Distance(unit.Position, center) <= radius)
                         {
@@ -81,16 +81,16 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return list;
         }
 
-        public override List<CompositePhysicalObject> CompleteList(ref List<CompositePhysicalObject> list)
+        public override List<PhysicalObject> CompleteList(ref List<PhysicalObject> list)
         {
-            foreach (CompositePhysicalObject obj in unitList.GetList<CompositePhysicalObject>())
+            foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
             {
                 list.Add(obj);
             }
             return list;
         }
 
-        public override void Move(CompositePhysicalObject obj)
+        public override void Move(PhysicalObject obj)
         {
             if(unitList.Contains(obj))
             {
@@ -121,7 +121,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             {
                 Node newNode = new InternalNode(false, this.Parent, this.MapSpace, leafDictionary);// (this.Parent, this.mapSpace, 2);
                 this.Parent.Replace(this, newNode);
-                foreach (CompositePhysicalObject obj in unitList.GetList<CompositePhysicalObject>())
+                foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
                 {
                     this.Remove(obj);
                     if (!newNode.Add(obj))
@@ -135,7 +135,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public Boolean Contains(CompositePhysicalObject obj)
+        public Boolean Contains(PhysicalObject obj)
         {
             return this.unitList.Contains(obj);
         }

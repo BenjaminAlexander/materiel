@@ -100,7 +100,7 @@ namespace MyGame.Client
                     {
                         Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
 
-                        List<CompositePhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
+                        List<PhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
                         if (clickList.Count > 0 && clickList[0] is Base)
                         {
                             selectedBase = (Base)clickList[0];
@@ -111,7 +111,7 @@ namespace MyGame.Client
                     {
                         Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
 
-                        List<CompositePhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
+                        List<PhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
                         if (clickList.Count > 0 && clickList[0] is Vehicle)
                         {
                             selectedVehicle = (Vehicle)clickList[0];
