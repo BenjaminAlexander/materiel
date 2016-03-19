@@ -83,7 +83,7 @@ namespace MyGame.materiel
             return co;
         }
 
-        public void DrawCompanyList(GameTime gameTime, MyGraphicsClass myGraphicsClass)
+        public void DrawCompanyList(GameTime gameTime, MyGraphicsClass myGraphicsClass, Camera camera)
         {
             int count = 0;
             foreach (Company co in this.companies.Value)
@@ -93,6 +93,7 @@ namespace MyGame.materiel
                     Vector2 textSize = MyGraphicsClass.Font.MeasureString(co.GetHudText());
                     myGraphicsClass.DrawDebugFont(co.GetHudText(), new Vector2(0, count), 1);
                     count = count + (int)(textSize.Y);
+                    co.DrawScreen(gameTime, myGraphicsClass, camera, Color.Gray, .9f);
                 }
             }
         }

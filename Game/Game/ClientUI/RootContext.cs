@@ -22,7 +22,7 @@ namespace MyGame.ClientUI
 
         public override void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics)
         {
-            this.PlayerObject.DrawCompanyList(gameTime, graphics);
+            this.PlayerObject.DrawCompanyList(gameTime, graphics, this.Game.Camera);
         }
 
         public override void UpdateWithIOEvent(IO.IOEvent ioEvent)
