@@ -41,8 +41,18 @@ namespace MyGame.Server
             while (queue.Count > 0)
             {
                 RtsCommandMessage message = queue.Dequeue();
-                message.Execute(game);
+                message.Execute(game, this);
             }
+        }
+
+        public bool Owns(IPlayerControlled obj)
+        {
+            PlayerGameObject playerObject = obj.ControllingPlayer;
+            if (playerObject != null && obj != null)
+            {
+                return playerObject.PlayerID == this.Id;
+            }
+            return false;
         }
     }
 }

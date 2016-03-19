@@ -10,7 +10,7 @@ using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.materiel
 {
-    public class Company : GameObject
+    public class Company : GameObject, IPlayerControlled
     {
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
         private GameObjectReferenceListField<Vehicle> vehicles;
@@ -59,6 +59,14 @@ namespace MyGame.materiel
         public string GetHudText()
         {
             return this.ID.ToString() + " AR CO - " + this.vehicles.Value.Count.ToString();
+        }
+
+        public GameObjectReference<PlayerGameObject> ControllingPlayer
+        {
+            get
+            {
+                return controllingPlayer.Value;
+            }
         }
     }
 }

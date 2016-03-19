@@ -18,14 +18,14 @@ namespace MyGame.materiel
             player.SendTCP(this);
         }
 
-        public static void ExecuteCommand(RtsCommandMessage message, ServerGame game)
+        public static void ExecuteCommand(RtsCommandMessage message, ServerGame game, RemotePlayer player)
         {
             int companyId = message.ReadInt();
             int vehicleId = message.ReadInt();
 
             Company co = game.GameObjectCollection.Get<Company>(companyId);
             Vehicle vic = game.GameObjectCollection.Get<Vehicle>(vehicleId);
-            if (co != null && vic != null)
+            if (player.Owns(co) && player.Owns(co))
             {
                 co.AddVehicle(vic);
             }

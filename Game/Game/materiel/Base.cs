@@ -11,7 +11,7 @@ using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.materiel
 {
-    public class Base : PhysicalObject
+    public class Base : PhysicalObject, IPlayerControlled
     {
         static Collidable collidable = new Collidable(TextureLoader.GetTexture("Star"), Color.Black, new Vector2(25), .1f);
         public override Collidable Collidable

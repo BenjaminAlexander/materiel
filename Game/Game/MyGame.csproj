@@ -72,6 +72,7 @@
     <Compile Include="BaseGame.cs" />
     <Compile Include="Client\Program.cs" />
     <Compile Include="Client\LocalPlayer.cs" />
+    <Compile Include="materiel\IPlayerControlled.cs" />
     <Compile Include="Server\Player.cs" />
     <Compile Include="Server\RemotePlayer.cs" />
     <Compile Include="Server\Program.cs" />

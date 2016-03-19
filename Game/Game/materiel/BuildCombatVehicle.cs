@@ -17,12 +17,12 @@ namespace MyGame.materiel
             player.SendTCP(this);
         }
 
-        public static void ExecuteCommand(RtsCommandMessage message, ServerGame game)
+        public static void ExecuteCommand(RtsCommandMessage message, ServerGame game, RemotePlayer player)
         {
             int baseObjID = message.ReadInt();
 
             Base obj = game.GameObjectCollection.Get<Base>(baseObjID);
-            if (obj != null)
+            if (player.Owns(obj))
             {
                 obj.BuildCombatVehicle();
             }

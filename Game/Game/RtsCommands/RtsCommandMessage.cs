@@ -8,10 +8,11 @@ using Microsoft.Xna.Framework;
 using MyGame.Server;
 using System.Reflection;
 using System.Net.Sockets;
+using MyGame.Client;
 
 namespace MyGame.RtsCommands
 {
-    public delegate void CommandDelegate(RtsCommandMessage message, ServerGame game);
+    public delegate void CommandDelegate(RtsCommandMessage message, ServerGame game, RemotePlayer player);
 
     public class RtsCommandMessage : GameMessage
     {
@@ -36,11 +37,11 @@ namespace MyGame.RtsCommands
             }
         }
 
-        public void Execute(ServerGame game)
+        public void Execute(ServerGame game, RemotePlayer player)
         {
             this.ResetReader();
             int typeID = this.ReadInt();
-            commandDelegates[typeID](this, game);
+            commandDelegates[typeID](this, game, player);
         }
 
         public RtsCommandMessage()

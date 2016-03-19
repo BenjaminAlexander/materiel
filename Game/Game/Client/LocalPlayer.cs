@@ -71,5 +71,15 @@ namespace MyGame.Client
         {
             this.topOfStack.UpdateWithIOEvent(ioEvent);
         }
+
+        public bool Owns(IPlayerControlled obj)
+        {
+            PlayerGameObject playerObject = obj.ControllingPlayer;
+            if (playerObject != null && obj != null)
+            {
+                return playerObject.PlayerID == this.Id;
+            }
+            return false;
+        }
     }
 }

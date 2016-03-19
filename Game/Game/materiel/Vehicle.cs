@@ -11,7 +11,7 @@ using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.materiel
 {
-    public class Vehicle : PhysicalObject
+    public class Vehicle : PhysicalObject, IPlayerControlled
     {
         private static Collidable collidable = new Collidable(TextureLoader.GetTexture("Enemy"), Color.White, TextureLoader.GetTexture("Enemy").CenterOfMass, .9f);
         public override Collidable Collidable
@@ -77,6 +77,14 @@ namespace MyGame.materiel
 
         public override void MoveOutsideWorld(Vector2 position, Vector2 movePosition)
         {
+        }
+
+        public GameObjectReference<PlayerGameObject> ControllingPlayer
+        {
+            get 
+            { 
+                return controllingPlayer.Value; 
+            }
         }
     }
 }

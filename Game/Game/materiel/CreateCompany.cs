@@ -13,18 +13,12 @@ namespace MyGame.materiel
     {
         public CreateCompany(LocalPlayer player)
         {
-            this.Append(player.Id);
             player.SendTCP(this);
         }
 
-        public static void ExecuteCommand(RtsCommandMessage message, ServerGame game)
+        public static void ExecuteCommand(RtsCommandMessage message, ServerGame game, RemotePlayer player)
         {
-            int playerObjId = message.ReadInt();
-            PlayerGameObject obj = game.GameObjectCollection.Get<PlayerGameObject>(playerObjId);
-            if (obj != null)
-            {
-                obj.AddCompany(game);
-            }
+            player.GameObject.AddCompany(game);
         }
     }
 }

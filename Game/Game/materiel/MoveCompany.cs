@@ -19,13 +19,13 @@ namespace MyGame.materiel
             player.SendTCP(this);
         }
 
-        public static void ExecuteCommand(RtsCommandMessage message, ServerGame game)
+        public static void ExecuteCommand(RtsCommandMessage message, ServerGame game, RemotePlayer player)
         {
             int companyId = message.ReadInt();
             Vector2 position = message.ReadVector2();
 
             Company co = game.GameObjectCollection.Get<Company>(companyId);
-            if (co != null)
+            if (player.Owns(co))
             {
                 co.Move(position);
             }
