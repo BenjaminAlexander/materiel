@@ -105,5 +105,13 @@ namespace MyGame.materiel
                 controllingPlayer.Value = player.GameObject;
             }
         }
+
+        public GameObjectReference<PlayerGameObject> ControllingPlayer
+        {
+            get
+            {
+                return this.controllingPlayer.Value;
+            }
+        }
     }
 }

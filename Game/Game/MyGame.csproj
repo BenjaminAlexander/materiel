@@ -59,6 +59,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
+    <Compile Include="ClientUI\CompanySelected.cs" />
+    <Compile Include="ClientUI\BaseSelected.cs" />
+    <Compile Include="ClientUI\VehicleSelected.cs" />
+    <Compile Include="ClientUI\RootContext.cs" />
+    <Compile Include="ClientUI\UIContext.cs" />
     <Compile Include="Client\ClientGame.cs" />
     <Compile Include="DrawingUtils\Collidable.cs" />
     <Compile Include="DrawingUtils\LoadedTexture.cs" />

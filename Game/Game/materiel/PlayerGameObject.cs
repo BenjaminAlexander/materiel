@@ -83,7 +83,7 @@ namespace MyGame.materiel
             return co;
         }
 
-        public void DrawHud(GameTime gameTime, MyGraphicsClass myGraphicsClass, Company selectedCo)
+        public void DrawCompanyList(GameTime gameTime, MyGraphicsClass myGraphicsClass)
         {
             int count = 0;
             foreach (Company co in this.companies.Value)
@@ -92,6 +92,19 @@ namespace MyGame.materiel
                 {
                     Vector2 textSize = MyGraphicsClass.Font.MeasureString(co.GetHudText());
                     myGraphicsClass.DrawDebugFont(co.GetHudText(), new Vector2(0, count), 1);
+                    count = count + (int)(textSize.Y);
+                }
+            }
+        }
+
+        public void DrawCompanySelection(GameTime gameTime, MyGraphicsClass myGraphicsClass, Company selectedCo)
+        {
+            int count = 0;
+            foreach (Company co in this.companies.Value)
+            {
+                if (co != null)
+                {
+                    Vector2 textSize = MyGraphicsClass.Font.MeasureString(co.GetHudText());
                     if (co == selectedCo)
                     {
                         myGraphicsClass.DrawRectangle(new Vector2(0, count), textSize, new Vector2(0), 0, Color.Red, 1);

@@ -9,12 +9,13 @@ using MyGame.Server;
 using MyGame.GameStateObjects;
 using System.Threading;
 using Microsoft.Xna.Framework;
-using MyGame.IO;
-using MyGame.IO.Events;
 using MyGame.materiel;
 using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework.Input;
 using MyGame.RtsCommands;
+using MyGame.ClientUI;
+using MyGame.IO;
+using MyGame.IO.Events;
 
 namespace MyGame.Client
 {
@@ -24,29 +25,23 @@ namespace MyGame.Client
     {
         private ClientGame game;
 
-        private IOEvent leftMousePress = new LeftMousePressed();
-        private IOEvent leftMouseRelease = new LeftMouseReleased();
-        private IOEvent rightMousePress = new RightMousePressed();
-        private IOEvent rightMouseRelease = new RightMouseReleased();
-        private IOEvent constructCombat = new KeyPressEvent(Keys.C);
-        private IOEvent createCompany = new KeyPressEvent(Keys.Z);
-
         private PlayerGameObject playerGameObject = null;
-
-        private Base selectedBase = null;
-        private Company selectedCompany = null;
-        private Vehicle selectedVehicle = null;
+        private UIContext topOfStack = null;
 
         public LocalPlayer(IPAddress serverAddress, ClientGame game) : base(serverAddress)
         {
             this.game = game;
+            UIContext.RegisterIO(game.InputManager, this);
+        }
 
-            this.game.InputManager.Register(leftMousePress, this);
-            this.game.InputManager.Register(leftMouseRelease, this);
-            this.game.InputManager.Register(rightMousePress, this);
-            this.game.InputManager.Register(rightMouseRelease, this);
-            this.game.InputManager.Register(constructCombat, this);
-            this.game.InputManager.Register(createCompany, this);
+        public void PushUIContext(UIContext context)
+        {
+            this.topOfStack = context;
+        }
+
+        public void PopUIContext()
+        {
+            this.topOfStack = this.topOfStack.NextInStack;
         }
 
         public void SetPlayerGameObject(PlayerGameObject obj)
@@ -54,96 +49,27 @@ namespace MyGame.Client
             if (obj.PlayerID == this.Id)
             {
                 this.playerGameObject = obj;
+                this.PushUIContext(new RootContext(this.game, this, this.playerGameObject));
             }
         }
 
         public void Draw(GameTime gameTime, MyGraphicsClass graphics)
         {
-            graphics.BeginWorld();
-
-            if(selectedBase != null)
+            if (this.topOfStack != null)
             {
-                graphics.DrawCircle(selectedBase.Position, 50, Color.Red, 1);
-            }
+                graphics.BeginWorld();
+                this.topOfStack.DrawWorld(gameTime, graphics);
+                graphics.End();
 
-            if (selectedVehicle != null)
-            {
-                graphics.DrawCircle(selectedVehicle.Position, 50, Color.Red, 1);
+                graphics.Begin();
+                this.topOfStack.DrawScreen(gameTime, graphics);
+                graphics.End();
             }
-
-            graphics.End();
-
-            graphics.Begin();
-            if (playerGameObject != null)
-            {
-                playerGameObject.DrawHud(gameTime, graphics, selectedCompany);
-            }
-            graphics.End(); 
         }
 
         public void UpdateWithIOEvent(IOEvent ioEvent)
         {
-            if (playerGameObject != null)
-            {
-                if (ioEvent.Equals(leftMousePress))
-                {
-                    selectedCompany = null;
-                    selectedBase = null;
-                    selectedVehicle = null;
-
-                    Vector2 sceenPosition = IOState.MouseScreenPosition();
-
-                    selectedCompany = this.playerGameObject.ClickCompany(sceenPosition);
-
-                    if (selectedCompany == null)
-                    {
-                        Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
-
-                        List<PhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
-                        if (clickList.Count > 0 && clickList[0] is Base)
-                        {
-                            selectedBase = (Base)clickList[0];
-                        }
-                    }
-
-                    if (selectedBase == null)
-                    {
-                        Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
-
-                        List<PhysicalObject> clickList = game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
-                        if (clickList.Count > 0 && clickList[0] is Vehicle)
-                        {
-                            selectedVehicle = (Vehicle)clickList[0];
-                        }
-                    }
-                }
-                else if (ioEvent.Equals(constructCombat))
-                {
-                    if (selectedBase != null)
-                    {
-                        new BuildCombatVehicle(this, selectedBase);
-                    }
-                }
-                else if (ioEvent.Equals(createCompany))
-                {
-                    new CreateCompany(this);
-                }
-                else if (ioEvent.Equals(rightMousePress))
-                {
-                    Vector2 sceenPosition = IOState.MouseScreenPosition();
-                    Company rightClickCompany = this.playerGameObject.ClickCompany(sceenPosition);
-
-                    if (rightClickCompany != null && selectedVehicle != null)
-                    {
-                        new AddVehicleToCompany(this, rightClickCompany, selectedVehicle);
-                    }
-                    else if (selectedCompany != null)
-                    {
-                        Vector2 worldPosition = game.Camera.ScreenToWorldPosition(sceenPosition);
-                        new MoveCompany(this, selectedCompany, worldPosition);
-                    }
-                }
-            }
+            this.topOfStack.UpdateWithIOEvent(ioEvent);
         }
     }
 }
