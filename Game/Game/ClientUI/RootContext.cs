@@ -49,7 +49,15 @@ namespace MyGame.ClientUI
                         }
                         else if (clickList[0] is Vehicle)
                         {
-                            new VehicleSelected(this, (Vehicle)clickList[0]);
+                            Vehicle vic = (Vehicle)clickList[0];
+                            if ((Company)vic.Company != null)
+                            {
+                                new CompanySelected(this, vic.Company);
+                            }
+                            else
+                            {
+                                new VehicleSelected(this, (Vehicle)clickList[0]);
+                            }
                         }
                     }
                 }

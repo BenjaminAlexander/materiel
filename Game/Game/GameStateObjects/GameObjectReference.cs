@@ -45,7 +45,7 @@ namespace MyGame.GameStateObjects
             }
         }
 
-        private T Dereference()
+        public T Dereference()
         {
             if(hasDereferenced)
             {

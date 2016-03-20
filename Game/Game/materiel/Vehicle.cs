@@ -52,13 +52,17 @@ namespace MyGame.materiel
             return vehicle;
         }
 
-        public void SetCompany(Company company)
+        public GameObjectReference<Company> Company
         {
-            if (this.company.Value != null)
+            set
             {
-                this.company.Value.RemoveVehicle(this);
+                this.company.Value = value;
             }
-            this.company.Value = company;
+
+            get
+            {
+                return this.company.Value;
+            }
         }
 
         public Vector2 TargetPosition
@@ -85,6 +89,26 @@ namespace MyGame.materiel
             { 
                 return controllingPlayer.Value; 
             }
+        }
+
+        public void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics, Camera camera, Color color, float depth)
+        {
+            graphics.DrawCircle(camera.WorldToScreenPosition(this.Position), 15, color, depth);
+            if (this.Position != this.targetPosition)
+            {
+                graphics.DrawCircle(camera.WorldToScreenPosition(this.targetPosition.Value), 15, color, depth);
+            }
+
+            Vector2 screenPos1 = camera.WorldToScreenPosition(this.Position);
+            Vector2 screenPos2 = camera.WorldToScreenPosition(this.targetPosition.Value);
+
+            if (Vector2.Distance(screenPos1, screenPos2) > 30)
+            {
+                Vector2 point1 = Utils.PhysicsUtils.MoveTowardBounded(screenPos1, screenPos2, 15);
+                Vector2 point2 = Utils.PhysicsUtils.MoveTowardBounded(screenPos2, screenPos1, 15);
+                graphics.DrawLine(point1, point2, color, depth);
+            }
+
         }
     }
 }

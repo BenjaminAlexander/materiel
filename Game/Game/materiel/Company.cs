@@ -14,12 +14,18 @@ namespace MyGame.materiel
     {
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
         private GameObjectReferenceListField<Vehicle> vehicles;
+        private Vector2GameObjectMember position1;
+        private Vector2GameObjectMember position2;
+
 
         public Company(GameObjectCollection collection)
             : base(collection)
         {
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
             vehicles = new GameObjectReferenceListField<Vehicle>(this);
+
+            position1 = new Vector2GameObjectMember(this, new Vector2(0));
+            position2 = new Vector2GameObjectMember(this, new Vector2(0));
         }
 
         public static void ServerInitialize(Company obj, PlayerGameObject controllingPlayer)
@@ -37,17 +43,48 @@ namespace MyGame.materiel
 
         public void AddVehicle(Vehicle vic)
         {
-            vic.SetCompany(this);
+            if (vic.Company.Dereference() != null)
+            {
+                vic.Company.Dereference().RemoveVehicle(vic);
+            }
+            vic.Company = this;
             vehicles.Value.Add(vic);
+
+            if (vehicles.Value.Count == 1)
+            {
+                this.Move(vic.Position, vic.Position);
+            }
+            else
+            {
+                this.Move(position1.Value, position2.Value);
+            }
         }
 
         public void RemoveVehicle(Vehicle vic)
         {
             vehicles.RemoveAllReferences(vic);
+            this.Move(position1.Value, position2.Value);
         }
 
         public void Move(Vector2 position1, Vector2 position2)
         {
+            float distance1 = Vector2.Distance(position1, this.position1.Value) + Vector2.Distance(position2, this.position2.Value);
+            float distance2 = Vector2.Distance(position1, this.position2.Value) + Vector2.Distance(position2, this.position1.Value);
+
+            float angle1 = Utils.Vector2Utils.Vector2Angle(this.position1.Value - this.position2.Value);
+            float angle2 = Utils.Vector2Utils.Vector2Angle(position1 - position2);
+            float angle3 = Utils.Vector2Utils.Vector2Angle(position2 - position1);
+
+            float angleDistance1 = Utils.Vector2Utils.ShortestAngleDistance(angle1, angle2);
+            float angleDistance2 = Utils.Vector2Utils.ShortestAngleDistance(angle1, angle3);
+
+            if (angleDistance2 < angleDistance1)
+            {
+                Vector2 swap = position1;
+                position1 = position2;
+                position2 = swap;
+            }
+
             if (this.vehicles.Value.Count == 1)
             {
                 Vehicle vic = this.vehicles.Value[0];
@@ -62,6 +99,9 @@ namespace MyGame.materiel
                     count++;
                 }
             }
+
+            this.position1.Value = position1;
+            this.position2.Value = position2;
         }
 
         public string GetHudText()
@@ -74,7 +114,7 @@ namespace MyGame.materiel
             Vehicle last = null;
             foreach (Vehicle vic in this.vehicles.Value)
             {
-                graphics.DrawCircle(camera.WorldToScreenPosition(vic.Position), 15, color, depth);
+                vic.DrawScreen(gameTime, graphics, camera, color, depth);
                 if(last != null)
                 {
                     Vector2 screenPos1 = camera.WorldToScreenPosition(vic.Position);
@@ -97,6 +137,16 @@ namespace MyGame.materiel
             {
                 return controllingPlayer.Value;
             }
+        }
+
+        public override void Destroy()
+        {
+            this.controllingPlayer.Value.RemoveCompany(this);
+            foreach (Vehicle vic in this.vehicles.Value.ToArray())
+            {
+                vic.Company = null;
+            }
+            base.Destroy();
         }
     }
 }

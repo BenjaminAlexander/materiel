@@ -20,6 +20,7 @@ namespace MyGame.ClientUI
         protected static IOEvent rightMousePress = new RightMousePressed();
         protected static IOEvent rightMouseRelease = new RightMouseReleased();
         protected static IOEvent constructCombat = new KeyPressEvent(Keys.C);
+        protected static IOEvent constructTransport = new KeyPressEvent(Keys.V);
         protected static IOEvent createCompany = new KeyPressEvent(Keys.Z);
 
         public static void RegisterIO(InputManager ioManager, IOObserver ioObserver)
@@ -29,6 +30,7 @@ namespace MyGame.ClientUI
             ioManager.Register(rightMousePress, ioObserver);
             ioManager.Register(rightMouseRelease, ioObserver);
             ioManager.Register(constructCombat, ioObserver);
+            ioManager.Register(constructTransport, ioObserver);
             ioManager.Register(createCompany, ioObserver);
         }
 

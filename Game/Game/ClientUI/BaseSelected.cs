@@ -34,6 +34,10 @@ namespace MyGame.ClientUI
             {
                 new BuildCombatVehicle(this.LocalPlayer, selectedBase);
             }
+            else if (ioEvent.Equals(constructTransport))
+            {
+                new BuildTransport(this.LocalPlayer, selectedBase);
+            }
             else if (ioEvent.Equals(leftMousePress))
             {
                 this.LocalPlayer.PopUIContext();

@@ -9,6 +9,7 @@ using MyGame.materiel;
 using Microsoft.Xna.Framework;
 using MyGame.IO.Events;
 using MyGame.IO;
+using MyGame.GameStateObjects;
 
 namespace MyGame.ClientUI
 {
@@ -43,8 +44,8 @@ namespace MyGame.ClientUI
         {
             if (ioEvent.Equals(rightMousePress))
             {
-                rightMouseDown = true;
                 Vector2 sceenPosition = IOState.MouseScreenPosition();
+                rightMouseDown = true;
                 rightMouseDownWorldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
             }
             else if (ioEvent.Equals(rightMouseRelease))
@@ -59,6 +60,29 @@ namespace MyGame.ClientUI
             }
             else if (ioEvent.Equals(leftMousePress))
             {
+                Vector2 sceenPosition = IOState.MouseScreenPosition();
+
+                if(this.PlayerObject.ClickCompanyDelete(sceenPosition, this.selectedCompany))
+                {
+                    new DeleteCompany(this.LocalPlayer, selectedCompany);
+                    this.LocalPlayer.PopUIContext();
+                    return;
+                }
+
+                Vector2 worldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
+
+                List<PhysicalObject> clickList = this.Game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
+                if (clickList.Count > 0)
+                {
+                    if (clickList[0] is Vehicle && (Company)((Vehicle)clickList[0]).Company == this.selectedCompany)
+                    {
+
+                        this.LocalPlayer.PopUIContext();
+                        new VehicleSelected(this.NextInStack, (Vehicle)clickList[0]);
+                        return;
+                    }
+                }
+
                 this.LocalPlayer.PopUIContext();
                 this.UpdateNextInStackIO(ioEvent);
             }

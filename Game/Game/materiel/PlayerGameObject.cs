@@ -83,6 +83,11 @@ namespace MyGame.materiel
             return co;
         }
 
+        public void RemoveCompany(Company co)
+        {
+            companies.RemoveAllReferences(co);
+        }
+
         public void DrawCompanyList(GameTime gameTime, MyGraphicsClass myGraphicsClass, Camera camera)
         {
             int count = 0;
@@ -109,10 +114,31 @@ namespace MyGame.materiel
                     if (co == selectedCo)
                     {
                         myGraphicsClass.DrawRectangle(new Vector2(0, count), textSize, new Vector2(0), 0, Color.Red, 1);
+                        myGraphicsClass.DrawDebugFont("X", new Vector2(textSize.X + 5, count), 1);
                     }
                     count = count + (int)(textSize.Y);
                 }
             }
+        }
+
+        public bool ClickCompanyDelete(Vector2 mouseScreen, Company selectedCo)
+        {
+            int count = 0;
+            foreach (Company co in this.companies.Value)
+            {
+                if (co != null)
+                {
+                    Vector2 textSize = MyGraphicsClass.Font.MeasureString(co.GetHudText());
+                    Vector2 xSize = MyGraphicsClass.Font.MeasureString("X");
+                    Rectangle rect = new Rectangle((int)(textSize.X + 5), count, (int)(xSize.X), (int)(xSize.Y));
+                    if (rect.Contains(mouseScreen) && co == selectedCo)
+                    {
+                        return true;
+                    }
+                    count = count + (int)(textSize.Y);
+                }
+            }
+            return false;
         }
 
         public Company ClickCompany(Vector2 mouseScreen)

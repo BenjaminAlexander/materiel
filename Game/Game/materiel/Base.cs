@@ -54,6 +54,11 @@ namespace MyGame.materiel
             buildQueue.Value.Enqueue(0);
         }
 
+        public void BuildTransportVehicle()
+        {
+            buildQueue.Value.Enqueue(1);
+        }
+
         public override void ServerOnlyUpdate(float secondsElapsed)
         {
             base.ServerOnlyUpdate(secondsElapsed);
@@ -62,11 +67,18 @@ namespace MyGame.materiel
                 timeTillSpawn = timeTillSpawn - secondsElapsed;
                 if (timeTillSpawn < 0)
                 {
-                    timeTillSpawn = 5f;
+                    timeTillSpawn = 1f;
                     if (buildQueue.Value.Count > 0)
                     {
-                        buildQueue.Value.Dequeue();
-                        Vehicle.VehicleFactory(this.Collection, this.controllingPlayer.Value, Utils.RandomUtils.RandomVector2(new Vector2(100)) + this.Position);
+                        int buildValue = buildQueue.Value.Dequeue();
+                        if (buildValue == 0)
+                        {
+                            Vehicle.VehicleFactory(this.Collection, this.controllingPlayer.Value, Utils.RandomUtils.RandomVector2(new Vector2(100)) + this.Position);
+                        }
+                        else if (buildValue == 1)
+                        {
+                            Transport.TransportFactory(this.Collection, this.controllingPlayer.Value, Utils.RandomUtils.RandomVector2(new Vector2(100)) + this.Position);
+                        }
                     }
                     else
                     {
