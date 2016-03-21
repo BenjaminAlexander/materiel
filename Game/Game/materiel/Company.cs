@@ -13,17 +13,19 @@ namespace MyGame.materiel
     public class Company : GameObject, IPlayerControlled
     {
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
-        private GameObjectReferenceListField<Vehicle> vehicles;
+        private GameObjectReferenceListField<CombatVehicle> combatVehicles;
+        private GameObjectReferenceListField<Transport> transports;
         private Vector2GameObjectMember position1;
         private Vector2GameObjectMember position2;
-
+        private GameObjectReferenceField<Base> supplyPoint;
 
         public Company(GameObjectCollection collection)
             : base(collection)
         {
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
-            vehicles = new GameObjectReferenceListField<Vehicle>(this);
-
+            combatVehicles = new GameObjectReferenceListField<CombatVehicle>(this);
+            transports = new GameObjectReferenceListField<Transport>(this);
+            supplyPoint = new GameObjectReferenceField<Base>(this);
             position1 = new Vector2GameObjectMember(this, new Vector2(0));
             position2 = new Vector2GameObjectMember(this, new Vector2(0));
         }
@@ -48,22 +50,36 @@ namespace MyGame.materiel
                 vic.Company.Dereference().RemoveVehicle(vic);
             }
             vic.Company = this;
-            vehicles.Value.Add(vic);
-
-            if (vehicles.Value.Count == 1)
+            if (vic is Transport)
             {
-                this.Move(vic.Position, vic.Position);
+                this.transports.Value.Add((Transport)vic);
             }
             else
             {
-                this.Move(position1.Value, position2.Value);
+                combatVehicles.Value.Add((CombatVehicle)vic);
+
+                if (combatVehicles.Value.Count == 1)
+                {
+                    this.Move(vic.Position, vic.Position);
+                }
+                else
+                {
+                    this.Move(position1.Value, position2.Value);
+                }
             }
         }
 
         public void RemoveVehicle(Vehicle vic)
         {
-            vehicles.RemoveAllReferences(vic);
-            this.Move(position1.Value, position2.Value);
+            if (vic is Transport)
+            {
+                this.transports.RemoveAllReferences((Transport)vic);
+            }
+            else
+            {
+                combatVehicles.RemoveAllReferences((CombatVehicle)vic);
+                this.Move(position1.Value, position2.Value);
+            }
         }
 
         public void Move(Vector2 position1, Vector2 position2)
@@ -85,17 +101,17 @@ namespace MyGame.materiel
                 position2 = swap;
             }
 
-            if (this.vehicles.Value.Count == 1)
+            if (this.combatVehicles.Value.Count == 1)
             {
-                Vehicle vic = this.vehicles.Value[0];
+                CombatVehicle vic = this.combatVehicles.Value[0];
                 vic.TargetPosition = Vector2.Lerp(position1, position2, 0.5f);
             }
             else
             {
                 float count = 0;
-                foreach (Vehicle vic in this.vehicles.Value)
+                foreach (CombatVehicle vic in this.combatVehicles.Value)
                 {
-                    vic.TargetPosition = Vector2.Lerp(position1, position2, count / ((float)this.vehicles.Value.Count - 1f));
+                    vic.TargetPosition = Vector2.Lerp(position1, position2, count / ((float)this.combatVehicles.Value.Count - 1f));
                     count++;
                 }
             }
@@ -106,13 +122,13 @@ namespace MyGame.materiel
 
         public string GetHudText()
         {
-            return this.ID.ToString() + " AR CO - " + this.vehicles.Value.Count.ToString();
+            return this.ID.ToString() + " AR CO - " + this.combatVehicles.Value.Count.ToString() + "/" + this.transports.Value.Count.ToString();
         }
 
         public void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics, Camera camera, Color color, float depth)
         {
             Vehicle last = null;
-            foreach (Vehicle vic in this.vehicles.Value)
+            foreach (Vehicle vic in this.combatVehicles.Value)
             {
                 vic.DrawScreen(gameTime, graphics, camera, color, depth);
                 if(last != null)
@@ -129,6 +145,13 @@ namespace MyGame.materiel
                 }
                 last = vic;
             }
+
+            if (supplyPoint.Value != null && this.combatVehicles.Value.Count != 0)
+            {
+                Vector2 point1 = camera.WorldToScreenPosition(Vector2.Lerp(this.position1.Value, this.position2.Value, 0.5f));
+                Vector2 point2 = camera.WorldToScreenPosition(supplyPoint.Value.Position);
+                graphics.DrawLine(point1, point2, color, depth);
+            }
         }
 
         public GameObjectReference<PlayerGameObject> ControllingPlayer
@@ -142,11 +165,61 @@ namespace MyGame.materiel
         public override void Destroy()
         {
             this.controllingPlayer.Value.RemoveCompany(this);
-            foreach (Vehicle vic in this.vehicles.Value.ToArray())
+            foreach (Vehicle vic in this.combatVehicles.Value.ToArray())
             {
                 vic.Company = null;
             }
+
+            foreach (Transport vic in this.transports.Value.ToArray())
+            {
+                vic.Company = null;
+            }
+
             base.Destroy();
+        }
+
+        public Base ResupplyPoint
+        {
+            get
+            {
+                return this.supplyPoint.Value;
+            }
+
+            set
+            {
+                this.supplyPoint.Value = value;
+            }
+        }
+
+        public Vehicle NextResupply()
+        {
+            List<GameObjectReference<CombatVehicle>> vicRefList = new List<GameObjectReference<CombatVehicle>>(combatVehicles.Value);
+            if(vicRefList.Count == 0)
+            {
+                return null;
+            }
+            Vehicle rtn = null;
+            foreach (Vehicle vic in vicRefList)
+            {
+                bool transportEnRoute = false;
+                foreach (Transport transport in transports.Value)
+                {
+                    if (transport.ResupplyTarget == vic)
+                    {
+                        transportEnRoute = true;
+                        break;
+                    }
+                }
+
+                if (!transportEnRoute)
+                {
+                    if(rtn == null || vic.Materiel < rtn.Materiel)
+                    {
+                        rtn = vic;
+                    }
+                }
+            }
+            return rtn;
         }
     }
 }

@@ -11,8 +11,9 @@ using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.materiel
 {
-    public class Vehicle : PhysicalObject, IPlayerControlled
+    public abstract class Vehicle : PhysicalObject, IPlayerControlled
     {
+        private const float distancePerMateriel = 100;
         private static Collidable collidable = new Collidable(TextureLoader.GetTexture("Enemy"), Color.White, TextureLoader.GetTexture("Enemy").CenterOfMass, .9f);
         public override Collidable Collidable
         {
@@ -20,36 +21,29 @@ namespace MyGame.materiel
         }
 
         private FloatGameObjectMember materiel;
+        private FloatGameObjectMember maxMateriel;
         private GameObjectReferenceField<Company> company;
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
         private FloatGameObjectMember maxSpeed;
-        private Vector2GameObjectMember targetPosition;
 
         public Vehicle(GameObjectCollection collection)
             : base(collection)
         {
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
             company = new GameObjectReferenceField<Company>(this);
-            materiel = new FloatGameObjectMember(this, 0);
+            materiel = new FloatGameObjectMember(this, 10);
+            maxMateriel = new FloatGameObjectMember(this, 10);
             maxSpeed = new FloatGameObjectMember(this, 100);
-            targetPosition = new Vector2GameObjectMember(this, new Vector2(0));
+            
         }
 
-        public static void ServerInitialize(Vehicle vic, PlayerGameObject controllingPlayer, Vector2 position)
+        public static void ServerInitialize(Vehicle vic, PlayerGameObject controllingPlayer, Vector2 position, float maxMateriel)
         {
             vic.controllingPlayer.Value = controllingPlayer;
             vic.maxSpeed.Value = 100;
-            vic.targetPosition.Value = position;
+            vic.materiel.Value = maxMateriel;
+            vic.maxMateriel.Value = maxMateriel;
             PhysicalObject.ServerInitialize(vic, position, 0);
-
-        }
-
-        public static Vehicle VehicleFactory(GameObjectCollection collection, PlayerGameObject controllingPlayer, Vector2 position)
-        {
-            Vehicle vehicle = new Vehicle(collection);
-            Vehicle.ServerInitialize(vehicle, controllingPlayer, position);
-            collection.Add(vehicle);
-            return vehicle;
         }
 
         public GameObjectReference<Company> Company
@@ -65,18 +59,13 @@ namespace MyGame.materiel
             }
         }
 
-        public Vector2 TargetPosition
+        public void MoveToward(Vector2 targetPos, float seconds)
         {
-            set
-            {
-                this.targetPosition.Value = value;
-            }
-        }
-
-        public override void SubclassUpdate(float seconds)
-        {
-            base.SubclassUpdate(seconds);
-            this.Position = Utils.PhysicsUtils.MoveTowardBounded(this.Position, this.targetPosition.Value, maxSpeed.Value * seconds);
+            float maxMoveDistance = Math.Min(maxSpeed.Value * seconds, this.Range());
+            float distanceToTarget = Vector2.Distance(this.Position, targetPos);
+            this.Position = Utils.PhysicsUtils.MoveTowardBounded(this.Position, targetPos, maxMoveDistance);
+            maxMoveDistance = Math.Min(distanceToTarget, maxMoveDistance);
+            this.materiel.Value = Math.Max(this.materiel.Value - this.MoveCost(maxMoveDistance), 0f);
         }
 
         public override void MoveOutsideWorld(Vector2 position, Vector2 movePosition)
@@ -91,24 +80,54 @@ namespace MyGame.materiel
             }
         }
 
-        public void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics, Camera camera, Color color, float depth)
+        public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
+        {
+            base.Draw(gameTime, graphics);
+            graphics.DrawDebugFont(this.materiel.Value.ToString(), this.Position + new Vector2(25, 0), 1f);
+        }
+
+        public virtual void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics, Camera camera, Color color, float depth)
         {
             graphics.DrawCircle(camera.WorldToScreenPosition(this.Position), 15, color, depth);
-            if (this.Position != this.targetPosition)
+        }
+
+        public float Range()
+        {
+            return distancePerMateriel * materiel.Value;
+        }
+
+        public float MoveCost(float distance)
+        {
+            return distance / distancePerMateriel;
+        }
+
+        public float Materiel
+        {
+            get
             {
-                graphics.DrawCircle(camera.WorldToScreenPosition(this.targetPosition.Value), 15, color, depth);
+                return materiel.Value;
             }
 
-            Vector2 screenPos1 = camera.WorldToScreenPosition(this.Position);
-            Vector2 screenPos2 = camera.WorldToScreenPosition(this.targetPosition.Value);
-
-            if (Vector2.Distance(screenPos1, screenPos2) > 30)
+            set
             {
-                Vector2 point1 = Utils.PhysicsUtils.MoveTowardBounded(screenPos1, screenPos2, 15);
-                Vector2 point2 = Utils.PhysicsUtils.MoveTowardBounded(screenPos2, screenPos1, 15);
-                graphics.DrawLine(point1, point2, color, depth);
+                materiel.Value = value;
             }
+        }
 
+        public float MaxMateriel
+        {
+            get
+            {
+                return maxMateriel.Value;
+            }
+        }
+
+        public float ResupplyAmount
+        {
+            get
+            {
+                return this.maxMateriel.Value - this.materiel.Value;
+            }
         }
     }
 }

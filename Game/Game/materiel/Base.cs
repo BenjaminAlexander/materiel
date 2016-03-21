@@ -23,9 +23,10 @@ namespace MyGame.materiel
         }
 
         private float timeTillSpawn = 5;
+        private Queue<Transport> resupplyQueue = new Queue<Transport>();
+
         private FloatGameObjectMember materiel;
         private IntegerQueueGameObjectField buildQueue;
-
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
 
         public static Base BaseFactory(ServerGame game, Vector2 position)
@@ -67,13 +68,13 @@ namespace MyGame.materiel
                 timeTillSpawn = timeTillSpawn - secondsElapsed;
                 if (timeTillSpawn < 0)
                 {
-                    timeTillSpawn = 1f;
+                    timeTillSpawn = 0.5f;
                     if (buildQueue.Value.Count > 0)
                     {
                         int buildValue = buildQueue.Value.Dequeue();
                         if (buildValue == 0)
                         {
-                            Vehicle.VehicleFactory(this.Collection, this.controllingPlayer.Value, Utils.RandomUtils.RandomVector2(new Vector2(100)) + this.Position);
+                            CombatVehicle.CombatVehicleFactory(this.Collection, this.controllingPlayer.Value, Utils.RandomUtils.RandomVector2(new Vector2(100)) + this.Position);
                         }
                         else if (buildValue == 1)
                         {
@@ -85,6 +86,15 @@ namespace MyGame.materiel
                         materiel.Value = materiel + 1f;
                     }
                 }
+            }
+
+            while (this.resupplyQueue.Count > 0 && this.resupplyQueue.Peek().ResupplyAmount <= this.materiel.Value)
+            {
+                float amount = this.resupplyQueue.Peek().ResupplyAmount;
+                this.materiel.Value = this.materiel.Value - amount;
+                this.resupplyQueue.Peek().Materiel = this.resupplyQueue.Peek().Materiel + amount;
+                this.resupplyQueue.Peek().ResupplyComplete();
+                this.resupplyQueue.Dequeue();
             }
         }
 
@@ -123,6 +133,24 @@ namespace MyGame.materiel
             get
             {
                 return this.controllingPlayer.Value;
+            }
+        }
+
+        public void EnqueueTransport(Transport vic)
+        {
+            this.resupplyQueue.Enqueue(vic);
+        }
+
+        public float Materiel
+        {
+            get
+            {
+                return this.materiel.Value;
+            }
+
+            set
+            {
+                this.materiel.Value = value;
             }
         }
     }

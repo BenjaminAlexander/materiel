@@ -45,6 +45,19 @@ namespace MyGame.ClientUI
             if (ioEvent.Equals(rightMousePress))
             {
                 Vector2 sceenPosition = IOState.MouseScreenPosition();
+
+                Vector2 worldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
+                List<PhysicalObject> clickList = this.Game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
+                if (clickList.Count > 0)
+                {
+                    if (clickList[0] is Base)
+                    {
+
+                        new SetSupplyPoint(this.LocalPlayer, (Base)clickList[0], this.selectedCompany);
+                        return;
+                    }
+                }
+
                 rightMouseDown = true;
                 rightMouseDownWorldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
             }
