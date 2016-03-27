@@ -130,7 +130,7 @@ namespace MyGame.materiel
 
         public float ExcessMateriel()
         {
-            return Math.Max(this.Materiel - this.MoveCost(this.DistanceToResupplyPoint()), 0);
+            return Math.Max(this.Materiel - this.MoveCost(this.DistanceToResupplyTargetAndBack()), 0);
         }
 
         public void ResupplyComplete()

@@ -122,6 +122,14 @@ namespace MyGame.materiel
             }
         }
 
+        public float MaxSpeed
+        {
+            get
+            {
+                return maxSpeed.Value;
+            }
+        }
+
         public float ResupplyAmount
         {
             get

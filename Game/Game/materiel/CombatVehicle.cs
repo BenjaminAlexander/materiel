@@ -11,7 +11,7 @@ using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.materiel
 {
-    class CombatVehicle : Vehicle
+    public class CombatVehicle : Vehicle, IComparable
     {
         private Vector2GameObjectMember targetPosition;
 
@@ -71,6 +71,41 @@ namespace MyGame.materiel
                 Vector2 point2 = Utils.PhysicsUtils.MoveTowardBounded(screenPos2, screenPos1, 15);
                 graphics.DrawLine(point1, point2, color, depth);
             }
+        }
+
+        public float MoveCostToTarget()
+        {
+            return this.MoveCost(Vector2.Distance(this.Position, this.TargetPosition));
+        }
+
+        public float DistanceToTarget()
+        {
+            return Vector2.Distance(this.Position, this.TargetPosition);
+        }
+
+        public float TimeUntilMaterielEmpty()
+        {
+            float moveCost = this.MoveCostToTarget();
+            if (moveCost >= this.Materiel)
+            {
+                return this.Range() / this.MaxSpeed;
+            }
+            else
+            {
+                return float.PositiveInfinity;
+            }
+        }
+
+        // -1 = supply this first
+        // 1 = supply obj first
+        public int CompareTo(object obj)
+        {
+            CombatVehicle other = (CombatVehicle)obj;
+            if (this.TimeUntilMaterielEmpty() != other.TimeUntilMaterielEmpty())
+            {
+                return Math.Sign(this.TimeUntilMaterielEmpty() - other.TimeUntilMaterielEmpty());
+            }
+            return Math.Sign(other.DistanceToTarget() - this.DistanceToTarget());
         }
     }
 }

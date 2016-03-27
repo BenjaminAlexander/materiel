@@ -191,15 +191,15 @@ namespace MyGame.materiel
             }
         }
 
-        public Vehicle NextResupply()
+        public CombatVehicle NextResupply()
         {
             List<GameObjectReference<CombatVehicle>> vicRefList = new List<GameObjectReference<CombatVehicle>>(combatVehicles.Value);
             if(vicRefList.Count == 0)
             {
                 return null;
             }
-            Vehicle rtn = null;
-            foreach (Vehicle vic in vicRefList)
+            CombatVehicle rtn = null;
+            foreach (CombatVehicle vic in vicRefList)
             {
                 bool transportEnRoute = false;
                 foreach (Transport transport in transports.Value)
@@ -213,7 +213,7 @@ namespace MyGame.materiel
 
                 if (!transportEnRoute)
                 {
-                    if(rtn == null || vic.Materiel < rtn.Materiel)
+                    if (rtn == null || vic.TimeUntilMaterielEmpty() < rtn.TimeUntilMaterielEmpty())
                     {
                         rtn = vic;
                     }
