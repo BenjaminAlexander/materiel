@@ -5,7 +5,6 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using System.Net.Sockets;
 using MyGame.Networking;
-using System.Net.Sockets;
 
 namespace MyGame.Client
 {

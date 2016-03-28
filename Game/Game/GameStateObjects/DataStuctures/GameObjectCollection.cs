@@ -21,7 +21,9 @@ namespace MyGame.GameStateObjects.DataStuctures
     {
         private int nextId = 1;
         private GameObjectListManager listManager = new GameObjectListManager();
-        private QuadTree quadTree;
+        private QuadTree simulationTree;
+        private QuadTree previousTree;
+        private QuadTree drawTree;
         private Dictionary<int, GameObject> dictionary = new Dictionary<int, GameObject>();
         private Utils.RectangleF worldRectangle;
         
@@ -34,7 +36,42 @@ namespace MyGame.GameStateObjects.DataStuctures
         {
             get 
             {
-                return quadTree;
+                if (GameObjectField.IsModeSimulation())
+                {
+                    return simulationTree;
+                }
+                else if (GameObjectField.IsModePrevious())
+                {
+                    return previousTree;
+                }
+                else
+                {
+                    return drawTree;
+                }
+            }
+        }
+
+        public QuadTree SimulationTree
+        {
+            get
+            {
+                return simulationTree;
+            }
+        }
+
+        public QuadTree DrawTree
+        {
+            get
+            {
+                return drawTree;
+            }
+        }
+
+        public QuadTree PreviousTree
+        {
+            get
+            {
+                return previousTree;
             }
         }
 
@@ -46,7 +83,9 @@ namespace MyGame.GameStateObjects.DataStuctures
         public GameObjectCollection(Vector2 world)
         {
             worldRectangle = new Utils.RectangleF(new Vector2(0), world);
-            quadTree = new QuadTree(world);
+            simulationTree = new QuadTree(world, new GetTreePosition(PhysicalObject.GetSimulationPosition));
+            previousTree = new QuadTree(world, new GetTreePosition(PhysicalObject.GetPreviousPosition));
+            drawTree = new QuadTree(world, new GetTreePosition(PhysicalObject.GetDrawPosition));
         }
 
         public Boolean Contains(GameObject obj)
@@ -65,8 +104,10 @@ namespace MyGame.GameStateObjects.DataStuctures
             {
                 if (obj is PhysicalObject)
                 {
-                    if (quadTree.Add((PhysicalObject)obj))
+                    if (simulationTree.Add((PhysicalObject)obj))
                     {
+                        previousTree.Add((PhysicalObject)obj);
+                        drawTree.Add((PhysicalObject)obj);
                         dictionary.Add(obj.ID, obj);
                         listManager.Add(obj);
                     }
@@ -85,7 +126,9 @@ namespace MyGame.GameStateObjects.DataStuctures
             dictionary.Remove(obj.ID);
             if (obj is PhysicalObject)
             {
-                quadTree.Remove((PhysicalObject)obj);
+                simulationTree.Remove((PhysicalObject)obj);
+                previousTree.Remove((PhysicalObject)obj);
+                drawTree.Remove((PhysicalObject)obj);
             }
         }
 

@@ -30,8 +30,8 @@ namespace MyGame.materiel
         public static CombatVehicle CombatVehicleFactory(GameObjectCollection collection, PlayerGameObject controllingPlayer, Vector2 position)
         {
             CombatVehicle vehicle = new CombatVehicle(collection);
-            CombatVehicle.ServerInitialize(vehicle, controllingPlayer, position);
             collection.Add(vehicle);
+            CombatVehicle.ServerInitialize(vehicle, controllingPlayer, position);
             return vehicle;
         }
 

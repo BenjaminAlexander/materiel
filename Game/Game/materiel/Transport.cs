@@ -39,8 +39,8 @@ namespace MyGame.materiel
         public static Transport TransportFactory(GameObjectCollection collection, PlayerGameObject controllingPlayer, Vector2 position)
         {
             Transport vehicle = new Transport(collection);
-            Transport.ServerInitialize(vehicle, controllingPlayer, position);
             collection.Add(vehicle);
+            Transport.ServerInitialize(vehicle, controllingPlayer, position);
             return vehicle;
         }
 

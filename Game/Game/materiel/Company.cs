@@ -38,8 +38,8 @@ namespace MyGame.materiel
         public static Company Factory(ServerGame game, PlayerGameObject controllingPlayer)
         {
             Company obj = new Company(game.GameObjectCollection);
-            Company.ServerInitialize(obj, controllingPlayer);
             game.GameObjectCollection.Add(obj);
+            Company.ServerInitialize(obj, controllingPlayer);
             return obj;
         }
 

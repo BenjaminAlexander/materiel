@@ -73,6 +73,7 @@
     <Compile Include="Client\Program.cs" />
     <Compile Include="Client\LocalPlayer.cs" />
     <Compile Include="GameStateObjects\BoolGameObjectMember.cs" />
+    <Compile Include="GameStateObjects\QuadTreeUtils\TreeVector2Member.cs" />
     <Compile Include="materiel\BuildTransport.cs" />
     <Compile Include="materiel\CombatVehicle.cs" />
     <Compile Include="materiel\SetSupplyPoint.cs" />

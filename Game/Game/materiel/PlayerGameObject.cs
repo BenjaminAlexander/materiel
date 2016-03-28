@@ -43,8 +43,8 @@ namespace MyGame.materiel
         public static PlayerGameObject Factory(ServerGame game, RemotePlayer player)
         {
             PlayerGameObject obj = new PlayerGameObject(game.GameObjectCollection);
-            PlayerGameObject.ServerInitialize(obj, player.Id);
             game.GameObjectCollection.Add(obj);
+            PlayerGameObject.ServerInitialize(obj, player.Id);
             return obj;
         }
 

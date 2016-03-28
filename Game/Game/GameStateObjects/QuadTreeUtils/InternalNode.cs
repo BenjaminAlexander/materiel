@@ -19,8 +19,8 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return unitCount;
         }
 
-        public InternalNode(Boolean root, InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary)
-            : base(parent, mapSpace, leafDictionary)
+        public InternalNode(Boolean root, InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GetTreePosition positionFunc)
+            : base(parent, mapSpace, leafDictionary, positionFunc)
         {
             this.root = root;
             int halfWidth = mapSpace.Width / 2;
@@ -31,10 +31,10 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             Rectangle nwRectangle = new Rectangle(mapSpace.X, mapSpace.Y + halfHeight, halfWidth, mapSpace.Height - halfHeight);
             Rectangle neRectangle = new Rectangle(mapSpace.X + halfWidth, mapSpace.Y + halfHeight, mapSpace.Width - halfWidth, mapSpace.Height - halfHeight);
 
-            Node nw = new Leaf(this, nwRectangle, leafDictionary);
-            Node ne = new Leaf(this, neRectangle, leafDictionary);
-            Node sw = new Leaf(this, swRectangle, leafDictionary);
-            Node se = new Leaf(this, seRectangle, leafDictionary);
+            Node nw = new Leaf(this, nwRectangle, leafDictionary, positionFunc);
+            Node ne = new Leaf(this, neRectangle, leafDictionary, positionFunc);
+            Node sw = new Leaf(this, swRectangle, leafDictionary, positionFunc);
+            Node se = new Leaf(this, seRectangle, leafDictionary, positionFunc);
             children.Add(nw);
             children.Add(ne);
             children.Add(sw);
@@ -43,7 +43,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override bool Add(PhysicalObject obj)
         {
-            if (this.Contains(obj.SimulationPosition))
+            if (this.Contains(this.GetObjPosition(obj)))
             {
                 foreach (Node child in new List<Node>(children))
                 {
@@ -65,7 +65,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override Leaf Remove(PhysicalObject obj)
         {
-            if (this.Contains(obj.SimulationPosition))
+            if (this.Contains(this.GetObjPosition(obj)))
             {
                 if (children.Count != 4)
                 {
@@ -110,7 +110,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                         {
                             throw new Exception("incorrect child/parent");
                         }
-                        Leaf newNode = new Leaf(this.Parent, this.MapSpace, leafDictionary);
+                        Leaf newNode = new Leaf(this.Parent, this.MapSpace, leafDictionary, this.PositionFunc);
                         this.Parent.Replace(this, newNode);
 
                         foreach (Leaf leaf in children)
@@ -182,7 +182,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         public override void Move(PhysicalObject obj)
         {
             unitCount--;
-            if (this.Contains(obj.SimulationPosition))
+            if (this.Contains(this.GetObjPosition(obj)))
             {
                 this.Add(obj);
             }

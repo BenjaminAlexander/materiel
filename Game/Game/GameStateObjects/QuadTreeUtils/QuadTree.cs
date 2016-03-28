@@ -7,19 +7,23 @@ using MyGame.GameStateObjects;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
 {
+    public delegate Vector2 GetTreePosition(PhysicalObject obj);
+
     public class QuadTree
     {
         private Vector2 mapSize;
         private Node root;
+        private GetTreePosition positionFunc;
 
         LeafDictionary leafDictionary;
 
-        public QuadTree(Vector2 mapSize)
+        public QuadTree(Vector2 mapSize, GetTreePosition positionFunc)
         {
             this.mapSize = mapSize;
+            this.positionFunc = positionFunc;
             leafDictionary = new LeafDictionary(this);
             Rectangle mapRectangle = new Rectangle(0, 0, (int)Math.Ceiling(mapSize.X), (int)Math.Ceiling(mapSize.Y));
-            root = new InternalNode(true, null, mapRectangle, leafDictionary);
+            root = new InternalNode(true, null, mapRectangle, leafDictionary, this.positionFunc);
         }
 
         public bool Add(PhysicalObject unit)

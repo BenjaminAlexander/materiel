@@ -18,17 +18,33 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         protected LeafDictionary leafDictionary;
 
         private Rectangle mapSpace;
+        private GetTreePosition positionFunc;
+
         public Rectangle MapSpace
         {
             get { return mapSpace; }
         }
 
-        public Node(InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary)
+        public Node(InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GetTreePosition positionFunc)
         {
             id = nextI++;
             this.parent = parent;
             this.leafDictionary = leafDictionary;
             this.mapSpace = mapSpace;
+            this.positionFunc = positionFunc;
+        }
+
+        protected Vector2 GetObjPosition(PhysicalObject obj)
+        {
+            return positionFunc(obj);
+        }
+
+        protected GetTreePosition PositionFunc
+        {
+            get
+            {
+                return this.positionFunc;
+            }
         }
 
         public abstract int ObjectCount();

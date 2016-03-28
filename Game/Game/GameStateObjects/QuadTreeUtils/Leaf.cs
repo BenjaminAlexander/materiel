@@ -11,20 +11,22 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
     class Leaf : Node
     {
         private GameObjectListManager unitList;
+        private GetTreePosition positionFunc;
+
         public override int ObjectCount()
         {
             return unitList.GetMaster().Count;
         }
 
-        public Leaf(InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary)
-            : base(parent, mapSpace, leafDictionary)
+        public Leaf(InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GetTreePosition positionFunc)
+            : base(parent, mapSpace, leafDictionary, positionFunc)
         {
             unitList = new GameObjectListManager();
         }
 
         public override bool Add(PhysicalObject unit)
         {
-            if (this.Contains(unit.SimulationPosition))
+            if (this.Contains(this.GetObjPosition(unit)))
             {
                 unitList.Add(unit);
                 leafDictionary.SetLeaf(unit, this);
@@ -71,7 +73,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
                     foreach (PhysicalObject unit in unitList.GetList<PhysicalObject>())
                     {
-                        if (Vector2.Distance(unit.SimulationPosition, center) <= radius)
+                        if (Vector2.Distance(this.GetObjPosition(unit), center) <= radius)
                         {
                             list.Add(unit);
                         }
@@ -94,7 +96,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             if(unitList.Contains(obj))
             {
-                if (!this.Contains(obj.SimulationPosition))
+                if (!this.Contains(this.GetObjPosition(obj)))
                 {
                     this.Remove(obj);
                     this.Parent.Move(obj);
@@ -119,7 +121,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             if (MapSpace.Width > 1 && MapSpace.Height > 1)
             {
-                Node newNode = new InternalNode(false, this.Parent, this.MapSpace, leafDictionary);// (this.Parent, this.mapSpace, 2);
+                Node newNode = new InternalNode(false, this.Parent, this.MapSpace, leafDictionary, this.PositionFunc);// (this.Parent, this.mapSpace, 2);
                 this.Parent.Replace(this, newNode);
                 foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
                 {

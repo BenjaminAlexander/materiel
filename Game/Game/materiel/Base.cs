@@ -32,8 +32,8 @@ namespace MyGame.materiel
         public static Base BaseFactory(ServerGame game, Vector2 position)
         {
             Base baseObj = new Base(game.GameObjectCollection);
-            Base.ServerInitialize(baseObj, position);
             game.GameObjectCollection.Add(baseObj);
+            Base.ServerInitialize(baseObj, position);
             return baseObj;
         }
 
