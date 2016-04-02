@@ -51,7 +51,8 @@ namespace MyGame.materiel
         public override void SubclassUpdate(float seconds)
         {
             base.SubclassUpdate(seconds);
-            this.MoveToward(this.TargetPosition, seconds);
+            float secondsLeft = this.MoveToward(this.TargetPosition, seconds);
+            this.Idle(secondsLeft);
         }
 
         public override void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics, Camera camera, Color color, float depth)
@@ -92,7 +93,10 @@ namespace MyGame.materiel
             }
             else
             {
-                return float.PositiveInfinity;
+                float timeToTarget = this.DistanceToTarget() / this.MaxSpeed;
+                float idleMateriel = this.Materiel - moveCost;
+                float idleTime = this.IdleTime(idleMateriel);
+                return timeToTarget + idleTime;
             }
         }
 
@@ -105,7 +109,13 @@ namespace MyGame.materiel
             {
                 return Math.Sign(this.TimeUntilMaterielEmpty() - other.TimeUntilMaterielEmpty());
             }
-            return Math.Sign(other.DistanceToTarget() - this.DistanceToTarget());
+
+            if (other.DistanceToTarget() != this.DistanceToTarget())
+            {
+                return Math.Sign(other.DistanceToTarget() - this.DistanceToTarget());
+            }
+
+            return Math.Sign(this.Materiel - other.Materiel);
         }
     }
 }

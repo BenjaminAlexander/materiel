@@ -13,7 +13,8 @@ namespace MyGame.materiel
 {
     public abstract class Vehicle : PhysicalObject, IPlayerControlled
     {
-        private const float distancePerMateriel = 100;
+        private const float distancePerMateriel = 600;
+        private const float secondsPerMateriel = 60;
         private static Collidable collidable = new Collidable(TextureLoader.GetTexture("Enemy"), Color.White, TextureLoader.GetTexture("Enemy").CenterOfMass, .9f);
         public override Collidable Collidable
         {
@@ -59,13 +60,21 @@ namespace MyGame.materiel
             }
         }
 
-        public void MoveToward(Vector2 targetPos, float seconds)
+        public void Idle(float seconds)
+        {
+            float cost = seconds / secondsPerMateriel;
+            this.materiel.Value = Math.Max(this.materiel - cost, 0);
+        }
+
+        public float MoveToward(Vector2 targetPos, float seconds)
         {
             float maxMoveDistance = Math.Min(maxSpeed.Value * seconds, this.Range());
             float distanceToTarget = Vector2.Distance(this.Position, targetPos);
             this.Position = Utils.PhysicsUtils.MoveTowardBounded(this.Position, targetPos, maxMoveDistance);
             maxMoveDistance = Math.Min(distanceToTarget, maxMoveDistance);
             this.materiel.Value = Math.Max(this.materiel.Value - this.MoveCost(maxMoveDistance), 0f);
+            float secondsLeft = seconds - (maxMoveDistance / maxSpeed.Value);
+            return seconds;
         }
 
         public override void MoveOutsideWorld(Vector2 position, Vector2 movePosition)
@@ -128,6 +137,11 @@ namespace MyGame.materiel
             {
                 return maxSpeed.Value;
             }
+        }
+
+        public float IdleTime(float materiel)
+        {
+            return materiel * secondsPerMateriel;
         }
 
         public float ResupplyAmount

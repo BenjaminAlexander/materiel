@@ -54,6 +54,15 @@ namespace MyGame
             Base.BaseFactory(game, new Vector2((float)(0.16 * worldSize.X), (float)(0.75 * worldSize.Y)));
 
             player1Base.SetPlayerInControll(player1);
+            Company.Factory(game, player1.GameObject);
+
+            for(int i = 0; i < 5; i++)
+            {
+                CombatVehicle.CombatVehicleFactory(game.GameObjectCollection, player1.GameObject, player1Base.Position + new Vector2(i * 20, 100));
+                Transport.TransportFactory(game.GameObjectCollection, player1.GameObject, player1Base.Position + new Vector2(i * 20, 200));
+            }
+
+
             player2Base.SetPlayerInControll(player2);
         }
     }

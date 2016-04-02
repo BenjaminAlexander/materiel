@@ -33,7 +33,7 @@ namespace MyGame.materiel
 
         public static void ServerInitialize(Transport vic, PlayerGameObject controllingPlayer, Vector2 position)
         {
-            Vehicle.ServerInitialize(vic, controllingPlayer, position, 50);
+            Vehicle.ServerInitialize(vic, controllingPlayer, position, 20);
         }
 
         public static Transport TransportFactory(GameObjectCollection collection, PlayerGameObject controllingPlayer, Vector2 position)

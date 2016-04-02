@@ -198,8 +198,15 @@ namespace MyGame.materiel
             {
                 return null;
             }
-            CombatVehicle rtn = null;
+
+            List<CombatVehicle> vehicleList = new List<CombatVehicle>();
             foreach (CombatVehicle vic in vicRefList)
+            {
+                vehicleList.Add(vic);
+            }
+            vehicleList.Sort();
+
+            foreach (CombatVehicle vic in vehicleList)
             {
                 bool transportEnRoute = false;
                 foreach (Transport transport in transports.Value)
@@ -213,13 +220,13 @@ namespace MyGame.materiel
 
                 if (!transportEnRoute)
                 {
-                    if (rtn == null || vic.TimeUntilMaterielEmpty() < rtn.TimeUntilMaterielEmpty())
+                    if (vic != null)
                     {
-                        rtn = vic;
+                        return vic;
                     }
                 }
             }
-            return rtn;
+            return null;
         }
     }
 }
