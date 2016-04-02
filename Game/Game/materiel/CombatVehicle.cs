@@ -13,6 +13,7 @@ namespace MyGame.materiel
 {
     public class CombatVehicle : Vehicle, IComparable
     {
+        public const float maxMateriel = 5;
         private Vector2GameObjectMember targetPosition;
 
         public CombatVehicle(GameObjectCollection collection)
@@ -23,7 +24,7 @@ namespace MyGame.materiel
 
         public static void ServerInitialize(CombatVehicle vic, PlayerGameObject controllingPlayer, Vector2 position)
         {
-            Vehicle.ServerInitialize(vic, controllingPlayer, position, 5);
+            Vehicle.ServerInitialize(vic, controllingPlayer, position, maxMateriel);
             vic.targetPosition.Value = position;
         }
 

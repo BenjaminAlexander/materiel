@@ -13,8 +13,8 @@ namespace MyGame.materiel
 {
     public abstract class Vehicle : PhysicalObject, IPlayerControlled
     {
-        private const float distancePerMateriel = 600;
-        private const float secondsPerMateriel = 60;
+        public const float distancePerMateriel = 600;
+        public const float secondsPerMateriel = 12;
         private static Collidable collidable = new Collidable(TextureLoader.GetTexture("Enemy"), Color.White, TextureLoader.GetTexture("Enemy").CenterOfMass, .9f);
         public override Collidable Collidable
         {
@@ -25,7 +25,7 @@ namespace MyGame.materiel
         private FloatGameObjectMember maxMateriel;
         private GameObjectReferenceField<Company> company;
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
-        private FloatGameObjectMember maxSpeed;
+        public const float maxSpeed = 100;
 
         public Vehicle(GameObjectCollection collection)
             : base(collection)
@@ -33,15 +33,12 @@ namespace MyGame.materiel
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
             company = new GameObjectReferenceField<Company>(this);
             materiel = new FloatGameObjectMember(this, 10);
-            maxMateriel = new FloatGameObjectMember(this, 10);
-            maxSpeed = new FloatGameObjectMember(this, 100);
-            
+            maxMateriel = new FloatGameObjectMember(this, 10);            
         }
 
         public static void ServerInitialize(Vehicle vic, PlayerGameObject controllingPlayer, Vector2 position, float maxMateriel)
         {
             vic.controllingPlayer.Value = controllingPlayer;
-            vic.maxSpeed.Value = 100;
             vic.materiel.Value = maxMateriel;
             vic.maxMateriel.Value = maxMateriel;
             PhysicalObject.ServerInitialize(vic, position, 0);
@@ -68,12 +65,12 @@ namespace MyGame.materiel
 
         public float MoveToward(Vector2 targetPos, float seconds)
         {
-            float maxMoveDistance = Math.Min(maxSpeed.Value * seconds, this.Range());
+            float maxMoveDistance = Math.Min(maxSpeed * seconds, this.Range());
             float distanceToTarget = Vector2.Distance(this.Position, targetPos);
             this.Position = Utils.PhysicsUtils.MoveTowardBounded(this.Position, targetPos, maxMoveDistance);
             maxMoveDistance = Math.Min(distanceToTarget, maxMoveDistance);
             this.materiel.Value = Math.Max(this.materiel.Value - this.MoveCost(maxMoveDistance), 0f);
-            float secondsLeft = seconds - (maxMoveDistance / maxSpeed.Value);
+            float secondsLeft = seconds - (maxMoveDistance / maxSpeed);
             return seconds;
         }
 
@@ -135,7 +132,7 @@ namespace MyGame.materiel
         {
             get
             {
-                return maxSpeed.Value;
+                return maxSpeed;
             }
         }
 
