@@ -23,7 +23,7 @@ namespace MyGame.materiel
         }
 
         private float timeTillSpawn = 5;
-        private Queue<Transport> resupplyQueue = new Queue<Transport>();
+        private Queue<Vehicle> resupplyQueue = new Queue<Vehicle>();
 
         private FloatGameObjectMember materiel;
         private IntegerQueueGameObjectField buildQueue;
@@ -136,9 +136,14 @@ namespace MyGame.materiel
             }
         }
 
-        public void EnqueueTransport(Transport vic)
+        public void EnqueueTransport(Vehicle vic)
         {
             this.resupplyQueue.Enqueue(vic);
+        }
+
+        public bool InResupplyQueue(Vehicle vic)
+        {
+            return this.resupplyQueue.Contains(vic);
         }
 
         public float Materiel

@@ -133,7 +133,7 @@ namespace MyGame.materiel
             return Math.Max(this.Materiel - this.MoveCost(this.DistanceToResupplyTargetAndBack()), 0);
         }
 
-        public void ResupplyComplete()
+        public override void ResupplyComplete()
         {
             this.inQueue.Value = false;
             if (this.Company.Dereference() != null)

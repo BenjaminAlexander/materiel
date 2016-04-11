@@ -63,15 +63,32 @@ namespace MyGame.materiel
             this.materiel.Value = Math.Max(this.materiel - cost, 0);
         }
 
-        public float MoveToward(Vector2 targetPos, float seconds)
+        public float IdleCost(float seconds)
+        {
+            return seconds / secondsPerMateriel;
+        }
+
+        public void MoveToward(Vector2 targetPos, float seconds, out Vector2 resultPosition, out float secondsRemaining, out float cost)
         {
             float maxMoveDistance = Math.Min(maxSpeed * seconds, this.Range());
             float distanceToTarget = Vector2.Distance(this.Position, targetPos);
-            this.Position = Utils.PhysicsUtils.MoveTowardBounded(this.Position, targetPos, maxMoveDistance);
-            maxMoveDistance = Math.Min(distanceToTarget, maxMoveDistance);
-            this.materiel.Value = Math.Max(this.materiel.Value - this.MoveCost(maxMoveDistance), 0f);
-            float secondsLeft = seconds - (maxMoveDistance / maxSpeed);
-            return seconds;
+            resultPosition = Utils.PhysicsUtils.MoveTowardBounded(this.Position, targetPos, maxMoveDistance);
+            maxMoveDistance = Math.Min(distanceToTarget, maxMoveDistance);            
+            cost = this.MoveCost(maxMoveDistance);
+            secondsRemaining = seconds - (maxMoveDistance / maxSpeed);
+        }
+
+        public float MoveToward(Vector2 targetPos, float seconds)
+        {
+            Vector2 resultPosition;
+            float secondsRemaining;
+            float cost;
+
+            this.MoveToward(targetPos, seconds, out resultPosition, out secondsRemaining, out cost);
+
+            this.Position = resultPosition;
+            this.materiel.Value = Math.Max(this.materiel.Value - cost, 0f);
+            return secondsRemaining;
         }
 
         public override void MoveOutsideWorld(Vector2 position, Vector2 movePosition)
@@ -147,6 +164,10 @@ namespace MyGame.materiel
             {
                 return this.maxMateriel.Value - this.materiel.Value;
             }
+        }
+
+        public virtual void ResupplyComplete()
+        {
         }
     }
 }

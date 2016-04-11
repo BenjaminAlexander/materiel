@@ -19,6 +19,34 @@ namespace MyGame.materiel
         private Vector2GameObjectMember position2;
         private GameObjectReferenceField<Base> supplyPoint;
 
+        private int nextPosIndex = 0;
+        public int NextPosIndex
+        {
+            get
+            {
+                int mfp = this.MaximumFightingPositions();
+
+                if (mfp == 0)
+                {
+                    return -1;
+                }
+
+                int rtn = 0;
+                float rtnTime = this.TimeUntilFightingPositionAbandoned(rtn);
+                for (int i = 1; i < mfp; i++)
+                {
+                    float newTime = this.TimeUntilFightingPositionAbandoned(i);
+                    if (newTime < rtnTime)
+                    {
+                        rtnTime = newTime;
+                        rtn = i;
+                    }
+                }
+                return rtn;
+            }
+        }
+
+
         public Company(GameObjectCollection collection)
             : base(collection)
         {
@@ -104,12 +132,18 @@ namespace MyGame.materiel
             this.position1.Value = position1;
             this.position2.Value = position2;
 
+
             int maxPositionCount = this.MaximumFightingPositions();
             List<Vector2> positions = this.FightingPositions(maxPositionCount);
 
+            foreach (CombatVehicle vic in combatVehicles.Value)
+            {
+                vic.TargetFightingPosition = -1;
+            }
+
             for (int i = 0; i < positions.Count; i++)
             {
-                this.combatVehicles.Value[i].Dereference().TargetPosition = positions[i];
+                this.combatVehicles.Value[i].Dereference().TargetFightingPosition = i;
             }
         }
 
@@ -241,6 +275,25 @@ namespace MyGame.materiel
             }
         }
 
+        public Vector2 FightingPosition(int index)
+        {
+            int maxPositionCount = this.MaximumFightingPositions();
+            List<Vector2> positions = this.FightingPositions(maxPositionCount);
+
+            if (index < 0 || maxPositionCount == 0)
+            {
+                return this.ResupplyPoint.Position;
+            }
+            else if (index >= maxPositionCount)
+            {
+                return positions[maxPositionCount - 1];
+            }
+            else
+            {
+                return positions[index];
+            }
+        }
+
         public float ResupplyLapDistance(int positionCount)
         {
             if(this.supplyPoint.Value == null)
@@ -290,7 +343,7 @@ namespace MyGame.materiel
             float distance = Vector2.Distance(this.supplyPoint.Value.Position, farthestPos);
             float cost = distance / Vehicle.distancePerMateriel;
 
-            return (CombatVehicle.maxMateriel - cost) * Vehicle.secondsPerMateriel;
+            return (CombatVehicle.maxMateriel - (cost * 2)) * Vehicle.secondsPerMateriel;
         }
 
         public int MaximumFightingPositions()
@@ -307,5 +360,37 @@ namespace MyGame.materiel
             }
             return 0;
         }
+
+        public float TimeUntilFightingPositionAbandoned(int index)
+        {
+            if (index < 0 || index >= this.MaximumFightingPositions())
+            {
+                return 0;
+            }
+
+            float time = 0;
+            foreach (CombatVehicle vic in combatVehicles.Value)
+            {
+                if (vic.TargetFightingPosition == index)
+                {
+                    float newTime = vic.TimeUntilFightingPositionAbondoned();
+                    time = Math.Max(time, newTime);
+                }
+            }
+            return time;
+        }
+
+        public void OccupyFightingPosition(CombatVehicle vic)
+        {
+            foreach (CombatVehicle otherVic in combatVehicles.Value)
+            {
+                if (otherVic != vic && otherVic.TargetFightingPosition == vic.TargetFightingPosition && otherVic.InTargetFightingPosition)
+                {
+                    otherVic.TargetFightingPosition = -1;
+                    //otherVic.HandoffExtraMateriel(vic);
+                }
+            }
+        }
     }
 }
+
