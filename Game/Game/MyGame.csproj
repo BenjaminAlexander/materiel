@@ -61,6 +61,7 @@
     <Compile Include="Camera.cs" />
     <Compile Include="ClientUI\CompanySelected.cs" />
     <Compile Include="ClientUI\BaseSelected.cs" />
+    <Compile Include="ClientUI\SetCompanyPositionsContext.cs" />
     <Compile Include="ClientUI\VehicleSelected.cs" />
     <Compile Include="ClientUI\RootContext.cs" />
     <Compile Include="ClientUI\UIContext.cs" />
@@ -74,8 +75,11 @@
     <Compile Include="Client\LocalPlayer.cs" />
     <Compile Include="GameStateObjects\BoolGameObjectMember.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\TreeVector2Member.cs" />
+    <Compile Include="GameStateObjects\Vector2ListMember.cs" />
+    <Compile Include="IO\Events\KeyReleaseEvent.cs" />
     <Compile Include="materiel\BuildTransport.cs" />
     <Compile Include="materiel\CombatVehicle.cs" />
+    <Compile Include="materiel\SetCompanyPositions.cs" />
     <Compile Include="materiel\SetSupplyPoint.cs" />
     <Compile Include="materiel\DeleteCompany.cs" />
     <Compile Include="materiel\IPlayerControlled.cs" />

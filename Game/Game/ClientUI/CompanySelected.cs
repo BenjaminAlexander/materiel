@@ -16,9 +16,14 @@ namespace MyGame.ClientUI
     class CompanySelected : UIContext
     {
         private Company selectedCompany;
-        private bool rightMouseDown = false;
-        private Vector2 rightMouseDownWorldPosition = new Vector2(0);
 
+        public Company SelectedCompany
+        {
+            get
+            {
+                return selectedCompany;
+            }
+        }
 
         public CompanySelected(UIContext nextInStack, Company company)
             : base(nextInStack)
@@ -31,13 +36,6 @@ namespace MyGame.ClientUI
             base.DrawScreen(gameTime, graphics);
             this.PlayerObject.DrawCompanySelection(gameTime, graphics, selectedCompany);
             this.selectedCompany.DrawScreen(gameTime, graphics, this.Game.Camera, Color.Red, 1);
-
-            if (rightMouseDown)
-            {
-                Vector2 point1 = this.Game.Camera.WorldToScreenPosition(rightMouseDownWorldPosition);
-                Vector2 point2 = IOState.MouseScreenPosition();
-                graphics.DrawLine(point1, point2, Color.Red, 1);
-            }
         }
 
         public override void UpdateWithIOEvent(IO.IOEvent ioEvent)
@@ -57,25 +55,17 @@ namespace MyGame.ClientUI
                         return;
                     }
                 }
-
-                rightMouseDown = true;
-                rightMouseDownWorldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
             }
-            else if (ioEvent.Equals(rightMouseRelease))
+            else if (ioEvent.Equals(ctrPress))
             {
-                if (rightMouseDown)
-                {
-                    Vector2 sceenPosition = IOState.MouseScreenPosition();
-                    Vector2 rightMouseUpWorldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
-                    new MoveCompany(this.LocalPlayer, this.selectedCompany, rightMouseDownWorldPosition, rightMouseUpWorldPosition);
-                }
-                rightMouseDown = false;
+                new SetCompanyPositionsContext(this);
+                return;
             }
             else if (ioEvent.Equals(leftMousePress))
             {
                 Vector2 sceenPosition = IOState.MouseScreenPosition();
 
-                if(this.PlayerObject.ClickCompanyDelete(sceenPosition, this.selectedCompany))
+                if (this.PlayerObject.ClickCompanyDelete(sceenPosition, this.selectedCompany))
                 {
                     new DeleteCompany(this.LocalPlayer, selectedCompany);
                     this.LocalPlayer.PopUIContext();

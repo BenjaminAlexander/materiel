@@ -98,5 +98,15 @@ namespace MyGame.Utils
             float difference = Utils.Vector2Utils.MinimizeMagnitude(simulation - draw);
             return draw + smoothing * difference; //MathHelper.Lerp(0, difference, smoothing);
         }
+
+        public static float Det(Vector2 v1, Vector2 v2)
+        {
+            return Det(v1, v2, new Vector2(0));
+        }
+
+        public static float Det(Vector2 v1, Vector2 v2, Vector2 center)
+        {
+            return (v1.X - center.X) * (v2.Y - center.Y) - (v2.X - center.X) * (v1.Y - center.Y);
+        }
     } 
 }

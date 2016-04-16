@@ -92,6 +92,11 @@ namespace MyGame.IO
             return previousKeyBoardState.IsKeyUp(key) && currentKeyBoardState.IsKeyDown(key);
         }
 
+        public static bool isKeyReleased(Keys key)
+        {
+            return previousKeyBoardState.IsKeyDown(key) && currentKeyBoardState.IsKeyUp(key);
+        }
+
         public static bool isKeyDown(Keys key)
         {
             return currentKeyBoardState.IsKeyDown(key);

@@ -7,30 +7,38 @@ using MyGame.Server;
 using MyGame.Client;
 using Microsoft.Xna.Framework;
 using MyGame.RtsCommands;
-/*
+
 namespace MyGame.materiel
 {
-    class MoveCompany : RtsCommandMessage
+    class SetCompanyPositions : RtsCommandMessage
     {
-        public MoveCompany(LocalPlayer player, Company co, Vector2 position1, Vector2 position2)
+        public SetCompanyPositions(LocalPlayer player, Company co, List<Vector2> positions)
         {
             this.Append(co.ID);
-            this.Append(position1);
-            this.Append(position2);
+            this.Append(positions.Count);
+            foreach (Vector2 pos in positions)
+            {
+                this.Append(pos);
+            }
             player.SendTCP(this);
         }
 
         public static void ExecuteCommand(RtsCommandMessage message, ServerGame game, RemotePlayer player)
         {
             int companyId = message.ReadInt();
-            Vector2 position1 = message.ReadVector2();
-            Vector2 position2 = message.ReadVector2();
+            int positionCount = message.ReadInt();
+            List<Vector2> positions = new List<Vector2>();
+
+            for (int i = 0; i < positionCount; i++)
+            {
+                positions.Add(message.ReadVector2());
+            }
 
             Company co = game.GameObjectCollection.Get<Company>(companyId);
             if (player.Owns(co))
             {
-                co.Move(position1, position2);
+                co.SetPositions(positions);
             }
         }
     }
-}*/
+}

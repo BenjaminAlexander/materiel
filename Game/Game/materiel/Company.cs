@@ -12,28 +12,28 @@ namespace MyGame.materiel
 {
     public class Company : GameObject, IPlayerControlled
     {
+        private Comparison<Vector2> Vector2ClockwiseComparison;
+
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
         private GameObjectReferenceListField<CombatVehicle> combatVehicles;
         //private GameObjectReferenceListField<Transport> transports;
-        private Vector2GameObjectMember position1;
-        private Vector2GameObjectMember position2;
+        private Vector2ListMember fightingPositions;
         private GameObjectReferenceField<Base> supplyPoint;
 
-        private int nextPosIndex = 0;
+        //private Dictionary<int, CombatVehicle> lastVic = new Dictionary<int, CombatVehicle>();
+
         public int NextPosIndex
         {
             get
             {
-                int mfp = this.MaximumFightingPositions();
-
-                if (mfp == 0)
+                if (this.FightingPositions.Count == 0)
                 {
                     return -1;
                 }
 
                 int rtn = 0;
                 float rtnTime = this.TimeUntilFightingPositionAbandoned(rtn);
-                for (int i = 1; i < mfp; i++)
+                for (int i = 1; i < this.FightingPositions.Count; i++)
                 {
                     float newTime = this.TimeUntilFightingPositionAbandoned(i);
                     if (newTime < rtnTime)
@@ -46,16 +46,45 @@ namespace MyGame.materiel
             }
         }
 
+        public void SetVehicleTargetPosition(CombatVehicle vic)
+        {
+
+        }
+
+        /*
+        public int NextFightingPosition(CombatVehicle vic)
+        {
+            bool emptyPosFound = false;
+            int emptyPos = 0;
+            float emptyTime = 0;
+            for (int i = 0; i < this.FightingPositions.Count; i++)
+            {
+                float newEmptyTime = vic.TimeUntilFightingPositionAbondoned(i);
+                if (this.TimeUntilFightingPositionAbandoned(i) <= 0 && newEmptyTime > 0 && (!emptyPosFound || newEmptyTime > emptyTime))
+                {
+                    emptyPosFound = true;
+                    emptyPos = i;
+                    emptyTime = newEmptyTime;
+                }
+            }
+
+            if (emptyPosFound)
+            {
+                return emptyPos;
+            }
+        }*/
+
 
         public Company(GameObjectCollection collection)
             : base(collection)
         {
+            Vector2ClockwiseComparison = new Comparison<Vector2>(this.less);
+          
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
             combatVehicles = new GameObjectReferenceListField<CombatVehicle>(this);
             //transports = new GameObjectReferenceListField<Transport>(this);
             supplyPoint = new GameObjectReferenceField<Base>(this);
-            position1 = new Vector2GameObjectMember(this, new Vector2(0));
-            position2 = new Vector2GameObjectMember(this, new Vector2(0));
+            fightingPositions = new Vector2ListMember(this);
         }
 
         public static void ServerInitialize(Company obj, PlayerGameObject controllingPlayer)
@@ -85,15 +114,7 @@ namespace MyGame.materiel
             else
             {
                 combatVehicles.Value.Add((CombatVehicle)vic);
-
-                if (combatVehicles.Value.Count == 1)
-                {
-                    this.Move(vic.Position, vic.Position);
-                }
-                else
-                {
-                    this.Move(position1.Value, position2.Value);
-                }
+                ((CombatVehicle)vic).TargetFightingPosition = -1;
             }
         }
 
@@ -106,46 +127,71 @@ namespace MyGame.materiel
             else
             {
                 combatVehicles.RemoveAllReferences((CombatVehicle)vic);
-                this.Move(position1.Value, position2.Value);
             }
         }
 
-        public void Move(Vector2 position1, Vector2 position2)
+        public void SetPositions(List<Vector2> positions)
         {
-            float distance1 = Vector2.Distance(position1, this.position1.Value) + Vector2.Distance(position2, this.position2.Value);
-            float distance2 = Vector2.Distance(position1, this.position2.Value) + Vector2.Distance(position2, this.position1.Value);
-
-            float angle1 = Utils.Vector2Utils.Vector2Angle(this.position1.Value - this.position2.Value);
-            float angle2 = Utils.Vector2Utils.Vector2Angle(position1 - position2);
-            float angle3 = Utils.Vector2Utils.Vector2Angle(position2 - position1);
-
-            float angleDistance1 = Utils.Vector2Utils.ShortestAngleDistance(angle1, angle2);
-            float angleDistance2 = Utils.Vector2Utils.ShortestAngleDistance(angle1, angle3);
-
-            if (angleDistance2 < angleDistance1)
+            Vector2 center = new Vector2(0);
+            if (this.ResupplyPoint == null)
             {
-                Vector2 swap = position1;
-                position1 = position2;
-                position2 = swap;
+                foreach (Vector2 pos in this.FightingPositions)
+                {
+                    center = center + pos;
+                }
+                center = center / (float)this.FightingPositions.Count;
+            }
+            else
+            {
+                center = this.ResupplyPoint.Position;
             }
 
-            this.position1.Value = position1;
-            this.position2.Value = position2;
+            this.fightingPositions.Value = positions;
+            this.fightingPositions.Value.Sort(Vector2ClockwiseComparison);
 
-
-            int maxPositionCount = this.MaximumFightingPositions();
-            List<Vector2> positions = this.FightingPositions(maxPositionCount);
-
-            foreach (CombatVehicle vic in combatVehicles.Value)
+            if (this.fightingPositions.Value.Count > 1)
             {
-                vic.TargetFightingPosition = -1;
+                int largest = 0;
+                Vector2 v1 = this.FightingPositions[0] - center;
+                Vector2 v2 = this.FightingPositions[1] - center;
+                float cos = Vector2.Dot(v1, v2) / (v1.Length() * v2.Length());
+                float distance = Vector2.Distance(this.FightingPositions[0], this.FightingPositions[1]);
+
+                for (int i = 1; i < this.fightingPositions.Value.Count; i++)
+                {
+                    v1 = this.FightingPositions[i] - center;
+                    v2 = this.FightingPositions[(i + 1) % this.FightingPositions.Count] - center;
+                    float newCos = Vector2.Dot(v1, v2) / (v1.Length() * v2.Length());
+                    float newDistance = Vector2.Distance(this.FightingPositions[i], this.FightingPositions[(i + 1) % this.FightingPositions.Count]);
+
+                    if (newCos < cos || (newCos == cos && newDistance > distance))
+                    {
+                        largest = i;
+                        cos = newCos;
+                        distance = newDistance;
+                    }
+                }
+
+                for (; largest < this.FightingPositions.Count-1; largest++)
+                {
+                    Vector2 pos = this.fightingPositions.Value[this.FightingPositions.Count - 1];
+                    this.fightingPositions.Value.RemoveAt(this.FightingPositions.Count - 1);
+                    this.fightingPositions.Value.Insert(0, pos);
+                }
             }
 
-            for (int i = 0; i < positions.Count; i++)
-            {
-                this.combatVehicles.Value[i].Dereference().TargetFightingPosition = i;
-            }
+            //lastVic = new Dictionary<int, CombatVehicle>();
         }
+        /*
+        private void UpdateLastVic(CombatVehicle vic)
+        {
+            int targetIndex = vic.TargetFightingPosition;
+            if(lastVic.ContainsValue(vic))
+            {
+                lastVic.Remove(lastVic.
+            }
+            
+        }*/
 
         public string GetHudText()
         {
@@ -154,30 +200,37 @@ namespace MyGame.materiel
 
         public void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics, Camera camera, Color color, float depth)
         {
-            Vehicle last = null;
+            
             foreach (Vehicle vic in this.combatVehicles.Value)
             {
                 vic.DrawScreen(gameTime, graphics, camera, color, depth);
-                if(last != null)
-                {
-                    Vector2 screenPos1 = camera.WorldToScreenPosition(vic.Position);
-                    Vector2 screenPos2 = camera.WorldToScreenPosition(last.Position);
-
-                    Vector2 point1 = Utils.PhysicsUtils.MoveTowardBounded(screenPos1, screenPos2, 15);
-                    Vector2 point2 = Utils.PhysicsUtils.MoveTowardBounded(screenPos2, screenPos1, 15);
-                    if (Vector2.Distance(screenPos1, screenPos2) > 30)
-                    {
-                        graphics.DrawLine(point1, point2, color, depth);
-                    }
-                }
-                last = vic;
             }
 
-            if (supplyPoint.Value != null && this.combatVehicles.Value.Count != 0)
+            if (this.FightingPositions.Count > 0)
             {
-                Vector2 point1 = camera.WorldToScreenPosition(Vector2.Lerp(this.position1.Value, this.position2.Value, 0.5f));
-                Vector2 point2 = camera.WorldToScreenPosition(supplyPoint.Value.Position);
-                graphics.DrawLine(point1, point2, color, depth);
+                Vector2 screenPos = camera.WorldToScreenPosition(this.FightingPositions[0]);
+                graphics.DrawCircle(screenPos, 15, color, depth);
+            }
+
+            for (int i =1; i < this.FightingPositions.Count; i++)
+            {
+                Vector2 screenPos1 = camera.WorldToScreenPosition(this.FightingPositions[i - 1]);
+                Vector2 screenPos2 = camera.WorldToScreenPosition(this.FightingPositions[i]);
+
+                Vector2 point1 = Utils.PhysicsUtils.MoveTowardBounded(screenPos1, screenPos2, 15);
+                Vector2 point2 = Utils.PhysicsUtils.MoveTowardBounded(screenPos2, screenPos1, 15);
+
+                graphics.DrawCircle(screenPos2, 15, color, depth);
+                if (Vector2.Distance(screenPos1, screenPos2) > 30)
+                {
+                    graphics.DrawLine(point1, point2, color, depth);
+                }
+            }
+
+            if (supplyPoint.Value != null)
+            {
+                Vector2 point = camera.WorldToScreenPosition(supplyPoint.Value.Position);
+                graphics.DrawCircle(point, 15, color, depth);
             }
         }
 
@@ -257,76 +310,49 @@ namespace MyGame.materiel
             return null;
         }
 
-        public List<Vector2> FightingPositions(int count)
+        public List<Vector2> FightingPositions
         {
-            List<Vector2> positions = new List<Vector2>();
-            if (count == 1)
+            get
             {
-                positions.Add(Vector2.Lerp(position1, position2, 0.5f));
-                return positions;
-            }
-            else
-            {
-                for (float i = 0; i < count; i++)
-                {
-                    positions.Add(Vector2.Lerp(position1, position2, i / ((float)count - 1f)));
-                }
-                return positions;
+                return this.fightingPositions.Value;
             }
         }
 
-        public Vector2 FightingPosition(int index)
+        public bool FightingPositionExists(int index)
         {
-            int maxPositionCount = this.MaximumFightingPositions();
-            List<Vector2> positions = this.FightingPositions(maxPositionCount);
-
-            if (index < 0 || maxPositionCount == 0)
-            {
-                return this.ResupplyPoint.Position;
-            }
-            else if (index >= maxPositionCount)
-            {
-                return positions[maxPositionCount - 1];
-            }
-            else
-            {
-                return positions[index];
-            }
+            return this.FightingPositions.Count > index && index >= 0;
         }
 
-        public float ResupplyLapDistance(int positionCount)
+        public float ResupplyLapDistance()
         {
             if(this.supplyPoint.Value == null)
             {
                 return float.PositiveInfinity;
             }
 
-            List<Vector2> positions = this.FightingPositions(positionCount);
-
             float distance = 0;
-            foreach (Vector2 pos in positions)
+            foreach (Vector2 pos in this.FightingPositions)
             {
                 distance = distance + Vector2.Distance(this.supplyPoint.Value.Position, pos) * 2;
             }
             return distance;
         }
 
-        public float ResupplyLapTime(int positionCount)
+        public float ResupplyLapTime()
         {
-            return this.ResupplyLapDistance(positionCount) / Vehicle.maxSpeed;
+            return this.ResupplyLapDistance() / Vehicle.maxSpeed;
         }
 
-        public Vector2 FarthestPosition(int positionCount)
+        public Vector2 FarthestPosition()
         {
-            List<Vector2> positions = this.FightingPositions(positionCount);
-            if (positions.Count == 0)
+            if (this.FightingPositions.Count == 0)
             {
                 return new Vector2(float.PositiveInfinity, float.PositiveInfinity);
             }
             else
             {
-                Vector2 farthest = positions[0];
-                foreach(Vector2 pos in positions)
+                Vector2 farthest = this.FightingPositions[0];
+                foreach (Vector2 pos in this.FightingPositions)
                 {
                     if (Vector2.Distance(this.supplyPoint.Value.Position, pos) > Vector2.Distance(this.supplyPoint.Value.Position, farthest))
                     {
@@ -339,31 +365,16 @@ namespace MyGame.materiel
 
         public float MaxResupplyLapTime(int positionCount)
         {
-            Vector2 farthestPos = this.FarthestPosition(positionCount);
+            Vector2 farthestPos = this.FarthestPosition();
             float distance = Vector2.Distance(this.supplyPoint.Value.Position, farthestPos);
             float cost = distance / Vehicle.distancePerMateriel;
 
             return (CombatVehicle.maxMateriel - (cost * 2)) * Vehicle.secondsPerMateriel;
         }
 
-        public int MaximumFightingPositions()
-        {
-            for (int i = combatVehicles.Value.Count - 1; i >= 1; i--)
-            {
-                float maxLap = this.MaxResupplyLapTime(i);
-                float lap = this.ResupplyLapTime(i);
-                float resupplyVicCount = (float)(combatVehicles.Value.Count - i);
-                if (maxLap >= lap / resupplyVicCount)
-                {
-                    return i;
-                }
-            }
-            return 0;
-        }
-
         public float TimeUntilFightingPositionAbandoned(int index)
         {
-            if (index < 0 || index >= this.MaximumFightingPositions())
+            if (index < 0 || index >= this.FightingPositions.Count)
             {
                 return 0;
             }
@@ -390,6 +401,47 @@ namespace MyGame.materiel
                     //otherVic.HandoffExtraMateriel(vic);
                 }
             }
+        }
+
+        private int less(Vector2 a, Vector2 b)
+        {
+            Vector2 center = new Vector2(0);
+            if (this.ResupplyPoint == null)
+            {
+                foreach (Vector2 pos in this.FightingPositions)
+                {
+                    center = center + pos;
+                }
+                center = center / (float)this.FightingPositions.Count;
+            }
+            else
+            {
+                center = this.ResupplyPoint.Position;
+            }
+
+            if (a.X - center.X >= 0 && b.X - center.X < 0)
+                return 1;
+            if (a.X - center.X < 0 && b.X - center.X >= 0)
+                return -1;
+            if (a.X - center.X == 0 && b.X - center.X == 0)
+            {
+                if (a.Y - center.Y >= 0 || b.Y - center.Y >= 0)
+                    return Math.Sign(a.Y - b.Y);
+                return Math.Sign(b.Y - a.Y);
+            }
+
+            // compute the cross product of vectors (center -> a) x (center -> b)
+            float det = (a.X - center.X) * (b.Y - center.Y) - (b.X - center.X) * (a.Y - center.Y);
+            if (det < 0)
+                return 1;
+            if (det > 0)
+                return -1;
+
+            // points a and b are on the same line from the center
+            // check which point is closer to the center
+            float d1 = (a.X - center.X) * (a.X - center.X) + (a.Y - center.Y) * (a.Y - center.Y);
+            float d2 = (b.X - center.X) * (b.X - center.X) + (b.Y - center.Y) * (b.Y - center.Y);
+            return Math.Sign(d1 - d2);
         }
     }
 }

@@ -22,6 +22,8 @@ namespace MyGame.ClientUI
         protected static IOEvent constructCombat = new KeyPressEvent(Keys.C);
         protected static IOEvent constructTransport = new KeyPressEvent(Keys.V);
         protected static IOEvent createCompany = new KeyPressEvent(Keys.Z);
+        protected static IOEvent ctrPress = new KeyPressEvent(Keys.LeftControl);
+        protected static IOEvent ctrRelease = new KeyReleaseEvent(Keys.LeftControl);
 
         public static void RegisterIO(InputManager ioManager, IOObserver ioObserver)
         {
@@ -32,6 +34,8 @@ namespace MyGame.ClientUI
             ioManager.Register(constructCombat, ioObserver);
             ioManager.Register(constructTransport, ioObserver);
             ioManager.Register(createCompany, ioObserver);
+            ioManager.Register(ctrPress, ioObserver);
+            ioManager.Register(ctrRelease, ioObserver);
         }
 
         private ClientGame game;

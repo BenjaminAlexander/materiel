@@ -31,7 +31,7 @@ namespace MyGame
         private float rotation = 0;
 
         private float zoomIncrement = (float).001;
-        private float maxZoom = 3;
+        private float maxZoom = 1;
         private float minZoom = (float).1;
 
         public Camera(Vector2 position, float zoom, float rotation, GraphicsDeviceManager graphics, InputManager ioManager)
@@ -73,6 +73,8 @@ namespace MyGame
             currentZoomInterpolationTime = currentZoomInterpolationTime + seconds;
 
             zoom = MathHelper.Lerp(zoom, targetZoom, currentZoomInterpolationTime / zoomInterpolationTime);
+            zoom = Math.Min(zoom, maxZoom);
+            zoom = Math.Max(zoom, minZoom);
         }
 
         public Vector2 Position
