@@ -20,7 +20,7 @@ namespace MyGame.materiel
         private Vector2ListMember fightingPositions;
         private GameObjectReferenceField<Base> supplyPoint;
 
-        //private Dictionary<int, CombatVehicle> lastVic = new Dictionary<int, CombatVehicle>();
+        private Dictionary<int, CombatVehicle> lastVic = new Dictionary<int, CombatVehicle>();
 
         public int NextPosIndex
         {
@@ -31,11 +31,20 @@ namespace MyGame.materiel
                     return -1;
                 }
 
-                int rtn = 0;
-                float rtnTime = this.TimeUntilFightingPositionAbandoned(rtn);
-                for (int i = 1; i < this.FightingPositions.Count; i++)
+                int rtn = -1;
+                float rtnTime = float.PositiveInfinity;
+                for (int i = 0; i < this.FightingPositions.Count; i++)
                 {
-                    float newTime = this.TimeUntilFightingPositionAbandoned(i);
+                    float newTime;
+                    if (!lastVic.ContainsKey(i))
+                    {
+                        newTime = 0;
+                    }
+                    else
+                    {
+                        newTime = lastVic[i].TimeUntilFightingPositionAbondoned();
+                    }
+
                     if (newTime < rtnTime)
                     {
                         rtnTime = newTime;
@@ -43,36 +52,49 @@ namespace MyGame.materiel
                     }
                 }
                 return rtn;
+                
             }
         }
 
-        public void SetVehicleTargetPosition(CombatVehicle vic)
-        {
 
-        }
-
-        /*
         public int NextFightingPosition(CombatVehicle vic)
         {
-            bool emptyPosFound = false;
-            int emptyPos = 0;
-            float emptyTime = 0;
+            if (this.FightingPositions.Count == 0)
+            {
+                return -1;
+            }
+
+            int bestPosition = -1;
+            float timeInBest = 0;
+            float timeBestAbandoned = float.PositiveInfinity;
+
             for (int i = 0; i < this.FightingPositions.Count; i++)
             {
-                float newEmptyTime = vic.TimeUntilFightingPositionAbondoned(i);
-                if (this.TimeUntilFightingPositionAbandoned(i) <= 0 && newEmptyTime > 0 && (!emptyPosFound || newEmptyTime > emptyTime))
+                if (!lastVic.ContainsKey(i))
                 {
-                    emptyPosFound = true;
-                    emptyPos = i;
-                    emptyTime = newEmptyTime;
+                    float timeInPos = vic.TimeUntilFightingPositionAbondoned(i);
+                    if ((timeBestAbandoned != 0 && timeInPos > 0) || timeInPos > timeInBest)
+                    {
+                        bestPosition = i;
+                        timeInBest = timeInPos;
+                        timeBestAbandoned = 0;
+                    }
+                }
+                else if (timeBestAbandoned != 0)
+                {
+                    float currentTime = lastVic[i].TimeUntilFightingPositionAbondoned();
+                    float timeInPos = vic.TimeUntilFightingPositionAbondoned(i);
+                    if (timeBestAbandoned > currentTime && timeInPos > currentTime)
+                    {
+                        bestPosition = i;
+                        timeInBest = timeInPos;
+                        timeBestAbandoned = currentTime;
+                    }
                 }
             }
 
-            if (emptyPosFound)
-            {
-                return emptyPos;
-            }
-        }*/
+            return bestPosition;
+        }
 
 
         public Company(GameObjectCollection collection)
@@ -179,19 +201,27 @@ namespace MyGame.materiel
                     this.fightingPositions.Value.Insert(0, pos);
                 }
             }
-
-            //lastVic = new Dictionary<int, CombatVehicle>();
         }
-        /*
-        private void UpdateLastVic(CombatVehicle vic)
+        
+        public void RemoveFromLastVic(CombatVehicle vic)
         {
-            int targetIndex = vic.TargetFightingPosition;
-            if(lastVic.ContainsValue(vic))
+            if (lastVic.ContainsKey(vic.TargetFightingPosition) && lastVic[vic.TargetFightingPosition] != null && lastVic[vic.TargetFightingPosition] == vic)
             {
-                lastVic.Remove(lastVic.
+                lastVic.Remove(vic.TargetFightingPosition);
             }
-            
-        }*/
+        }
+
+        public void AddToLastVic(CombatVehicle vic)
+        {
+            if (vic.TargetFightingPosition != -1 && (
+                !lastVic.ContainsKey(vic.TargetFightingPosition) ||
+                lastVic[vic.TargetFightingPosition] == null || 
+                lastVic[vic.TargetFightingPosition] == vic || 
+                lastVic[vic.TargetFightingPosition].TimeUntilFightingPositionAbondoned() < vic.TimeUntilFightingPositionAbondoned()))
+            {
+                lastVic[vic.TargetFightingPosition] = vic;
+            }
+        }
 
         public string GetHudText()
         {
@@ -374,21 +404,14 @@ namespace MyGame.materiel
 
         public float TimeUntilFightingPositionAbandoned(int index)
         {
-            if (index < 0 || index >= this.FightingPositions.Count)
+            if (index < 0 || index >= this.FightingPositions.Count || !lastVic.ContainsKey(index))
             {
                 return 0;
             }
-
-            float time = 0;
-            foreach (CombatVehicle vic in combatVehicles.Value)
+            else
             {
-                if (vic.TargetFightingPosition == index)
-                {
-                    float newTime = vic.TimeUntilFightingPositionAbondoned();
-                    time = Math.Max(time, newTime);
-                }
+                return lastVic[index].TimeUntilFightingPositionAbondoned();
             }
-            return time;
         }
 
         public void OccupyFightingPosition(CombatVehicle vic)
@@ -397,8 +420,15 @@ namespace MyGame.materiel
             {
                 if (otherVic != vic && otherVic.TargetFightingPosition == vic.TargetFightingPosition && otherVic.InTargetFightingPosition)
                 {
-                    otherVic.TargetFightingPosition = -1;
-                    //otherVic.HandoffExtraMateriel(vic);
+                    if (otherVic.TimeUntilFightingPositionAbondoned() > vic.TimeUntilFightingPositionAbondoned())
+                    {
+                        vic.TargetFightingPosition = this.NextFightingPosition(vic);
+                        vic = otherVic;
+                    }
+                    else
+                    {
+                        otherVic.TargetFightingPosition = this.NextFightingPosition(otherVic);
+                    }
                 }
             }
         }

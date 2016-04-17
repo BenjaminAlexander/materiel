@@ -39,7 +39,16 @@ namespace MyGame.materiel
         {
             set
             {
+                Company co = this.Company.Dereference();
+                if (co != null)
+                {
+                    co.RemoveFromLastVic(this);
+                }
                 targetFightingPos.Value = value;
+                if (co != null)
+                {
+                    co.AddToLastVic(this);
+                }
             }
 
             get
@@ -93,7 +102,7 @@ namespace MyGame.materiel
             base.ResupplyComplete();
             if (this.Company.Dereference() != null)
             {
-                this.TargetFightingPosition = this.Company.Dereference().NextPosIndex;
+                this.TargetFightingPosition = this.Company.Dereference().NextFightingPosition(this);
             }
         }
 
@@ -241,6 +250,12 @@ namespace MyGame.materiel
             }
 
             return Math.Sign(this.Materiel - other.Materiel);
+        }
+
+        public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
+        {
+            base.Draw(gameTime, graphics);
+            graphics.DrawDebugFont(this.TimeUntilFightingPositionAbondoned().ToString(), this.Position + new Vector2(-25, 0), 1f);
         }
     }
 }

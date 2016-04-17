@@ -13,8 +13,8 @@ namespace MyGame.materiel
 {
     public abstract class Vehicle : PhysicalObject, IPlayerControlled
     {
-        public const float distancePerMateriel = 600;
-        public const float secondsPerMateriel = 12;
+        public const float distancePerMateriel = 1800;
+        public const float secondsPerMateriel = 32;
         private static Collidable collidable = new Collidable(TextureLoader.GetTexture("Enemy"), Color.White, TextureLoader.GetTexture("Enemy").CenterOfMass, .9f);
         public override Collidable Collidable
         {
@@ -111,7 +111,6 @@ namespace MyGame.materiel
 
         public virtual void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics, Camera camera, Color color, float depth)
         {
-            graphics.DrawCircle(camera.WorldToScreenPosition(this.Position), 15, color, depth);
         }
 
         public float Range()
