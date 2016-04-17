@@ -78,7 +78,7 @@ namespace MyGame.materiel
             secondsRemaining = seconds - (maxMoveDistance / maxSpeed);
         }
 
-        public float MoveToward(Vector2 targetPos, float seconds)
+        public void MoveTowardAndIdle(Vector2 targetPos, float seconds)
         {
             Vector2 resultPosition;
             float secondsRemaining;
@@ -88,7 +88,7 @@ namespace MyGame.materiel
 
             this.Position = resultPosition;
             this.materiel.Value = Math.Max(this.materiel.Value - cost, 0f);
-            return secondsRemaining;
+            this.Idle(secondsRemaining);
         }
 
         public override void MoveOutsideWorld(Vector2 position, Vector2 movePosition)

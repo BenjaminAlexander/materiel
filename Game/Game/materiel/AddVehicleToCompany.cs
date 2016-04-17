@@ -11,7 +11,7 @@ namespace MyGame.materiel
 {
     class AddVehicleToCompany : RtsCommandMessage
     {
-        public AddVehicleToCompany(LocalPlayer player, Company co, Vehicle vic)
+        public AddVehicleToCompany(LocalPlayer player, Company co, CombatVehicle vic)
         {
             this.Append(co.ID);
             this.Append(vic.ID);
@@ -24,7 +24,7 @@ namespace MyGame.materiel
             int vehicleId = message.ReadInt();
 
             Company co = game.GameObjectCollection.Get<Company>(companyId);
-            Vehicle vic = game.GameObjectCollection.Get<Vehicle>(vehicleId);
+            CombatVehicle vic = game.GameObjectCollection.Get<CombatVehicle>(vehicleId);
             if (player.Owns(co) && player.Owns(co))
             {
                 co.AddVehicle(vic);

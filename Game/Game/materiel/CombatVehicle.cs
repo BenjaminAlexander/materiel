@@ -11,7 +11,7 @@ using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.materiel
 {
-    public class CombatVehicle : Vehicle, IComparable
+    public class CombatVehicle : Vehicle
     {
         public const float maxMateriel = 5;
         private IntegerGameObjectMember targetFightingPos;
@@ -79,30 +79,16 @@ namespace MyGame.materiel
             }
         }
 
-        public bool InResupplyQueue()
-        {
-            if (this.ResupplyPoint != null)
-            {
-                return this.ResupplyPoint.InResupplyQueue(this);
-            }
-            return false;
-        }
-
         public override void ServerOnlyUpdate(float secondsElapsed)
         {
             base.ServerOnlyUpdate(secondsElapsed);
-            if (this.TargetFightingPosition == -1 && this.DistanceToResuplyPoint() < 10 && !this.InResupplyQueue() && this.ResupplyPoint != null)
+            if (this.TargetFightingPosition == -1 && 
+                this.ResupplyPoint != null &&
+                Vector2.Distance(this.Position, this.ResupplyPoint.Position) < 10 &&
+                !this.ResupplyPoint.InResupplyQueue(this) &&
+                this.ResupplyPoint != null)
             {
                 this.ResupplyPoint.EnqueueTransport(this);
-            }
-        }
-
-        public override void ResupplyComplete()
-        {
-            base.ResupplyComplete();
-            if (this.Company.Dereference() != null)
-            {
-                this.TargetFightingPosition = this.Company.Dereference().NextFightingPosition(this);
             }
         }
 
@@ -117,7 +103,8 @@ namespace MyGame.materiel
             this.MoveToward(this.TargetPosition, seconds, out resultPosition, out secondsRemaining, out cost);
             cost = cost + this.IdleCost(secondsRemaining);
 
-            if (this.Materiel - cost < this.MoveCostToTarget() + this.CostToReturnToBaseFromFightingPosition())
+            if (this.ResupplyPoint == null ||
+                this.Materiel - cost < this.MoveCost(Vector2.Distance(this.Position, this.TargetPosition)) + this.MoveCost(Vector2.Distance(this.ResupplyPoint.Position, this.TargetPosition)))
             {
                 this.TargetFightingPosition = -1;
             }
@@ -129,38 +116,15 @@ namespace MyGame.materiel
                 this.Company.Dereference().OccupyFightingPosition(this);
             }
 
-            float secondsLeft = this.MoveToward(this.TargetPosition, seconds);
-            this.Idle(secondsLeft);
+            this.MoveTowardAndIdle(this.TargetPosition, seconds);
         }
 
-        public bool InTargetFightingPosition
+        public override void ResupplyComplete()
         {
-            get
+            base.ResupplyComplete();
+            if (this.Company.Dereference() != null)
             {
-                return this.TargetPosition == this.Position;
-            }
-        }
-
-        public float MoveCostToTarget()
-        {
-            return this.MoveCost(Vector2.Distance(this.Position, this.TargetPosition));
-        }
-
-        public float DistanceToTarget()
-        {
-            return Vector2.Distance(this.Position, this.TargetPosition);
-        }
-
-        public float DistanceToResuplyPoint()
-        {
-            Base rsp = this.ResupplyPoint;
-            if (rsp != null)
-            {
-                return Vector2.Distance(this.Position, this.ResupplyPoint.Position);
-            }
-            else
-            {
-                return float.PositiveInfinity;
+                this.TargetFightingPosition = this.Company.Dereference().NextFightingPosition(this);
             }
         }
 
@@ -172,7 +136,9 @@ namespace MyGame.materiel
         public float TimeUntilFightingPositionAbondoned(int index)
         {
             Company co = this.Company.Dereference();
-            if (co == null || co.ResupplyPoint == null || !co.FightingPositionExists(index))
+            if (co == null || 
+                co.ResupplyPoint == null || 
+                !(co.FightingPositions.Count > index && index >= 0))
             {
                 return 0;
             }
@@ -185,22 +151,6 @@ namespace MyGame.materiel
 
             float time = timeToTarget + this.IdleTime(idleMateriel);
             return time;
-        }
-
-        public float TimeUntilMaterielEmpty()
-        {
-            float moveCost = this.MoveCostToTarget();
-            if (moveCost >= this.Materiel)
-            {
-                return this.Range() / this.MaxSpeed;
-            }
-            else
-            {
-                float timeToTarget = this.DistanceToTarget() / this.MaxSpeed;
-                float idleMateriel = this.Materiel - moveCost;
-                float idleTime = this.IdleTime(idleMateriel);
-                return timeToTarget + idleTime;
-            }
         }
 
         public Base ResupplyPoint
@@ -217,45 +167,6 @@ namespace MyGame.materiel
                     return co.ResupplyPoint;
                 }
             }
-        }
-
-        public float CostToReturnToBase()
-        {
-            return this.MoveCost(this.DistanceToResuplyPoint());
-        }
-
-        public float CostToReturnToBaseFromFightingPosition()
-        {
-            if(this.ResupplyPoint == null)
-            {
-                return float.PositiveInfinity;
-            }
-            float distance = Vector2.Distance(this.ResupplyPoint.Position, this.TargetPosition);
-            return this.MoveCost(distance);
-        }
-
-        // -1 = supply this first
-        // 1 = supply obj first
-        public int CompareTo(object obj)
-        {
-            CombatVehicle other = (CombatVehicle)obj;
-            if (this.TimeUntilMaterielEmpty() != other.TimeUntilMaterielEmpty())
-            {
-                return Math.Sign(this.TimeUntilMaterielEmpty() - other.TimeUntilMaterielEmpty());
-            }
-
-            if (other.DistanceToTarget() != this.DistanceToTarget())
-            {
-                return Math.Sign(other.DistanceToTarget() - this.DistanceToTarget());
-            }
-
-            return Math.Sign(this.Materiel - other.Materiel);
-        }
-
-        public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
-        {
-            base.Draw(gameTime, graphics);
-            graphics.DrawDebugFont(this.TimeUntilFightingPositionAbondoned().ToString(), this.Position + new Vector2(-25, 0), 1f);
         }
     }
 }

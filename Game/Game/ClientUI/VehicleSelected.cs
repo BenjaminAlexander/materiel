@@ -37,7 +37,10 @@ namespace MyGame.ClientUI
 
                 if (rightClickCompany != null)
                 {
-                    new AddVehicleToCompany(this.LocalPlayer, rightClickCompany, vehicle);
+                    if (vehicle is CombatVehicle)
+                    {
+                        new AddVehicleToCompany(this.LocalPlayer, rightClickCompany, (CombatVehicle)vehicle);
+                    }
                     this.LocalPlayer.PopUIContext();
                     new CompanySelected(this.NextInStack, rightClickCompany);
                 }

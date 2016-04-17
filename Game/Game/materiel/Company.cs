@@ -16,46 +16,10 @@ namespace MyGame.materiel
 
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
         private GameObjectReferenceListField<CombatVehicle> combatVehicles;
-        //private GameObjectReferenceListField<Transport> transports;
         private Vector2ListMember fightingPositions;
         private GameObjectReferenceField<Base> supplyPoint;
 
         private Dictionary<int, CombatVehicle> lastVic = new Dictionary<int, CombatVehicle>();
-
-        public int NextPosIndex
-        {
-            get
-            {
-                if (this.FightingPositions.Count == 0)
-                {
-                    return -1;
-                }
-
-                int rtn = -1;
-                float rtnTime = float.PositiveInfinity;
-                for (int i = 0; i < this.FightingPositions.Count; i++)
-                {
-                    float newTime;
-                    if (!lastVic.ContainsKey(i))
-                    {
-                        newTime = 0;
-                    }
-                    else
-                    {
-                        newTime = lastVic[i].TimeUntilFightingPositionAbondoned();
-                    }
-
-                    if (newTime < rtnTime)
-                    {
-                        rtnTime = newTime;
-                        rtn = i;
-                    }
-                }
-                return rtn;
-                
-            }
-        }
-
 
         public int NextFightingPosition(CombatVehicle vic)
         {
@@ -104,7 +68,6 @@ namespace MyGame.materiel
           
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
             combatVehicles = new GameObjectReferenceListField<CombatVehicle>(this);
-            //transports = new GameObjectReferenceListField<Transport>(this);
             supplyPoint = new GameObjectReferenceField<Base>(this);
             fightingPositions = new Vector2ListMember(this);
         }
@@ -122,31 +85,20 @@ namespace MyGame.materiel
             return obj;
         }
 
-        public void AddVehicle(Vehicle vic)
+        public void AddVehicle(CombatVehicle vic)
         {
             if (vic.Company.Dereference() != null)
             {
                 vic.Company.Dereference().RemoveVehicle(vic);
             }
             vic.Company = this;
-            if (vic is Transport)
-            {
-                //this.transports.Value.Add((Transport)vic);
-            }
-            else
-            {
-                combatVehicles.Value.Add((CombatVehicle)vic);
-                ((CombatVehicle)vic).TargetFightingPosition = -1;
-            }
+            combatVehicles.Value.Add(vic);
+            vic.TargetFightingPosition = this.NextFightingPosition(vic);
         }
 
         public void RemoveVehicle(Vehicle vic)
         {
-            if (vic is Transport)
-            {
-                //this.transports.RemoveAllReferences((Transport)vic);
-            }
-            else
+            if (vic is CombatVehicle)
             {
                 combatVehicles.RemoveAllReferences((CombatVehicle)vic);
             }
@@ -279,12 +231,6 @@ namespace MyGame.materiel
             {
                 vic.Company = null;
             }
-    
-            /*
-            foreach (Transport vic in this.transports.Value.ToArray())
-            {
-                vic.Company = null;
-            }*/
 
             base.Destroy();
         }
@@ -302,44 +248,6 @@ namespace MyGame.materiel
             }
         }
 
-        public CombatVehicle NextResupply()
-        {
-            List<GameObjectReference<CombatVehicle>> vicRefList = new List<GameObjectReference<CombatVehicle>>(combatVehicles.Value);
-            if(vicRefList.Count == 0)
-            {
-                return null;
-            }
-
-            List<CombatVehicle> vehicleList = new List<CombatVehicle>();
-            foreach (CombatVehicle vic in vicRefList)
-            {
-                vehicleList.Add(vic);
-            }
-            vehicleList.Sort();
-
-            foreach (CombatVehicle vic in vehicleList)
-            {
-                bool transportEnRoute = false;
-                /*foreach (Transport transport in transports.Value)
-                {
-                    if (transport.ResupplyTarget == vic)
-                    {
-                        transportEnRoute = true;
-                        break;
-                    }
-                }*/
-
-                if (!transportEnRoute)
-                {
-                    if (vic != null)
-                    {
-                        return vic;
-                    }
-                }
-            }
-            return null;
-        }
-
         public List<Vector2> FightingPositions
         {
             get
@@ -348,77 +256,13 @@ namespace MyGame.materiel
             }
         }
 
-        public bool FightingPositionExists(int index)
-        {
-            return this.FightingPositions.Count > index && index >= 0;
-        }
-
-        public float ResupplyLapDistance()
-        {
-            if(this.supplyPoint.Value == null)
-            {
-                return float.PositiveInfinity;
-            }
-
-            float distance = 0;
-            foreach (Vector2 pos in this.FightingPositions)
-            {
-                distance = distance + Vector2.Distance(this.supplyPoint.Value.Position, pos) * 2;
-            }
-            return distance;
-        }
-
-        public float ResupplyLapTime()
-        {
-            return this.ResupplyLapDistance() / Vehicle.maxSpeed;
-        }
-
-        public Vector2 FarthestPosition()
-        {
-            if (this.FightingPositions.Count == 0)
-            {
-                return new Vector2(float.PositiveInfinity, float.PositiveInfinity);
-            }
-            else
-            {
-                Vector2 farthest = this.FightingPositions[0];
-                foreach (Vector2 pos in this.FightingPositions)
-                {
-                    if (Vector2.Distance(this.supplyPoint.Value.Position, pos) > Vector2.Distance(this.supplyPoint.Value.Position, farthest))
-                    {
-                        farthest = pos;
-                    }
-                }
-                return farthest;
-            }
-        }
-
-        public float MaxResupplyLapTime(int positionCount)
-        {
-            Vector2 farthestPos = this.FarthestPosition();
-            float distance = Vector2.Distance(this.supplyPoint.Value.Position, farthestPos);
-            float cost = distance / Vehicle.distancePerMateriel;
-
-            return (CombatVehicle.maxMateriel - (cost * 2)) * Vehicle.secondsPerMateriel;
-        }
-
-        public float TimeUntilFightingPositionAbandoned(int index)
-        {
-            if (index < 0 || index >= this.FightingPositions.Count || !lastVic.ContainsKey(index))
-            {
-                return 0;
-            }
-            else
-            {
-                return lastVic[index].TimeUntilFightingPositionAbondoned();
-            }
-        }
-
         public void OccupyFightingPosition(CombatVehicle vic)
         {
             foreach (CombatVehicle otherVic in combatVehicles.Value)
             {
-                if (otherVic != vic && otherVic.TargetFightingPosition == vic.TargetFightingPosition && otherVic.InTargetFightingPosition)
+                if (otherVic != vic && 
+                    otherVic.TargetFightingPosition == vic.TargetFightingPosition
+                    && otherVic.TargetPosition == otherVic.Position)
                 {
                     if (otherVic.TimeUntilFightingPositionAbondoned() > vic.TimeUntilFightingPositionAbondoned())
                     {
