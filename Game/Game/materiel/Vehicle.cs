@@ -44,7 +44,7 @@ namespace MyGame.materiel
             PhysicalObject.ServerInitialize(vic, position, 0);
         }
 
-        public GameObjectReference<Company> Company
+        public Company Company
         {
             set
             {

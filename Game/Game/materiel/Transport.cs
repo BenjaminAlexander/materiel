@@ -47,9 +47,9 @@ namespace MyGame.materiel
 
         public Base ResupplyPoint()
         {
-            if (this.Company.Dereference() != null)
+            if (this.Company != null)
             {
-                return this.Company.Dereference().ResupplyPoint;
+                return this.Company.ResupplyPoint;
             }
             return null;
         }
@@ -65,7 +65,7 @@ namespace MyGame.materiel
 
         public override void ResupplyComplete()
         {
-            if (this.Company.Dereference() != null)
+            if (this.Company != null)
             {
             }
         }

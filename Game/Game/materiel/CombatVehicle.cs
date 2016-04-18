@@ -39,15 +39,14 @@ namespace MyGame.materiel
         {
             set
             {
-                Company co = this.Company.Dereference();
-                if (co != null)
+                if (this.Company != null)
                 {
-                    co.RemoveFromLastVic(this);
+                    this.Company.RemoveFromLastVic(this);
                 }
                 targetFightingPos.Value = value;
-                if (co != null)
+                if (this.Company != null)
                 {
-                    co.AddToLastVic(this);
+                    this.Company.AddToLastVic(this);
                 }
             }
 
@@ -61,12 +60,11 @@ namespace MyGame.materiel
         {
             get
             {
-                Company co = this.Company.Dereference();
-                if (co != null)
+                if (this.Company != null)
                 {
-                    if (this.TargetFightingPosition >= 0 && co.FightingPositions.Count > this.TargetFightingPosition)
+                    if (this.TargetFightingPosition >= 0 && this.Company.FightingPositions.Count > this.TargetFightingPosition)
                     {
-                        return co.FightingPositions[this.TargetFightingPosition];
+                        return this.Company.FightingPositions[this.TargetFightingPosition];
                     }
 
                     this.TargetFightingPosition = -1;
@@ -90,6 +88,13 @@ namespace MyGame.materiel
             {
                 this.ResupplyPoint.EnqueueTransport(this);
             }
+
+            if (this.TargetFightingPosition != -1 &&
+                this.Position == this.TargetPosition &&
+                this.Company != null)
+            {
+                this.Company.OccupyFightingPosition(this);
+            }
         }
 
         public override void SubclassUpdate(float seconds)
@@ -108,13 +113,6 @@ namespace MyGame.materiel
             {
                 this.TargetFightingPosition = -1;
             }
-            else if (this.TargetFightingPosition != -1 &&
-                this.Position != this.TargetPosition &&
-                resultPosition == this.TargetPosition &&
-                this.Company.Dereference() != null)
-            {
-                this.Company.Dereference().OccupyFightingPosition(this);
-            }
 
             this.MoveTowardAndIdle(this.TargetPosition, seconds);
         }
@@ -122,9 +120,9 @@ namespace MyGame.materiel
         public override void ResupplyComplete()
         {
             base.ResupplyComplete();
-            if (this.Company.Dereference() != null)
+            if (this.Company != null)
             {
-                this.TargetFightingPosition = this.Company.Dereference().NextFightingPosition(this);
+                this.TargetFightingPosition = this.Company.NextFightingPosition(this);
             }
         }
 
@@ -135,17 +133,16 @@ namespace MyGame.materiel
         
         public float TimeUntilFightingPositionAbondoned(int index)
         {
-            Company co = this.Company.Dereference();
-            if (co == null || 
-                co.ResupplyPoint == null || 
-                !(co.FightingPositions.Count > index && index >= 0))
+            if (this.Company == null ||
+                this.Company.ResupplyPoint == null ||
+                !(this.Company.FightingPositions.Count > index && index >= 0))
             {
                 return 0;
             }
 
-            Vector2 fightingPosition = co.FightingPositions[index];
+            Vector2 fightingPosition = this.Company.FightingPositions[index];
             float distanceToPosition = Vector2.Distance(this.Position, fightingPosition);
-            float distanceFightingPositionToBase = Vector2.Distance(co.ResupplyPoint.Position, fightingPosition);
+            float distanceFightingPositionToBase = Vector2.Distance(this.Company.ResupplyPoint.Position, fightingPosition);
             float timeToTarget = distanceToPosition / this.MaxSpeed;
             float idleMateriel = this.Materiel - this.MoveCost(distanceToPosition) - this.MoveCost(distanceFightingPositionToBase);
 
@@ -157,14 +154,13 @@ namespace MyGame.materiel
         {
             get
             {
-                Company co = this.Company.Dereference();
-                if (co == null)
+                if (this.Company == null)
                 {
                     return null;
                 }
                 else
                 {
-                    return co.ResupplyPoint;
+                    return this.Company.ResupplyPoint;
                 }
             }
         }

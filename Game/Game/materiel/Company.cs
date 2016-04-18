@@ -20,6 +20,7 @@ namespace MyGame.materiel
         private GameObjectReferenceField<Base> supplyPoint;
 
         private Dictionary<int, CombatVehicle> lastVic = new Dictionary<int, CombatVehicle>();
+        private Dictionary<int, CombatVehicle> fullPositions = new Dictionary<int, CombatVehicle>();
 
         public int NextFightingPosition(CombatVehicle vic)
         {
@@ -85,11 +86,16 @@ namespace MyGame.materiel
             return obj;
         }
 
+        public override void ServerOnlyUpdate(float secondsElapsed)
+        {
+            base.ServerOnlyUpdate(secondsElapsed);
+        }
+
         public void AddVehicle(CombatVehicle vic)
         {
-            if (vic.Company.Dereference() != null)
+            if (vic.Company != null)
             {
-                vic.Company.Dereference().RemoveVehicle(vic);
+                vic.Company.RemoveVehicle(vic);
             }
             vic.Company = this;
             combatVehicles.Value.Add(vic);
@@ -258,22 +264,23 @@ namespace MyGame.materiel
 
         public void OccupyFightingPosition(CombatVehicle vic)
         {
-            foreach (CombatVehicle otherVic in combatVehicles.Value)
+            if (vic.Position == vic.TargetPosition)
             {
-                if (otherVic != vic && 
-                    otherVic.TargetFightingPosition == vic.TargetFightingPosition
-                    && otherVic.TargetPosition == otherVic.Position)
+                if (fullPositions.ContainsKey(vic.TargetFightingPosition) && fullPositions[vic.TargetFightingPosition] != vic)
                 {
-                    if (otherVic.TimeUntilFightingPositionAbondoned() > vic.TimeUntilFightingPositionAbondoned())
+                    CombatVehicle otherVic = fullPositions[vic.TargetFightingPosition];
+                    if (otherVic.TargetFightingPosition == vic.TargetFightingPosition && otherVic.TargetPosition == otherVic.Position)
                     {
-                        vic.TargetFightingPosition = this.NextFightingPosition(vic);
-                        vic = otherVic;
-                    }
-                    else
-                    {
+                        if (otherVic.TimeUntilFightingPositionAbondoned() > vic.TimeUntilFightingPositionAbondoned())
+                        {
+                            CombatVehicle swap = vic;
+                            vic = otherVic;
+                            otherVic = swap;
+                        }
                         otherVic.TargetFightingPosition = this.NextFightingPosition(otherVic);
                     }
                 }
+                fullPositions[vic.TargetFightingPosition] = vic;
             }
         }
 
