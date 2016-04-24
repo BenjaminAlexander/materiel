@@ -84,6 +84,7 @@
     <Compile Include="materiel\DeleteCompany.cs" />
     <Compile Include="materiel\IPlayerControlled.cs" />
     <Compile Include="materiel\Transport.cs" />
+    <Compile Include="materiel\VehiclePosition.cs" />
     <Compile Include="Server\Player.cs" />
     <Compile Include="Server\RemotePlayer.cs" />
     <Compile Include="Server\Program.cs" />

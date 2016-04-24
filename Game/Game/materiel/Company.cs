@@ -16,7 +16,7 @@ namespace MyGame.materiel
 
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
         private GameObjectReferenceListField<CombatVehicle> combatVehicles;
-        private Vector2ListMember fightingPositions;
+        private GameObjectReferenceListField<VehiclePosition> fightingPositions;
         private GameObjectReferenceField<Base> supplyPoint;
 
         private Dictionary<int, CombatVehicle> lastVic = new Dictionary<int, CombatVehicle>();
@@ -35,7 +35,7 @@ namespace MyGame.materiel
 
             for (int i = 0; i < this.FightingPositions.Count; i++)
             {
-                if (!lastVic.ContainsKey(i))
+                if (this.VehiclePositions[i].Dereference() != null && this.VehiclePositions[i].Dereference().LastVehicle == null)
                 {
                     float timeInPos = vic.TimeUntilFightingPositionAbondoned(i);
                     if ((timeBestAbandoned != 0 && timeInPos > 0) || timeInPos > timeInBest)
@@ -70,7 +70,7 @@ namespace MyGame.materiel
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
             combatVehicles = new GameObjectReferenceListField<CombatVehicle>(this);
             supplyPoint = new GameObjectReferenceField<Base>(this);
-            fightingPositions = new Vector2ListMember(this);
+            fightingPositions = new GameObjectReferenceListField<VehiclePosition>(this);
         }
 
         public static void ServerInitialize(Company obj, PlayerGameObject controllingPlayer)
@@ -110,39 +110,38 @@ namespace MyGame.materiel
             }
         }
 
-        public void SetPositions(List<Vector2> positions)
+        public void SetPositions(GameObjectCollection collection, List<Vector2> positions)
         {
             Vector2 center = new Vector2(0);
             if (this.ResupplyPoint == null)
             {
-                foreach (Vector2 pos in this.FightingPositions)
+                foreach (Vector2 pos in positions)
                 {
                     center = center + pos;
                 }
-                center = center / (float)this.FightingPositions.Count;
+                center = center / (float)positions.Count;
             }
             else
             {
                 center = this.ResupplyPoint.Position;
             }
 
-            this.fightingPositions.Value = positions;
-            this.fightingPositions.Value.Sort(Vector2ClockwiseComparison);
+            positions.Sort(Vector2ClockwiseComparison);
 
-            if (this.fightingPositions.Value.Count > 1)
+            if (positions.Count > 1)
             {
                 int largest = 0;
-                Vector2 v1 = this.FightingPositions[0] - center;
-                Vector2 v2 = this.FightingPositions[1] - center;
+                Vector2 v1 = positions[0] - center;
+                Vector2 v2 = positions[1] - center;
                 float cos = Vector2.Dot(v1, v2) / (v1.Length() * v2.Length());
-                float distance = Vector2.Distance(this.FightingPositions[0], this.FightingPositions[1]);
+                float distance = Vector2.Distance(positions[0], positions[1]);
 
-                for (int i = 1; i < this.fightingPositions.Value.Count; i++)
+                for (int i = 1; i < positions.Count; i++)
                 {
-                    v1 = this.FightingPositions[i] - center;
-                    v2 = this.FightingPositions[(i + 1) % this.FightingPositions.Count] - center;
+                    v1 = positions[i] - center;
+                    v2 = positions[(i + 1) % positions.Count] - center;
                     float newCos = Vector2.Dot(v1, v2) / (v1.Length() * v2.Length());
-                    float newDistance = Vector2.Distance(this.FightingPositions[i], this.FightingPositions[(i + 1) % this.FightingPositions.Count]);
+                    float newDistance = Vector2.Distance(positions[i], positions[(i + 1) % positions.Count]);
 
                     if (newCos < cos || (newCos == cos && newDistance > distance))
                     {
@@ -152,12 +151,24 @@ namespace MyGame.materiel
                     }
                 }
 
-                for (; largest < this.FightingPositions.Count-1; largest++)
+                for (; largest < positions.Count-1; largest++)
                 {
-                    Vector2 pos = this.fightingPositions.Value[this.FightingPositions.Count - 1];
-                    this.fightingPositions.Value.RemoveAt(this.FightingPositions.Count - 1);
-                    this.fightingPositions.Value.Insert(0, pos);
+                    Vector2 pos = positions[positions.Count - 1];
+                    positions.RemoveAt(positions.Count - 1);
+                    positions.Insert(0, pos);
                 }
+            }
+
+            foreach(VehiclePosition pos in this.fightingPositions.Value)
+            {
+                pos.Destroy();
+            }
+
+            this.fightingPositions.Value.Clear();
+
+            foreach(Vector2 pos in positions)
+            {
+                this.fightingPositions.Value.Add(VehiclePosition.Factory(collection, this, pos));
             }
         }
         
@@ -258,29 +269,27 @@ namespace MyGame.materiel
         {
             get
             {
-                return this.fightingPositions.Value;
+                List<Vector2> rtn = new List<Vector2>();
+                foreach (VehiclePosition position in this.fightingPositions.Value)
+                {
+                    if (position == null)
+                    {
+                        rtn.Add(new Vector2(0));
+                    }
+                    else
+                    {
+                        rtn.Add(position.Position);
+                    }
+                }
+                return rtn;
             }
         }
 
-        public void OccupyFightingPosition(CombatVehicle vic)
+        public List<GameObjectReference<VehiclePosition>> VehiclePositions
         {
-            if (vic.Position == vic.TargetPosition)
+            get
             {
-                if (fullPositions.ContainsKey(vic.TargetFightingPosition) && fullPositions[vic.TargetFightingPosition] != vic)
-                {
-                    CombatVehicle otherVic = fullPositions[vic.TargetFightingPosition];
-                    if (otherVic.TargetFightingPosition == vic.TargetFightingPosition && otherVic.TargetPosition == otherVic.Position)
-                    {
-                        if (otherVic.TimeUntilFightingPositionAbondoned() > vic.TimeUntilFightingPositionAbondoned())
-                        {
-                            CombatVehicle swap = vic;
-                            vic = otherVic;
-                            otherVic = swap;
-                        }
-                        otherVic.TargetFightingPosition = this.NextFightingPosition(otherVic);
-                    }
-                }
-                fullPositions[vic.TargetFightingPosition] = vic;
+                return this.fightingPositions.Value;
             }
         }
 

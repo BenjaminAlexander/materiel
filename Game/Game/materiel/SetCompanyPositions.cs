@@ -37,7 +37,7 @@ namespace MyGame.materiel
             Company co = game.GameObjectCollection.Get<Company>(companyId);
             if (player.Owns(co))
             {
-                co.SetPositions(positions);
+                co.SetPositions(game.GameObjectCollection, positions);
             }
         }
     }

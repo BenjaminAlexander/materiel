@@ -15,11 +15,13 @@ namespace MyGame.materiel
     {
         public const float maxMateriel = 5;
         private IntegerGameObjectMember targetFightingPos;
+        private GameObjectReferenceField<VehiclePosition> targetFightingPosition;
 
         public CombatVehicle(GameObjectCollection collection)
             : base(collection)
         {
             targetFightingPos = new IntegerGameObjectMember(this, -1);
+            targetFightingPosition = new GameObjectReferenceField<VehiclePosition>(this);
         }
 
         public static void ServerInitialize(CombatVehicle vic, PlayerGameObject controllingPlayer, Vector2 position)
@@ -39,9 +41,23 @@ namespace MyGame.materiel
         {
             set
             {
+                
+                if (this.targetFightingPosition.Value != null)
+                {
+                    this.targetFightingPosition.Value.Remove(this);
+                }
                 if (this.Company != null)
                 {
                     this.Company.RemoveFromLastVic(this);
+                    if (value == -1)
+                    {
+                        this.targetFightingPosition.Value = null;
+                    }
+                    else
+                    {
+                        this.targetFightingPosition.Value = this.Company.VehiclePositions[value];
+                        this.targetFightingPosition.Value.Add(this);
+                    }
                 }
                 targetFightingPos.Value = value;
                 if (this.Company != null)
@@ -60,20 +76,23 @@ namespace MyGame.materiel
         {
             get
             {
-                if (this.Company != null)
+                if (this.targetFightingPosition.Value != null)
                 {
-                    if (this.TargetFightingPosition >= 0 && this.Company.FightingPositions.Count > this.TargetFightingPosition)
-                    {
-                        return this.Company.FightingPositions[this.TargetFightingPosition];
-                    }
-
-                    this.TargetFightingPosition = -1;
-                    if (this.ResupplyPoint != null)
-                    {
-                        return this.ResupplyPoint.Position;
-                    }
+                    return this.targetFightingPosition.Value.Position;
+                }
+                else if (this.ResupplyPoint != null)
+                {
+                    return this.ResupplyPoint.Position;
                 }
                 return this.Position;
+            }
+        }
+
+        public VehiclePosition VehicleFightingPosition
+        {
+            get
+            {
+                return this.targetFightingPosition.Value;
             }
         }
 
@@ -89,11 +108,9 @@ namespace MyGame.materiel
                 this.ResupplyPoint.EnqueueTransport(this);
             }
 
-            if (this.TargetFightingPosition != -1 &&
-                this.Position == this.TargetPosition &&
-                this.Company != null)
+            if (this.targetFightingPosition.Value != null)
             {
-                this.Company.OccupyFightingPosition(this);
+                this.targetFightingPosition.Value.OccupyPosition(this);
             }
         }
 
@@ -112,6 +129,11 @@ namespace MyGame.materiel
                 this.Materiel - cost < this.MoveCost(Vector2.Distance(this.Position, this.TargetPosition)) + this.MoveCost(Vector2.Distance(this.ResupplyPoint.Position, this.TargetPosition)))
             {
                 this.TargetFightingPosition = -1;
+                if (this.targetFightingPosition.Value != null)
+                {
+                    this.targetFightingPosition.Value.Remove(this);
+                }
+                this.targetFightingPosition.Value = null;
             }
 
             this.MoveTowardAndIdle(this.TargetPosition, seconds);
@@ -128,14 +150,21 @@ namespace MyGame.materiel
 
         public float TimeUntilFightingPositionAbondoned()
         {
-            return TimeUntilFightingPositionAbondoned(this.TargetFightingPosition);
+            if (this.targetFightingPosition.Value != null)
+            {
+                return TimeUntilFightingPositionAbondoned(this.targetFightingPosition.Value.Position);
+            }
+            else
+            {
+                return 0;
+            }
         }
         
         public float TimeUntilFightingPositionAbondoned(int index)
         {
             if (this.Company == null ||
                 this.Company.ResupplyPoint == null ||
-                !(this.Company.FightingPositions.Count > index && index >= 0))
+                !(this.Company.VehiclePositions.Count > index && index >= 0))
             {
                 return 0;
             }
@@ -143,6 +172,23 @@ namespace MyGame.materiel
             Vector2 fightingPosition = this.Company.FightingPositions[index];
             float distanceToPosition = Vector2.Distance(this.Position, fightingPosition);
             float distanceFightingPositionToBase = Vector2.Distance(this.Company.ResupplyPoint.Position, fightingPosition);
+            float timeToTarget = distanceToPosition / this.MaxSpeed;
+            float idleMateriel = this.Materiel - this.MoveCost(distanceToPosition) - this.MoveCost(distanceFightingPositionToBase);
+
+            float time = timeToTarget + this.IdleTime(idleMateriel);
+            return time;
+        }
+
+        public float TimeUntilFightingPositionAbondoned(Vector2 pos)
+        {
+            if (this.Company == null ||
+                this.Company.ResupplyPoint == null)
+            {
+                return 0;
+            }
+
+            float distanceToPosition = Vector2.Distance(this.Position, pos);
+            float distanceFightingPositionToBase = Vector2.Distance(this.Company.ResupplyPoint.Position, pos);
             float timeToTarget = distanceToPosition / this.MaxSpeed;
             float idleMateriel = this.Materiel - this.MoveCost(distanceToPosition) - this.MoveCost(distanceFightingPositionToBase);
 
