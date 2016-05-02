@@ -19,46 +19,48 @@ namespace MyGame.materiel
         private GameObjectReferenceListField<VehiclePosition> fightingPositions;
         private GameObjectReferenceField<Base> supplyPoint;
 
-        private Dictionary<int, CombatVehicle> lastVic = new Dictionary<int, CombatVehicle>();
-        private Dictionary<int, CombatVehicle> fullPositions = new Dictionary<int, CombatVehicle>();
-
-        public int NextFightingPosition(CombatVehicle vic)
+        public void AssignFightingPosition(CombatVehicle vic)
         {
-            if (this.FightingPositions.Count == 0)
+            if (this.fightingPositions.Value.Count == 0)
             {
-                return -1;
+                return;
             }
 
-            int bestPosition = -1;
+            VehiclePosition bestPosition = null;
             float timeInBest = 0;
             float timeBestAbandoned = float.PositiveInfinity;
 
-            for (int i = 0; i < this.FightingPositions.Count; i++)
+            foreach (VehiclePosition position in this.fightingPositions.Value)
             {
-                if (this.VehiclePositions[i].Dereference() != null && this.VehiclePositions[i].Dereference().LastVehicle == null)
+                if (position != null)
                 {
-                    float timeInPos = vic.TimeUntilFightingPositionAbondoned(i);
-                    if ((timeBestAbandoned != 0 && timeInPos > 0) || timeInPos > timeInBest)
+                    float timeInPos = position.TimeUntilAbandoned(vic);
+                    if (position.LastVehicle == null)
                     {
-                        bestPosition = i;
-                        timeInBest = timeInPos;
-                        timeBestAbandoned = 0;
+                        if ((timeBestAbandoned != 0 && timeInPos > 0) || timeInPos > timeInBest)
+                        {
+                            bestPosition = position;
+                            timeInBest = timeInPos;
+                            timeBestAbandoned = 0;
+                        }
                     }
-                }
-                else if (timeBestAbandoned != 0)
-                {
-                    float currentTime = lastVic[i].TimeUntilFightingPositionAbondoned();
-                    float timeInPos = vic.TimeUntilFightingPositionAbondoned(i);
-                    if (timeBestAbandoned > currentTime && timeInPos > currentTime)
+                    else if (timeBestAbandoned != 0)
                     {
-                        bestPosition = i;
-                        timeInBest = timeInPos;
-                        timeBestAbandoned = currentTime;
+                        float currentTime = position.TimeUntilAbandoned();
+                        if (timeBestAbandoned > currentTime && timeInPos > currentTime)
+                        {
+                            bestPosition = position;
+                            timeInBest = timeInPos;
+                            timeBestAbandoned = currentTime;
+                        }
                     }
                 }
             }
 
-            return bestPosition;
+            if (bestPosition != null)
+            {
+                bestPosition.Add(vic);
+            }
         }
 
 
@@ -86,11 +88,6 @@ namespace MyGame.materiel
             return obj;
         }
 
-        public override void ServerOnlyUpdate(float secondsElapsed)
-        {
-            base.ServerOnlyUpdate(secondsElapsed);
-        }
-
         public void AddVehicle(CombatVehicle vic)
         {
             if (vic.Company != null)
@@ -99,14 +96,19 @@ namespace MyGame.materiel
             }
             vic.Company = this;
             combatVehicles.Value.Add(vic);
-            vic.TargetFightingPosition = this.NextFightingPosition(vic);
+            this.AssignFightingPosition(vic);
         }
 
         public void RemoveVehicle(Vehicle vic)
         {
             if (vic is CombatVehicle)
             {
-                combatVehicles.RemoveAllReferences((CombatVehicle)vic);
+                CombatVehicle combatVehicle = (CombatVehicle)vic;
+                if (combatVehicle.VehicleFightingPosition != null)
+                {
+                    combatVehicle.VehicleFightingPosition.Remove(combatVehicle);
+                }
+                combatVehicles.RemoveAllReferences(combatVehicle);
             }
         }
 
@@ -159,36 +161,21 @@ namespace MyGame.materiel
                 }
             }
 
-            foreach(VehiclePosition pos in this.fightingPositions.Value)
-            {
-                pos.Destroy();
-            }
-
+            List<GameObjectReference<VehiclePosition>> oldPositions = new List<GameObjectReference<VehiclePosition>>(this.fightingPositions.Value.ToArray());
             this.fightingPositions.Value.Clear();
 
-            foreach(Vector2 pos in positions)
+            foreach (Vector2 pos in positions)
             {
                 this.fightingPositions.Value.Add(VehiclePosition.Factory(collection, this, pos));
             }
-        }
-        
-        public void RemoveFromLastVic(CombatVehicle vic)
-        {
-            if (lastVic.ContainsKey(vic.TargetFightingPosition) && lastVic[vic.TargetFightingPosition] != null && lastVic[vic.TargetFightingPosition] == vic)
-            {
-                lastVic.Remove(vic.TargetFightingPosition);
-            }
-        }
 
-        public void AddToLastVic(CombatVehicle vic)
-        {
-            if (vic.TargetFightingPosition != -1 && (
-                !lastVic.ContainsKey(vic.TargetFightingPosition) ||
-                lastVic[vic.TargetFightingPosition] == null || 
-                lastVic[vic.TargetFightingPosition] == vic || 
-                lastVic[vic.TargetFightingPosition].TimeUntilFightingPositionAbondoned() < vic.TimeUntilFightingPositionAbondoned()))
+            for (int i = 0; i < oldPositions.Count; i++)
             {
-                lastVic[vic.TargetFightingPosition] = vic;
+                if(this.fightingPositions.Value.Count > i)
+                {
+                    this.fightingPositions.Value[i].Dereference().Add(oldPositions[i]);
+                }
+                oldPositions[i].Dereference().Destroy();
             }
         }
 
@@ -205,24 +192,26 @@ namespace MyGame.materiel
                 vic.DrawScreen(gameTime, graphics, camera, color, depth);
             }
 
-            if (this.FightingPositions.Count > 0)
+            VehiclePosition last = null;
+            foreach (VehiclePosition pos in this.fightingPositions.Value)
             {
-                Vector2 screenPos = camera.WorldToScreenPosition(this.FightingPositions[0]);
-                graphics.DrawCircle(screenPos, 15, color, depth);
-            }
-
-            for (int i =1; i < this.FightingPositions.Count; i++)
-            {
-                Vector2 screenPos1 = camera.WorldToScreenPosition(this.FightingPositions[i - 1]);
-                Vector2 screenPos2 = camera.WorldToScreenPosition(this.FightingPositions[i]);
-
-                Vector2 point1 = Utils.PhysicsUtils.MoveTowardBounded(screenPos1, screenPos2, 15);
-                Vector2 point2 = Utils.PhysicsUtils.MoveTowardBounded(screenPos2, screenPos1, 15);
-
-                graphics.DrawCircle(screenPos2, 15, color, depth);
-                if (Vector2.Distance(screenPos1, screenPos2) > 30)
+                if (pos != null)
                 {
-                    graphics.DrawLine(point1, point2, color, depth);
+                    pos.DrawScreen(gameTime, graphics, camera, color, depth);
+                    if (last != null)
+                    {
+                        Vector2 screenPos1 = camera.WorldToScreenPosition(pos.Position);
+                        Vector2 screenPos2 = camera.WorldToScreenPosition(last.Position);
+
+                        Vector2 point1 = Utils.PhysicsUtils.MoveTowardBounded(screenPos1, screenPos2, 15);
+                        Vector2 point2 = Utils.PhysicsUtils.MoveTowardBounded(screenPos2, screenPos1, 15);
+
+                        if (Vector2.Distance(screenPos1, screenPos2) > 30)
+                        {
+                            graphics.DrawLine(point1, point2, color, depth);
+                        }
+                    }
+                    last = pos;
                 }
             }
 
@@ -249,6 +238,11 @@ namespace MyGame.materiel
                 vic.Company = null;
             }
 
+            foreach (VehiclePosition pos in this.fightingPositions.Value.ToArray())
+            {
+                pos.Destroy();
+            }
+
             base.Destroy();
         }
 
@@ -265,44 +259,30 @@ namespace MyGame.materiel
             }
         }
 
-        public List<Vector2> FightingPositions
+        private Vector2 AveragePosition
         {
             get
             {
-                List<Vector2> rtn = new List<Vector2>();
+                Vector2 center = new Vector2(0);
+                float count = 0;
                 foreach (VehiclePosition position in this.fightingPositions.Value)
                 {
-                    if (position == null)
+                    if (position != null)
                     {
-                        rtn.Add(new Vector2(0));
-                    }
-                    else
-                    {
-                        rtn.Add(position.Position);
+                        center = center + position.Position;
+                        count = count + 1;
                     }
                 }
-                return rtn;
-            }
-        }
-
-        public List<GameObjectReference<VehiclePosition>> VehiclePositions
-        {
-            get
-            {
-                return this.fightingPositions.Value;
+                return center / count;
             }
         }
 
         private int less(Vector2 a, Vector2 b)
         {
-            Vector2 center = new Vector2(0);
+            Vector2 center;
             if (this.ResupplyPoint == null)
             {
-                foreach (Vector2 pos in this.FightingPositions)
-                {
-                    center = center + pos;
-                }
-                center = center / (float)this.FightingPositions.Count;
+                center = this.AveragePosition;
             }
             else
             {

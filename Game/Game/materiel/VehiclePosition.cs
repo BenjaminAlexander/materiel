@@ -27,20 +27,26 @@ namespace MyGame.materiel
         public static VehiclePosition Factory(GameObjectCollection collection, Company company, Vector2 position)
         {
             VehiclePosition rtn = new VehiclePosition(collection);
+            collection.Add(rtn);
             rtn.company.Value = company;
             rtn.position.Value = position;
-            collection.Add(rtn);
             return rtn;
         }
 
         public void Add(CombatVehicle vic)
         {
+            if (vic.VehicleFightingPosition != null)
+            {
+                vic.VehicleFightingPosition.Remove(vic);
+            }
             vehicles.Value.Add(vic);
+            vic.VehicleFightingPosition = this;
         }
 
         public void Remove(CombatVehicle vic)
         {
             vehicles.RemoveAllReferences(vic);
+            vic.VehicleFightingPosition = null;
         }
 
         public CombatVehicle LastVehicle
@@ -87,7 +93,7 @@ namespace MyGame.materiel
 
                         if (this.company.Value != null)
                         {
-                            otherVic.TargetFightingPosition = this.company.Value.NextFightingPosition(otherVic);
+                            this.company.Value.AssignFightingPosition(otherVic);
                         }
                     }
                 }
@@ -95,11 +101,59 @@ namespace MyGame.materiel
             }
         }
 
+        public float TimeUntilAbandoned()
+        {
+            CombatVehicle vic = this.LastVehicle;
+            if (vic == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return vic.TimeUntilFightingPositionAbondoned();
+            }
+        }
+
+        public float TimeUntilAbandoned(CombatVehicle vic)
+        {
+            if (vic == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return vic.TimeUntilFightingPositionAbondoned(this.Position);
+            }
+        }
+
+        public override void Destroy()
+        {
+            foreach (CombatVehicle vic in this.vehicles.Value.ToArray())
+            {
+                this.Remove(vic);
+            }
+            base.Destroy();
+        }
+
+        public void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics, Camera camera, Color color, float depth)
+        {
+            Vector2 screenPos = camera.WorldToScreenPosition(this.Position);
+            graphics.DrawCircle(screenPos, 15, color, depth);
+        }
+
         public Vector2 Position
         {
             get
             {
                 return this.position.Value;
+            }
+        }
+
+        public void Add(VehiclePosition pos)
+        {
+            foreach (CombatVehicle vic in pos.vehicles.Value.ToArray())
+            {
+                this.Add(vic);
             }
         }
     }
