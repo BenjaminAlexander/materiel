@@ -81,7 +81,14 @@ namespace MyGame.ClientUI
                     {
 
                         this.LocalPlayer.PopUIContext();
-                        new VehicleSelected(this.NextInStack, (Vehicle)clickList[0]);
+                        if (clickList[0] is CombatVehicle)
+                        {
+                            new CombatVehicleSelected(this.NextInStack, (CombatVehicle)clickList[0]);
+                        }
+                        else if(clickList[0] is Transport)
+                        {
+                            new TransportVehicleSelected(this.NextInStack, (Transport)clickList[0]);
+                        }
                         return;
                     }
                 }

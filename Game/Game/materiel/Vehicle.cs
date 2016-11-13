@@ -14,7 +14,6 @@ namespace MyGame.materiel
     public abstract class Vehicle : PhysicalObject, IPlayerControlled
     {
         public const float distancePerMateriel = 1800;
-        public const float secondsPerMateriel = 32;
         private static Collidable collidable = new Collidable(TextureLoader.GetTexture("Enemy"), Color.White, TextureLoader.GetTexture("Enemy").CenterOfMass, .9f);
         public override Collidable Collidable
         {
@@ -57,20 +56,32 @@ namespace MyGame.materiel
             }
         }
 
-        public void Idle(float seconds)
+        public Base ResupplyPoint()
         {
-            float cost = seconds / secondsPerMateriel;
-            this.materiel.Value = Math.Max(this.materiel - cost, 0);
+            if (this.Company != null)
+            {
+                return this.Company.ResupplyPoint;
+            }
+            return null;
         }
 
-        public float IdleCost(float seconds)
+        public float DistanceToResupplyPoint()
         {
-            return seconds / secondsPerMateriel;
+            if (this.ResupplyPoint() != null)
+            {
+                return Vector2.Distance(this.Position, this.ResupplyPoint().Position);
+            }
+            return float.MaxValue;
+        }
+
+        public float CostToMoveToResupplyPoint()
+        {
+            return this.MoveCost(this.DistanceToResupplyPoint());
         }
 
         public void MoveToward(Vector2 targetPos, float seconds, out Vector2 resultPosition, out float secondsRemaining, out float cost)
         {
-            float maxMoveDistance = Math.Min(maxSpeed * seconds, this.Range());
+            float maxMoveDistance = Math.Min(maxSpeed * seconds, this.Range);
             float distanceToTarget = Vector2.Distance(this.Position, targetPos);
             resultPosition = Utils.PhysicsUtils.MoveTowardBounded(this.Position, targetPos, maxMoveDistance);
             maxMoveDistance = Math.Min(distanceToTarget, maxMoveDistance);            
@@ -88,7 +99,6 @@ namespace MyGame.materiel
 
             this.Position = resultPosition;
             this.materiel.Value = Math.Max(this.materiel.Value - cost, 0f);
-            this.Idle(secondsRemaining);
         }
 
         public override void MoveOutsideWorld(Vector2 position, Vector2 movePosition)
@@ -111,11 +121,16 @@ namespace MyGame.materiel
 
         public virtual void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics, Camera camera, Color color, float depth)
         {
+            Vector2 point = camera.WorldToScreenPosition(this.Position);
+            graphics.DrawCircle(point, 15, color, depth);
         }
 
-        public float Range()
+        public float Range
         {
-            return distancePerMateriel * materiel.Value;
+            get
+            {
+                return distancePerMateriel * materiel.Value;
+            }
         }
 
         public float MoveCost(float distance)
@@ -150,11 +165,6 @@ namespace MyGame.materiel
             {
                 return maxSpeed;
             }
-        }
-
-        public float IdleTime(float materiel)
-        {
-            return materiel * secondsPerMateriel;
         }
 
         public float ResupplyAmount

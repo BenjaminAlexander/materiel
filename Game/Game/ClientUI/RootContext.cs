@@ -47,16 +47,29 @@ namespace MyGame.ClientUI
                         {
                             new BaseSelected(this, (Base)clickList[0]);
                         }
-                        else if (clickList[0] is Vehicle)
+                        else if (clickList[0] is CombatVehicle)
                         {
-                            Vehicle vic = (Vehicle)clickList[0];
+                            CombatVehicle vic = (CombatVehicle)clickList[0];
                             if ((Company)vic.Company != null)
                             {
                                 new CompanySelected(this, vic.Company);
                             }
                             else
                             {
-                                new VehicleSelected(this, (Vehicle)clickList[0]);
+                                new CombatVehicleSelected(this, vic);
+                            }
+                        }
+                        else if (clickList[0] is Transport)
+                        {
+                            Transport vic = (Transport)clickList[0];
+                            if ((Company)vic.Company != null)
+                            {
+                                new CompanySelected(this, vic.Company);
+                            }
+                            else
+                            {
+                                new TransportVehicleSelected(this, vic);
+
                             }
                         }
                     }

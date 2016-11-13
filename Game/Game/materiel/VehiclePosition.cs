@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MyGame.GameStateObjects;
 using MyGame.GameStateObjects.DataStuctures;
 using Microsoft.Xna.Framework;
+/*
 namespace MyGame.materiel
 {
     public class VehiclePosition : GameObject
@@ -91,6 +92,7 @@ namespace MyGame.materiel
                             otherVic = swap;
                         }
 
+                        this.Remove(otherVic);
                         if (this.company.Value != null)
                         {
                             this.company.Value.AssignFightingPosition(otherVic);
@@ -111,18 +113,6 @@ namespace MyGame.materiel
             else
             {
                 return vic.TimeUntilFightingPositionAbondoned();
-            }
-        }
-
-        public float TimeUntilAbandoned(CombatVehicle vic)
-        {
-            if (vic == null)
-            {
-                return 0;
-            }
-            else
-            {
-                return vic.TimeUntilFightingPositionAbondoned(this.Position);
             }
         }
 
@@ -157,4 +147,4 @@ namespace MyGame.materiel
             }
         }
     }
-}
+}*/

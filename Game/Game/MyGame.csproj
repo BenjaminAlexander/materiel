@@ -59,10 +59,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
+    <Compile Include="ClientUI\TransportVehicleSelected.cs" />
     <Compile Include="ClientUI\CompanySelected.cs" />
     <Compile Include="ClientUI\BaseSelected.cs" />
     <Compile Include="ClientUI\SetCompanyPositionsContext.cs" />
-    <Compile Include="ClientUI\VehicleSelected.cs" />
+    <Compile Include="ClientUI\CombatVehicleSelected.cs" />
     <Compile Include="ClientUI\RootContext.cs" />
     <Compile Include="ClientUI\UIContext.cs" />
     <Compile Include="Client\ClientGame.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="GameStateObjects\QuadTreeUtils\TreeVector2Member.cs" />
     <Compile Include="GameStateObjects\Vector2ListMember.cs" />
     <Compile Include="IO\Events\KeyReleaseEvent.cs" />
+    <Compile Include="materiel\AddTransportVehicleToCompany.cs" />
     <Compile Include="materiel\BuildTransport.cs" />
     <Compile Include="materiel\CombatVehicle.cs" />
     <Compile Include="materiel\SetCompanyPositions.cs" />
@@ -91,7 +93,7 @@
     <Compile Include="IO\Events\RightMousePressed.cs" />
     <Compile Include="IO\Events\RightMouseReleased.cs" />
     <Compile Include="materiel\Company.cs" />
-    <Compile Include="materiel\AddVehicleToCompany.cs" />
+    <Compile Include="materiel\AddCombatVehicleToCompany.cs" />
     <Compile Include="materiel\BuildCombatVehicle.cs" />
     <Compile Include="materiel\CreateCompany.cs" />
     <Compile Include="materiel\MoveCompany.cs" />

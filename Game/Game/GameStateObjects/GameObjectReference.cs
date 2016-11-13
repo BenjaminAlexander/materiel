@@ -41,11 +41,17 @@ namespace MyGame.GameStateObjects
             }
             else
             {
-                Dereference();
+                try
+                {
+                    Dereference();
+                }
+                catch (Exception)
+                {
+                }
             }
         }
 
-        public T Dereference()
+        public T Dereference() 
         {
             if(hasDereferenced)
             {
@@ -60,7 +66,7 @@ namespace MyGame.GameStateObjects
             }
             else
             {
-                return null;
+                throw new FailedDereferenceException<T>(this);
             }
         }
 
@@ -68,12 +74,6 @@ namespace MyGame.GameStateObjects
         {
             message.Append(this.id);
             return message;
-        }
-
-        public Boolean IsDereferenced()
-        {
-            Dereference();
-            return hasDereferenced;
         }
 
         public int ID
@@ -92,6 +92,15 @@ namespace MyGame.GameStateObjects
         public static implicit operator GameObjectReference<T>(T obj)
         {
             return new GameObjectReference<T>(obj);
+        }
+    }
+
+    public class FailedDereferenceException<T> : Exception where T : GameObject
+    {
+        public GameObjectReference<T> obj;
+        public FailedDereferenceException(GameObjectReference<T> obj) 
+        {
+            this.obj = obj;
         }
     }
 }

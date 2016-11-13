@@ -42,10 +42,5 @@ namespace MyGame.GameStateObjects
                 this.value = value;
             }
         }
-
-        public Boolean IsDereferenced()
-        {
-            return this.value.IsDereferenced();
-        }
     }
 }

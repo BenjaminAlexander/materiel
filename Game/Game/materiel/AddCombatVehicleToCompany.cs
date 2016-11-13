@@ -9,9 +9,9 @@ using MyGame.RtsCommands;
 
 namespace MyGame.materiel
 {
-    class AddVehicleToCompany : RtsCommandMessage
+    class AddCombatVehicleToCompany : RtsCommandMessage
     {
-        public AddVehicleToCompany(LocalPlayer player, Company co, CombatVehicle vic)
+        public AddCombatVehicleToCompany(LocalPlayer player, Company co, CombatVehicle vic)
         {
             this.Append(co.ID);
             this.Append(vic.ID);

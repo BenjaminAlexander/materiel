@@ -12,11 +12,11 @@ using MyGame.IO;
 
 namespace MyGame.ClientUI
 {
-    class VehicleSelected : UIContext
+    class CombatVehicleSelected : UIContext
     {
-        private Vehicle vehicle;
+        private CombatVehicle vehicle;
 
-        public VehicleSelected(UIContext nextInStack, Vehicle vehicle)
+        public CombatVehicleSelected(UIContext nextInStack, CombatVehicle vehicle)
             : base(nextInStack)
         {
             this.vehicle = vehicle;
@@ -37,10 +37,7 @@ namespace MyGame.ClientUI
 
                 if (rightClickCompany != null)
                 {
-                    if (vehicle is CombatVehicle)
-                    {
-                        new AddVehicleToCompany(this.LocalPlayer, rightClickCompany, (CombatVehicle)vehicle);
-                    }
+                    new AddCombatVehicleToCompany(this.LocalPlayer, rightClickCompany, vehicle);
                     this.LocalPlayer.PopUIContext();
                     new CompanySelected(this.NextInStack, rightClickCompany);
                 }
