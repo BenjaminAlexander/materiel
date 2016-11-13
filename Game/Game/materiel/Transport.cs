@@ -56,14 +56,10 @@ namespace MyGame.materiel
         {
             base.SubclassUpdate(seconds);
 
-            Vector2 resultPosition;
-            float secondsRemaining;
-            float cost;
             try
             {
                 if (this.vicToResupply.Value != null)
                 {
-                    this.MoveToward(this.vicToResupply.Value.Position, seconds, out resultPosition, out secondsRemaining, out cost);
                     this.MoveTowardAndIdle(this.vicToResupply.Value.Position, seconds);
 
                     if(Vector2.Distance(this.Position, this.vicToResupply.Value.Position) < 10)
@@ -74,8 +70,6 @@ namespace MyGame.materiel
                 }
                 else if (this.vicToResupply.Value == null && this.ResupplyPoint() != null)
                 {
-                    this.MoveToward(this.ResupplyPoint().Position, seconds, out resultPosition, out secondsRemaining, out cost);
-
                     this.MoveTowardAndIdle(this.ResupplyPoint().Position, seconds);
                 }
             }
@@ -94,13 +88,18 @@ namespace MyGame.materiel
 
         public void ResupplyCombatVehicle(CombatVehicle vic)
         {
-            float returnToBaseCost = this.CostToMoveToResupplyPoint();
-            float maxResupply = this.Materiel - returnToBaseCost;
-            float resupply = Math.Min(maxResupply, vic.ResupplyAmount);
-            resupply = Math.Max(resupply, 0);
+            float resupply = Math.Min(this.MaxMaterielWithdrawl, vic.MaxMaterielDeposit);
 
             this.Materiel = this.Materiel - resupply;
             vic.Materiel = vic.Materiel + resupply;
+        }
+
+        public override float MaxMaterielWithdrawl
+        {
+            get
+            {
+                return Math.Max(0, this.Materiel - this.CostToMoveToResupplyPoint());
+            }
         }
     }
 }

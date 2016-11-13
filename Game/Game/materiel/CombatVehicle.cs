@@ -49,20 +49,9 @@ namespace MyGame.materiel
             }
         }
 
-        public override void ServerOnlyUpdate(float secondsElapsed)
-        {
-        }
-
         public override void SubclassUpdate(float seconds)
         {
             base.SubclassUpdate(seconds);
-
-            Vector2 resultPosition;
-            float secondsRemaining;
-            float cost;
-
-            this.MoveToward(this.TargetPosition, seconds, out resultPosition, out secondsRemaining, out cost);
-
             this.MoveTowardAndIdle(this.TargetPosition, seconds);
         }
     }

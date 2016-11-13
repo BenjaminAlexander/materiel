@@ -147,7 +147,17 @@ namespace MyGame.materiel
 
             set
             {
-                materiel.Value = value;
+                float newValue = Math.Min(value, this.MaxMateriel);
+                newValue = Math.Max(newValue, 0);
+                materiel.Value = newValue;
+            }
+        }
+
+        public virtual float MaxMaterielWithdrawl
+        {
+            get
+            {
+                return this.Materiel;
             }
         }
 
@@ -167,7 +177,7 @@ namespace MyGame.materiel
             }
         }
 
-        public float ResupplyAmount
+        public float MaxMaterielDeposit
         {
             get
             {

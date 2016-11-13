@@ -88,9 +88,9 @@ namespace MyGame.materiel
                 }
             }
 
-            while (this.resupplyQueue.Count > 0 && this.resupplyQueue.Peek().ResupplyAmount <= this.materiel.Value)
+            while (this.resupplyQueue.Count > 0 && this.resupplyQueue.Peek().MaxMaterielDeposit <= this.materiel.Value)
             {
-                float amount = this.resupplyQueue.Peek().ResupplyAmount;
+                float amount = this.resupplyQueue.Peek().MaxMaterielDeposit;
                 this.materiel.Value = this.materiel.Value - amount;
                 this.resupplyQueue.Peek().Materiel = this.resupplyQueue.Peek().Materiel + amount;
                 this.resupplyQueue.Peek().ResupplyComplete();
