@@ -75,6 +75,8 @@
     <Compile Include="Client\Program.cs" />
     <Compile Include="Client\LocalPlayer.cs" />
     <Compile Include="GameStateObjects\BoolGameObjectMember.cs" />
+    <Compile Include="GameStateObjects\GameObjectReferenceCollectionField.cs" />
+    <Compile Include="GameStateObjects\GameObjectReferenceQueueField.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\TreeVector2Member.cs" />
     <Compile Include="GameStateObjects\Vector2ListMember.cs" />
     <Compile Include="IO\Events\KeyReleaseEvent.cs" />

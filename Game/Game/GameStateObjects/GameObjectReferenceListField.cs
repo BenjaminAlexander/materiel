@@ -8,37 +8,23 @@ using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.GameStateObjects
 {
-    class GameObjectReferenceListField<T> : GameObjectField where T : GameObject
+    class GameObjectReferenceListField<T> : GameObjectReferenceCollectionField<T> where T : GameObject
     {
-        private GameObjectCollection collection;
         private List<GameObjectReference<T>> value;
 
         public GameObjectReferenceListField(GameObject obj) : base(obj)
         {
-            this.collection = obj.Collection;
             this.value = new List<GameObjectReference<T>>();
         }
 
-        public override void ApplyMessage(GameObjectUpdate message)
+        protected override void SetValue(List<GameObjectReference<T>> list)
         {
-            var rtn = new List<GameObjectReference<T>>();
-            int count = message.ReadInt();
-            for (int i = 0; i < count; i++)
-            {
-                GameObjectReference<T> rf = new GameObjectReference<T>(message, collection);
-                rtn.Add(rf);
-            }
-            this.value = rtn;
+            this.value = list;
         }
 
         public override GameObjectUpdate ConstructMessage(GameObjectUpdate message)
         {
-            message.Append(this.value.Count);
-            foreach (GameObjectReference<T> obj in this.value)
-            {
-                message = obj.ConstructMessage(message);
-            }
-            return message;
+            return this.ConstructMessage(message, this.value);
         }
 
         public List<GameObjectReference<T>> Value
