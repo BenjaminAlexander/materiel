@@ -43,7 +43,14 @@ namespace MyGame.Utils
             angle = Utils.Vector2Utils.RestrictAngle(angle);
             target = Utils.Vector2Utils.RestrictAngle(target);
             float difference = Utils.Vector2Utils.MinimizeMagnitude(target - angle);
-            return angle + MoveTowardBounded(0, difference, maxDistance);
+            if (Math.Abs(difference) <= maxDistance)
+            {
+                return target;
+            }
+            else
+            {
+                return angle + MoveTowardBounded(0, difference, maxDistance);
+            }
         }
 
         public static Boolean IsPointedAt(Vector2 position, float direction, Vector2 target, float errorDistance)

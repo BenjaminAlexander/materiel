@@ -14,7 +14,7 @@ namespace MyGame.materiel
     public abstract class Vehicle : PhysicalObject, IPlayerControlled
     {
         public const float distancePerMateriel = 400;
-        private static Collidable collidable = new Collidable(TextureLoader.GetTexture("Enemy"), Color.White, TextureLoader.GetTexture("Enemy").CenterOfMass, .9f);
+        private static Collidable collidable = new Collidable(TextureLoader.GetTexture("VehicleBody"), Color.White, TextureLoader.GetTexture("VehicleBody").CenterOfMass, .9f);
         public override Collidable Collidable
         {
             get { return collidable; }
@@ -91,14 +91,23 @@ namespace MyGame.materiel
 
         public void MoveTowardAndIdle(Vector2 targetPos, float seconds)
         {
-            Vector2 resultPosition;
-            float secondsRemaining;
-            float cost;
+            if (targetPos != this.Position)
+            {
+                float angleToTarget = Utils.Vector2Utils.Vector2Angle(targetPos - this.Position);
+                this.Direction = Utils.PhysicsUtils.AngularMoveTowardBounded(this.Direction, angleToTarget, 2 * seconds);
 
-            this.MoveToward(targetPos, seconds, out resultPosition, out secondsRemaining, out cost);
+                if (this.Direction == angleToTarget)
+                {
+                    Vector2 resultPosition;
+                    float secondsRemaining;
+                    float cost;
 
-            this.Position = resultPosition;
-            this.materiel.Value = Math.Max(this.materiel.Value - cost, 0f);
+                    this.MoveToward(targetPos, seconds, out resultPosition, out secondsRemaining, out cost);
+
+                    this.Position = resultPosition;
+                    this.materiel.Value = Math.Max(this.materiel.Value - cost, 0f);
+                }
+            }
         }
 
         public override void MoveOutsideWorld(Vector2 position, Vector2 movePosition)
@@ -115,7 +124,14 @@ namespace MyGame.materiel
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
         {
-            base.Draw(gameTime, graphics);
+            if (controllingPlayer.Value == null)
+            {
+                this.Collidable.Draw(graphics, this.Position, this.Direction);
+            }
+            else
+            {
+                this.Collidable.Draw(graphics, this.Position, this.Direction, controllingPlayer.Value.Color);
+            }
             graphics.DrawDebugFont(this.materiel.Value.ToString(), this.Position + new Vector2(25, 0), 1f);
         }
 
