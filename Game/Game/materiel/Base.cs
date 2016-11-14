@@ -23,7 +23,7 @@ namespace MyGame.materiel
         }
 
         private float timeTillSpawn = 5;
-        private Queue<Vehicle> resupplyQueue = new Queue<Vehicle>();
+        private GameObjectReferenceQueueField<Vehicle> resupplyQueue;
 
         private FloatGameObjectMember materiel;
         private IntegerQueueGameObjectField buildQueue;
@@ -48,6 +48,7 @@ namespace MyGame.materiel
             materiel = new FloatGameObjectMember(this, 0);
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
             buildQueue = new IntegerQueueGameObjectField(this);
+            resupplyQueue = new GameObjectReferenceQueueField<Vehicle>(this);
         }
 
         public void BuildCombatVehicle()
@@ -88,13 +89,13 @@ namespace MyGame.materiel
                 }
             }
 
-            while (this.resupplyQueue.Count > 0 && this.resupplyQueue.Peek().MaxMaterielDeposit <= this.materiel.Value)
+            while (this.resupplyQueue.Value.Count > 0 && this.resupplyQueue.Value.Peek().Dereference().MaxMaterielDeposit <= this.materiel.Value)
             {
-                float amount = this.resupplyQueue.Peek().MaxMaterielDeposit;
+                float amount = this.resupplyQueue.Value.Peek().Dereference().MaxMaterielDeposit;
                 this.materiel.Value = this.materiel.Value - amount;
-                this.resupplyQueue.Peek().Materiel = this.resupplyQueue.Peek().Materiel + amount;
-                this.resupplyQueue.Peek().ResupplyComplete();
-                this.resupplyQueue.Dequeue();
+                this.resupplyQueue.Value.Peek().Dereference().Materiel = this.resupplyQueue.Value.Peek().Dereference().Materiel + amount;
+                this.resupplyQueue.Value.Peek().Dereference().ResupplyComplete();
+                this.resupplyQueue.Value.Dequeue();
             }
         }
 
@@ -138,12 +139,12 @@ namespace MyGame.materiel
 
         public void EnqueueTransport(Vehicle vic)
         {
-            this.resupplyQueue.Enqueue(vic);
+            this.resupplyQueue.Value.Enqueue(vic);
         }
 
         public bool InResupplyQueue(Vehicle vic)
         {
-            return this.resupplyQueue.Contains(vic);
+            return this.resupplyQueue.Value.Contains(vic);
         }
 
         public float Materiel
