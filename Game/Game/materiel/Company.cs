@@ -149,15 +149,32 @@ namespace MyGame.materiel
             try
             {
                 List<CombatVehicle> combatVics = this.combatVehicles.DereferenceAll();
+                List<Transport> transportVics = this.transportVehicles.DereferenceAll();
+                Dictionary<CombatVehicle, float> combatVicsMateriel = new Dictionary<CombatVehicle, float>();
+
                 CombatVehicle bestVic = null;
 
                 foreach (CombatVehicle vic in combatVics)
                 {
-                    if(bestVic == null || bestVic.Materiel > vic.Materiel)
+                    combatVicsMateriel[vic] = vic.Materiel;
+                }
+
+                foreach (Transport vic in transportVics)
+                {
+                    if(vic.VicToResupply != null && combatVicsMateriel.ContainsKey(vic.VicToResupply))
+                    {
+                        combatVicsMateriel[vic.VicToResupply] = combatVicsMateriel[vic.VicToResupply] + vic.EstimatedMaterielDelivery();
+                    }
+                }
+
+                foreach (CombatVehicle vic in combatVics)
+                {
+                    if (combatVicsMateriel[vic] < vic.MaxMateriel && (bestVic == null || combatVicsMateriel[bestVic] > combatVicsMateriel[vic]))
                     {
                         bestVic = vic;
                     }
                 }
+
                 return bestVic;
             }
             catch (Exception)

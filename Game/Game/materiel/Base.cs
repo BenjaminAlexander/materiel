@@ -89,6 +89,12 @@ namespace MyGame.materiel
                 }
             }
 
+        }
+
+        public override void SubclassUpdate(float secondsElapsed)
+        {
+            base.SubclassUpdate(secondsElapsed);
+
             while (this.resupplyQueue.Value.Count > 0 && this.resupplyQueue.Value.Peek().Dereference().MaxMaterielDeposit <= this.materiel.Value)
             {
                 float amount = this.resupplyQueue.Value.Peek().Dereference().MaxMaterielDeposit;

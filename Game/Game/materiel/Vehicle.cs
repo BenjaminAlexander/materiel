@@ -13,7 +13,7 @@ namespace MyGame.materiel
 {
     public abstract class Vehicle : PhysicalObject, IPlayerControlled
     {
-        public const float distancePerMateriel = 1800;
+        public const float distancePerMateriel = 400;
         private static Collidable collidable = new Collidable(TextureLoader.GetTexture("Enemy"), Color.White, TextureLoader.GetTexture("Enemy").CenterOfMass, .9f);
         public override Collidable Collidable
         {

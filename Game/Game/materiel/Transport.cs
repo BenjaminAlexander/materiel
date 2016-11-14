@@ -40,35 +40,57 @@ namespace MyGame.materiel
             graphics.DrawDebugFont("T", this.Position + new Vector2(25, 15), 1f);
         }
 
+        public CombatVehicle VicToResupply
+        {
+            get
+            {
+                return this.vicToResupply.Value;
+            }
+        }
+
         public override void SubclassUpdate(float seconds)
         {
             base.SubclassUpdate(seconds);
 
             try
             {
-                if (this.vicToResupply.Value == null || this.CostToResupplyVehicleAndBack() >= this.Materiel)
+                if (this.Company != null)
                 {
-                    this.vicToResupply.Value = null;
-                    if (this.ResupplyPoint() != null)
+                    if (this.vicToResupply.Value == null)
                     {
-                        this.MoveTowardAndIdle(this.ResupplyPoint().Position, seconds);
-                        if (this.DistanceToResupplyPoint() < 10 && !this.ResupplyPoint().InResupplyQueue(this))
+                        this.vicToResupply.Value = this.Company.NextVehicleToResupply();
+                        if (this.vicToResupply.Value != null && this.CostToResupplyVehicleAndBack() >= this.Materiel)
                         {
-                            this.ResupplyPoint().EnqueueTransport(this);
+                            this.vicToResupply.Value = null;
+                        }
+                    }
+                    else if(this.CostToResupplyVehicleAndBack() >= this.Materiel)
+                    {
+                        this.vicToResupply.Value = null;
+                    }
+
+                    if (this.vicToResupply.Value != null)
+                    {
+                        this.MoveTowardAndIdle(this.vicToResupply.Value.Position, seconds);
+
+                        if (Vector2.Distance(this.Position, this.vicToResupply.Value.Position) < 10)
+                        {
+                            this.ResupplyCombatVehicle(this.vicToResupply.Value);
+                            this.vicToResupply.Value = this.Company.NextVehicleToResupply();
+                        }
+                    }
+                    else
+                    {
+                        if (this.ResupplyPoint() != null)
+                        {
+                            this.MoveTowardAndIdle(this.ResupplyPoint().Position, seconds);
+                            if (this.DistanceToResupplyPoint() < 10 && !this.ResupplyPoint().InResupplyQueue(this))
+                            {
+                                this.ResupplyPoint().EnqueueTransport(this);
+                            }
                         }
                     }
                 }
-                else if(this.vicToResupply.Value != null)
-                {
-                    this.MoveTowardAndIdle(this.vicToResupply.Value.Position, seconds);
-
-                    if (Vector2.Distance(this.Position, this.vicToResupply.Value.Position) < 10)
-                    {
-                        this.ResupplyCombatVehicle(this.vicToResupply.Value);
-                        this.vicToResupply.Value = this.Company.NextVehicleToResupply();
-                    }
-                }
-                
             }
             catch (Exception)
             {
@@ -108,6 +130,11 @@ namespace MyGame.materiel
                 return this.MoveCost(distance);
             }
             return float.PositiveInfinity;
+        }
+
+        public float EstimatedMaterielDelivery()
+        {
+            return this.Materiel - this.CostToResupplyVehicleAndBack();
         }
     }
 }
