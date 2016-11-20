@@ -22,29 +22,34 @@ namespace MyGame.materiel
             }
         }
 
-        private float timeTillSpawn = 5;
+        private FloatGameObjectMember spawnCountDown;
+        private FloatGameObjectMember timeTillSpawn;
         private GameObjectReferenceQueueField<Vehicle> resupplyQueue;
 
         private FloatGameObjectMember materiel;
         private IntegerQueueGameObjectField buildQueue;
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
 
-        public static Base BaseFactory(ServerGame game, Vector2 position)
+        public static Base BaseFactory(ServerGame game, Vector2 position, float productionTime)
         {
             Base baseObj = new Base(game.GameObjectCollection);
             game.GameObjectCollection.Add(baseObj);
-            Base.ServerInitialize(baseObj, position);
+            Base.ServerInitialize(baseObj, position, productionTime);
             return baseObj;
         }
 
-        public static void ServerInitialize(Base obj, Vector2 position)
+        public static void ServerInitialize(Base obj, Vector2 position, float productionTime)
         {
             PhysicalObject.ServerInitialize(obj, position, 0);
+            obj.timeTillSpawn.Value = productionTime;
+            obj.spawnCountDown.Value = productionTime;
         }
 
         public Base(GameObjectCollection collection)
             : base(collection)
         {
+            spawnCountDown = new FloatGameObjectMember(this, 5);
+            timeTillSpawn = new FloatGameObjectMember(this, 5);
             materiel = new FloatGameObjectMember(this, 0);
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
             buildQueue = new IntegerQueueGameObjectField(this);
@@ -66,10 +71,10 @@ namespace MyGame.materiel
             base.ServerOnlyUpdate(secondsElapsed);
             if (controllingPlayer.Value != null)
             {
-                timeTillSpawn = timeTillSpawn - secondsElapsed;
-                if (timeTillSpawn < 0)
+                this.spawnCountDown.Value = this.spawnCountDown.Value - secondsElapsed;
+                if (this.spawnCountDown.Value < 0)
                 {
-                    timeTillSpawn = 0.5f;
+                    this.spawnCountDown.Value = this.timeTillSpawn.Value;
                     if (buildQueue.Value.Count > 0)
                     {
                         int buildValue = buildQueue.Value.Dequeue();
@@ -87,6 +92,61 @@ namespace MyGame.materiel
                         materiel.Value = materiel + 1f;
                     }
                 }
+            }
+
+        }
+
+        public override void SimulationStateOnlyUpdate(float secondsElapsed)
+        {
+            base.SimulationStateOnlyUpdate(secondsElapsed);
+
+            List<PhysicalObject> objectList = this.Collection.Tree.GetObjectsInCircle(this.Position, 50);
+            Dictionary<PlayerGameObject, int> vicCount = new Dictionary<PlayerGameObject, int>();
+
+            foreach (PhysicalObject obj in objectList)
+            {
+                try
+                {
+                    if (obj is Vehicle)
+                    {
+                        Vehicle vic = (Vehicle)obj;
+
+                        PlayerGameObject player = vic.ControllingPlayer;
+                        if (!vicCount.ContainsKey(player))
+                        {
+                            vicCount[player] = 1;
+                        }
+                        else
+                        {
+                            vicCount[player]++;
+                        }
+                    }
+                }
+                catch (FailedDereferenceException<PlayerGameObject> e)
+                {
+
+                }
+            }
+
+            try
+            {
+                PlayerGameObject best = null;
+                foreach (PlayerGameObject player in vicCount.Keys)
+                {
+                    if (best == null || vicCount[best] < vicCount[player])
+                    {
+                        best = player;
+                    }
+                }
+
+                if (best != null)
+                {
+                    this.controllingPlayer.Value = best;
+                }
+            }
+            catch (Exception e)
+            {
+
             }
 
         }

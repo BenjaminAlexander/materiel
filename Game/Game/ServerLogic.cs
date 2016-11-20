@@ -31,27 +31,27 @@ namespace MyGame
                 player2 = lobby.Clients[1];
             }
 
-            Base player2Base = Base.BaseFactory(game, new Vector2((float)(0.84 * worldSize.X), (float)(0.5 * worldSize.Y)));
-            Base.BaseFactory(game, new Vector2((float)(0.84 * worldSize.X), (float)(0.25 * worldSize.Y)));
-            Base.BaseFactory(game, new Vector2((float)(0.84 * worldSize.X), (float)(0.75 * worldSize.Y)));
+            Base player2Base = Base.BaseFactory(game, new Vector2((float)(0.84 * worldSize.X), (float)(0.5 * worldSize.Y)), 1);
+            Base.BaseFactory(game, new Vector2((float)(0.84 * worldSize.X), (float)(0.25 * worldSize.Y)), float.PositiveInfinity);
+            Base.BaseFactory(game, new Vector2((float)(0.84 * worldSize.X), (float)(0.75 * worldSize.Y)), float.PositiveInfinity);
 
-            Base.BaseFactory(game, new Vector2((float)(0.67 * worldSize.X), (float)(0.11 * worldSize.Y)));
-            Base.BaseFactory(game, new Vector2((float)(0.67 * worldSize.X), (float)(0.37 * worldSize.Y)));
-            Base.BaseFactory(game, new Vector2((float)(0.67 * worldSize.X), (float)(0.63 * worldSize.Y)));
-            Base.BaseFactory(game, new Vector2((float)(0.67 * worldSize.X), (float)(0.89 * worldSize.Y)));
+            Base.BaseFactory(game, new Vector2((float)(0.67 * worldSize.X), (float)(0.11 * worldSize.Y)), float.PositiveInfinity);
+            Base.BaseFactory(game, new Vector2((float)(0.67 * worldSize.X), (float)(0.37 * worldSize.Y)), float.PositiveInfinity);
+            Base.BaseFactory(game, new Vector2((float)(0.67 * worldSize.X), (float)(0.63 * worldSize.Y)), float.PositiveInfinity);
+            Base.BaseFactory(game, new Vector2((float)(0.67 * worldSize.X), (float)(0.89 * worldSize.Y)), float.PositiveInfinity);
 
-            Base.BaseFactory(game, new Vector2((float)(0.5 * worldSize.X), (float)(0.5 * worldSize.Y)));
-            Base.BaseFactory(game, new Vector2((float)(0.5 * worldSize.X), (float)(0.25 * worldSize.Y)));
-            Base.BaseFactory(game, new Vector2((float)(0.5 * worldSize.X), (float)(0.75 * worldSize.Y)));
+            Base.BaseFactory(game, new Vector2((float)(0.5 * worldSize.X), (float)(0.5 * worldSize.Y)), float.PositiveInfinity);
+            Base.BaseFactory(game, new Vector2((float)(0.5 * worldSize.X), (float)(0.25 * worldSize.Y)), float.PositiveInfinity);
+            Base.BaseFactory(game, new Vector2((float)(0.5 * worldSize.X), (float)(0.75 * worldSize.Y)), float.PositiveInfinity);
 
-            Base.BaseFactory(game, new Vector2((float)(0.33 * worldSize.X), (float)(0.11 * worldSize.Y)));
-            Base.BaseFactory(game, new Vector2((float)(0.33 * worldSize.X), (float)(0.37 * worldSize.Y)));
-            Base.BaseFactory(game, new Vector2((float)(0.33 * worldSize.X), (float)(0.63 * worldSize.Y)));
-            Base.BaseFactory(game, new Vector2((float)(0.33 * worldSize.X), (float)(0.89 * worldSize.Y)));
+            Base.BaseFactory(game, new Vector2((float)(0.33 * worldSize.X), (float)(0.11 * worldSize.Y)), float.PositiveInfinity);
+            Base.BaseFactory(game, new Vector2((float)(0.33 * worldSize.X), (float)(0.37 * worldSize.Y)), float.PositiveInfinity);
+            Base.BaseFactory(game, new Vector2((float)(0.33 * worldSize.X), (float)(0.63 * worldSize.Y)), float.PositiveInfinity);
+            Base.BaseFactory(game, new Vector2((float)(0.33 * worldSize.X), (float)(0.89 * worldSize.Y)), float.PositiveInfinity);
 
-            Base player1Base = Base.BaseFactory(game, new Vector2((float)(0.16 * worldSize.X), (float)(0.5 * worldSize.Y)));
-            Base.BaseFactory(game, new Vector2((float)(0.16 * worldSize.X), (float)(0.25 * worldSize.Y)));
-            Base.BaseFactory(game, new Vector2((float)(0.16 * worldSize.X), (float)(0.75 * worldSize.Y)));
+            Base player1Base = Base.BaseFactory(game, new Vector2((float)(0.16 * worldSize.X), (float)(0.5 * worldSize.Y)), 1);
+            Base.BaseFactory(game, new Vector2((float)(0.16 * worldSize.X), (float)(0.25 * worldSize.Y)), float.PositiveInfinity);
+            Base.BaseFactory(game, new Vector2((float)(0.16 * worldSize.X), (float)(0.75 * worldSize.Y)), float.PositiveInfinity);
 
             player1Base.SetPlayerInControll(player1);
             Company.Factory(game, player1.GameObject);
