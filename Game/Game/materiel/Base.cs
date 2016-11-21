@@ -8,10 +8,11 @@ using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework;
 using MyGame.Server;
 using MyGame.GameStateObjects.DataStuctures;
+using MyGame.materiel.GameObjects;
 
 namespace MyGame.materiel
 {
-    public class Base : PhysicalObject, IPlayerControlled
+    public class Base : MaterielContainer, IPlayerControlled
     {
         static Collidable collidable = new Collidable(TextureLoader.GetTexture("Star"), Color.Black, new Vector2(25), .1f);
         public override Collidable Collidable
@@ -40,7 +41,7 @@ namespace MyGame.materiel
 
         public static void ServerInitialize(Base obj, Vector2 position, float productionTime)
         {
-            PhysicalObject.ServerInitialize(obj, position, 0);
+            MaterielContainer.ServerInitialize(obj, position, 0);
             obj.timeTillSpawn.Value = productionTime;
             obj.spawnCountDown.Value = productionTime;
         }

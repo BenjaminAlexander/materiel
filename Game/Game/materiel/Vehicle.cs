@@ -8,10 +8,11 @@ using Microsoft.Xna.Framework;
 using MyGame.Server;
 using MyGame.DrawingUtils;
 using MyGame.GameStateObjects.DataStuctures;
+using MyGame.materiel.GameObjects;
 
 namespace MyGame.materiel
 {
-    public abstract class Vehicle : PhysicalObject, IPlayerControlled
+    public abstract class Vehicle : MaterielContainer, IPlayerControlled
     {
         public const float distancePerMateriel = 400;
         private static Collidable collidable = new Collidable(TextureLoader.GetTexture("VehicleBody"), Color.White, TextureLoader.GetTexture("VehicleBody").CenterOfMass, .9f);
@@ -40,7 +41,7 @@ namespace MyGame.materiel
             vic.controllingPlayer.Value = controllingPlayer;
             vic.materiel.Value = maxMateriel;
             vic.maxMateriel.Value = maxMateriel;
-            PhysicalObject.ServerInitialize(vic, position, 0);
+            MaterielContainer.ServerInitialize(vic, position, 0);
         }
 
         public Company Company

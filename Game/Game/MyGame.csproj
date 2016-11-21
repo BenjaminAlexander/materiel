@@ -84,6 +84,7 @@
     <Compile Include="materiel\AddTransportVehicleToCompany.cs" />
     <Compile Include="materiel\BuildTransport.cs" />
     <Compile Include="materiel\CombatVehicle.cs" />
+    <Compile Include="materiel\GameObjects\MaterielContainer.cs" />
     <Compile Include="materiel\SetTransportSupplyRoute.cs" />
     <Compile Include="materiel\SetCompanyPositions.cs" />
     <Compile Include="materiel\SetSupplyPoint.cs" />
