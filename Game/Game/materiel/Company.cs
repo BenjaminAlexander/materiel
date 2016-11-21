@@ -163,7 +163,7 @@ namespace MyGame.materiel
                 {
                     if(vic.VicToResupply != null && combatVicsMateriel.ContainsKey(vic.VicToResupply))
                     {
-                        combatVicsMateriel[vic.VicToResupply] = combatVicsMateriel[vic.VicToResupply] + vic.EstimatedMaterielDelivery();
+                        combatVicsMateriel[vic.VicToResupply] = combatVicsMateriel[vic.VicToResupply] + vic.EstimatedVehicleMaterielDelivery();
                     }
                 }
 

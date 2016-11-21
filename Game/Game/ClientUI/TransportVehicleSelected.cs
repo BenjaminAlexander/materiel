@@ -16,6 +16,14 @@ namespace MyGame.ClientUI
     {
         private Transport vehicle;
 
+        public Transport SelectedVehicle
+        {
+            get
+            {
+                return vehicle;
+            }
+        }
+
         public TransportVehicleSelected(UIContext nextInStack, Transport vehicle)
             : base(nextInStack)
         {
@@ -42,6 +50,16 @@ namespace MyGame.ClientUI
                     this.LocalPlayer.PopUIContext();
                     new CompanySelected(this.NextInStack, rightClickCompany);
                 }
+                else
+                {
+                    Vector2 worldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
+
+                }
+            }
+            else if (ioEvent.Equals(ctrPress))
+            {
+                new SetTransportResupplyContext(this);
+                return;
             }
             else if (ioEvent.Equals(leftMousePress))
             {

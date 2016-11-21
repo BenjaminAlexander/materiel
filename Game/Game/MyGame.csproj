@@ -59,6 +59,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
+    <Compile Include="ClientUI\SetTransportResupplyContext.cs" />
     <Compile Include="ClientUI\TransportVehicleSelected.cs" />
     <Compile Include="ClientUI\CompanySelected.cs" />
     <Compile Include="ClientUI\BaseSelected.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="materiel\AddTransportVehicleToCompany.cs" />
     <Compile Include="materiel\BuildTransport.cs" />
     <Compile Include="materiel\CombatVehicle.cs" />
+    <Compile Include="materiel\SetTransportSupplyRoute.cs" />
     <Compile Include="materiel\SetCompanyPositions.cs" />
     <Compile Include="materiel\SetSupplyPoint.cs" />
     <Compile Include="materiel\DeleteCompany.cs" />

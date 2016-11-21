@@ -225,5 +225,13 @@ namespace MyGame.materiel
                 this.materiel.Value = value;
             }
         }
+
+        public float MaxMaterielDeposit
+        {
+            get
+            {
+                return float.PositiveInfinity;
+            }
+        }
     }
 }

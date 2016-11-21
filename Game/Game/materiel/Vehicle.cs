@@ -56,28 +56,7 @@ namespace MyGame.materiel
             }
         }
 
-        public Base ResupplyPoint()
-        {
-            if (this.Company != null)
-            {
-                return this.Company.ResupplyPoint;
-            }
-            return null;
-        }
 
-        public float DistanceToResupplyPoint()
-        {
-            if (this.ResupplyPoint() != null)
-            {
-                return Vector2.Distance(this.Position, this.ResupplyPoint().Position);
-            }
-            return float.MaxValue;
-        }
-
-        public float CostToMoveToResupplyPoint()
-        {
-            return this.MoveCost(this.DistanceToResupplyPoint());
-        }
 
         public void MoveToward(Vector2 targetPos, float seconds, out Vector2 resultPosition, out float secondsRemaining, out float cost)
         {
