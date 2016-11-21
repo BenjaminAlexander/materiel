@@ -21,8 +21,6 @@ namespace MyGame.materiel
             get { return collidable; }
         }
 
-        private FloatGameObjectMember materiel;
-        private FloatGameObjectMember maxMateriel;
         private GameObjectReferenceField<Company> company;
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
         public const float maxSpeed = 100;
@@ -31,17 +29,13 @@ namespace MyGame.materiel
             : base(collection)
         {
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
-            company = new GameObjectReferenceField<Company>(this);
-            materiel = new FloatGameObjectMember(this, 10);
-            maxMateriel = new FloatGameObjectMember(this, 10);            
+            company = new GameObjectReferenceField<Company>(this);            
         }
 
         public static void ServerInitialize(Vehicle vic, PlayerGameObject controllingPlayer, Vector2 position, float maxMateriel)
         {
             vic.controllingPlayer.Value = controllingPlayer;
-            vic.materiel.Value = maxMateriel;
-            vic.maxMateriel.Value = maxMateriel;
-            MaterielContainer.ServerInitialize(vic, position, 0);
+            MaterielContainer.ServerInitialize(vic, position, 0, maxMateriel, maxMateriel);
         }
 
         public Company Company
@@ -85,7 +79,7 @@ namespace MyGame.materiel
                     this.MoveToward(targetPos, seconds, out resultPosition, out secondsRemaining, out cost);
 
                     this.Position = resultPosition;
-                    this.materiel.Value = Math.Max(this.materiel.Value - cost, 0f);
+                    this.Materiel = Math.Max(this.Materiel - cost, 0f);
                 }
             }
         }
@@ -112,7 +106,7 @@ namespace MyGame.materiel
             {
                 this.Collidable.Draw(graphics, this.Position, this.Direction, controllingPlayer.Value.Color);
             }
-            graphics.DrawDebugFont(this.materiel.Value.ToString(), this.Position + new Vector2(25, 0), 1f);
+            graphics.DrawDebugFont(this.Materiel.ToString(), this.Position + new Vector2(25, 0), 1f);
         }
 
         public virtual void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics, Camera camera, Color color, float depth)
@@ -125,7 +119,7 @@ namespace MyGame.materiel
         {
             get
             {
-                return distancePerMateriel * materiel.Value;
+                return distancePerMateriel * this.Materiel;
             }
         }
 
@@ -134,50 +128,11 @@ namespace MyGame.materiel
             return distance / distancePerMateriel;
         }
 
-        public float Materiel
-        {
-            get
-            {
-                return materiel.Value;
-            }
-
-            set
-            {
-                float newValue = Math.Min(value, this.MaxMateriel);
-                newValue = Math.Max(newValue, 0);
-                materiel.Value = newValue;
-            }
-        }
-
-        public virtual float MaxMaterielWithdrawl
-        {
-            get
-            {
-                return this.Materiel;
-            }
-        }
-
-        public float MaxMateriel
-        {
-            get
-            {
-                return maxMateriel.Value;
-            }
-        }
-
         public float MaxSpeed
         {
             get
             {
                 return maxSpeed;
-            }
-        }
-
-        public float MaxMaterielDeposit
-        {
-            get
-            {
-                return this.maxMateriel.Value - this.materiel.Value;
             }
         }
 

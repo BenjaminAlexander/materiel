@@ -27,7 +27,6 @@ namespace MyGame.materiel
         private FloatGameObjectMember timeTillSpawn;
         private GameObjectReferenceQueueField<Vehicle> resupplyQueue;
 
-        private FloatGameObjectMember materiel;
         private IntegerQueueGameObjectField buildQueue;
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
 
@@ -41,7 +40,7 @@ namespace MyGame.materiel
 
         public static void ServerInitialize(Base obj, Vector2 position, float productionTime)
         {
-            MaterielContainer.ServerInitialize(obj, position, 0);
+            MaterielContainer.ServerInitialize(obj, position, 0, 0, float.PositiveInfinity);
             obj.timeTillSpawn.Value = productionTime;
             obj.spawnCountDown.Value = productionTime;
         }
@@ -51,7 +50,6 @@ namespace MyGame.materiel
         {
             spawnCountDown = new FloatGameObjectMember(this, 5);
             timeTillSpawn = new FloatGameObjectMember(this, 5);
-            materiel = new FloatGameObjectMember(this, 0);
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
             buildQueue = new IntegerQueueGameObjectField(this);
             resupplyQueue = new GameObjectReferenceQueueField<Vehicle>(this);
@@ -90,7 +88,7 @@ namespace MyGame.materiel
                     }
                     else
                     {
-                        materiel.Value = materiel + 1f;
+                        this.Materiel = this.Materiel + 1f;
                     }
                 }
             }
@@ -156,11 +154,9 @@ namespace MyGame.materiel
         {
             base.SubclassUpdate(secondsElapsed);
 
-            while (this.resupplyQueue.Value.Count > 0 && this.resupplyQueue.Value.Peek().Dereference().MaxMaterielDeposit <= this.materiel.Value)
+            while (this.resupplyQueue.Value.Count > 0 && this.resupplyQueue.Value.Peek().Dereference().MaxMaterielDeposit <= this.Materiel)
             {
-                float amount = this.resupplyQueue.Value.Peek().Dereference().MaxMaterielDeposit;
-                this.materiel.Value = this.materiel.Value - amount;
-                this.resupplyQueue.Value.Peek().Dereference().Materiel = this.resupplyQueue.Value.Peek().Dereference().Materiel + amount;
+                MaterielContainer.MaximumMaterielTransfer(this, this.resupplyQueue.Value.Peek().Dereference());
                 this.resupplyQueue.Value.Peek().Dereference().ResupplyComplete();
                 this.resupplyQueue.Value.Dequeue();
             }
@@ -176,7 +172,7 @@ namespace MyGame.materiel
             {
                 this.Collidable.Draw(graphics, this.Position, this.Direction, controllingPlayer.Value.Color);
             }
-            graphics.DrawDebugFont(materiel.Value.ToString(), this.Position + new Vector2(25, 0) , 1f);
+            graphics.DrawDebugFont(this.Materiel.ToString(), this.Position + new Vector2(25, 0) , 1f);
         }
     
         public override void MoveOutsideWorld(Microsoft.Xna.Framework.Vector2 position, Microsoft.Xna.Framework.Vector2 movePosition)
@@ -212,27 +208,6 @@ namespace MyGame.materiel
         public bool InResupplyQueue(Vehicle vic)
         {
             return this.resupplyQueue.Value.Contains(vic);
-        }
-
-        public float Materiel
-        {
-            get
-            {
-                return this.materiel.Value;
-            }
-
-            set
-            {
-                this.materiel.Value = value;
-            }
-        }
-
-        public float MaxMaterielDeposit
-        {
-            get
-            {
-                return float.PositiveInfinity;
-            }
         }
     }
 }

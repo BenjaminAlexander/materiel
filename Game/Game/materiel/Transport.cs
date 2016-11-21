@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using MyGame.Server;
 using MyGame.DrawingUtils;
 using MyGame.GameStateObjects.DataStuctures;
+using MyGame.materiel.GameObjects;
 
 namespace MyGame.materiel
 {
@@ -95,7 +96,7 @@ namespace MyGame.materiel
 
                         if (Vector2.Distance(this.Position, this.vicToResupply.Value.Position) < 10)
                         {
-                            this.ResupplyCombatVehicle(this.vicToResupply.Value);
+                            MaterielContainer.MaximumMaterielTransfer(this, this.vicToResupply.Value);
                             this.vicToResupply.Value = this.Company.NextVehicleToResupply();
                         }
                     }
@@ -127,7 +128,7 @@ namespace MyGame.materiel
 
                         if (Vector2.Distance(this.Position, this.base2.Value.Position) < 10)
                         {
-                            this.ResupplyBase(this.base2.Value);
+                            MaterielContainer.MaximumMaterielTransfer(this, this.base2.Value);
                         }
                     }
                 }
@@ -170,22 +171,6 @@ namespace MyGame.materiel
             {
                 this.vicToResupply.Value = this.Company.NextVehicleToResupply();
             }
-        }
-
-        public void ResupplyCombatVehicle(CombatVehicle vic)
-        {
-            float resupply = Math.Min(this.MaxMaterielWithdrawl, vic.MaxMaterielDeposit);
-
-            this.Materiel = this.Materiel - resupply;
-            vic.Materiel = vic.Materiel + resupply;
-        }
-
-        public void ResupplyBase(Base basetToResupply)
-        {
-            float resupply = Math.Min(this.MaxMaterielWithdrawl, basetToResupply.MaxMaterielDeposit);
-
-            this.Materiel = this.Materiel - resupply;
-            basetToResupply.Materiel = basetToResupply.Materiel + resupply;
         }
 
         public override float MaxMaterielWithdrawl
