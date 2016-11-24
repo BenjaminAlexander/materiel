@@ -80,82 +80,75 @@ namespace MyGame.materiel
                     if (this.vicToResupply.Value == null)
                     {
                         this.vicToResupply.Value = this.Company.NextVehicleToResupply();
-                        if (this.vicToResupply.Value != null && this.CostToResupplyVehicleAndBack() >= this.Materiel)
+                    }
+                }
+
+                //this code should work
+                if (this.TransportFrom != null)
+                {
+                    if (this.TransportTo == null || this.CostToResupplyAndBack() >= this.Materiel)
+                    {
+                        this.vicToResupply.Value = null;
+                        this.MoveTowardAndIdle(this.TransportFrom.Position, seconds);
+                        if (this.DistanceToResupplyPoint() < 10 && !this.TransportFrom.InResupplyQueue(this))
                         {
+                            this.TransportFrom.EnqueueTransport(this);
+                        }
+                    }
+                    else
+                    {
+                        this.MoveTowardAndIdle(this.TransportTo.Position, seconds);
+                        if (Vector2.Distance(this.Position, this.TransportTo.Position) < 10)
+                        {
+                            MaterielContainer.MaximumMaterielTransfer(this, this.TransportTo);
                             this.vicToResupply.Value = null;
                         }
                     }
-                    else if(this.CostToResupplyVehicleAndBack() >= this.Materiel)
-                    {
-                        this.vicToResupply.Value = null;
-                    }
-
-                    if (this.vicToResupply.Value != null)
-                    {
-                        this.MoveTowardAndIdle(this.vicToResupply.Value.Position, seconds);
-
-                        if (Vector2.Distance(this.Position, this.vicToResupply.Value.Position) < 10)
-                        {
-                            MaterielContainer.MaximumMaterielTransfer(this, this.vicToResupply.Value);
-                            this.vicToResupply.Value = this.Company.NextVehicleToResupply();
-                        }
-                    }
-                    else
-                    {
-                        if (this.ResupplyPoint() != null)
-                        {
-                            this.MoveTowardAndIdle(this.ResupplyPoint().Position, seconds);
-                            if (this.DistanceToResupplyPoint() < 10 && !this.ResupplyPoint().InResupplyQueue(this))
-                            {
-                                this.ResupplyPoint().EnqueueTransport(this);
-                            }
-                        }
-                    }
                 }
-                else if(base1.Value != null && base2.Value != null)
-                {
-                    if(this.CostToResupplyBaseAndBack() >= this.Materiel)
-                    {
-                        this.MoveTowardAndIdle(this.ResupplyPoint().Position, seconds);
-                        if (this.DistanceToResupplyPoint() < 10 && !this.ResupplyPoint().InResupplyQueue(this))
-                        {
-                            this.ResupplyPoint().EnqueueTransport(this);
-                        }
-                    }
-                    else
-                    {
-                        this.MoveTowardAndIdle(this.base2.Value.Position, seconds);
 
-                        if (Vector2.Distance(this.Position, this.base2.Value.Position) < 10)
-                        {
-                            MaterielContainer.MaximumMaterielTransfer(this, this.base2.Value);
-                        }
-                    }
-                }
             }
             catch (Exception)
             {
             }
         }
 
-        public Base ResupplyPoint()
+        public Base TransportFrom
         {
-            if (this.Company != null)
+            get
             {
-                return this.Company.ResupplyPoint;
+                if (this.Company != null)
+                {
+                    return this.Company.ResupplyPoint;
+                }
+                else if (this.base1.Value != null & this.base2.Value != null)
+                {
+                    return base1.Value;
+                }
+                return null;
             }
-            else if(this.base1.Value != null &  this.base2.Value != null)
+        }
+
+        public MaterielContainer TransportTo
+        {
+            get
             {
-                return base1.Value;
+                if (this.Company != null)
+                {
+                    return this.vicToResupply.Value;
+                }
+                else if (this.base1.Value != null & this.base2.Value != null)
+                {
+                    return base2.Value;
+                }
+                return null;
             }
-            return null;
         }
 
         public float DistanceToResupplyPoint()
         {
-            if (this.ResupplyPoint() != null)
+            if (this.TransportFrom != null)
             {
-                return Vector2.Distance(this.Position, this.ResupplyPoint().Position);
+                return Vector2.Distance(this.Position, this.TransportFrom.Position);
             }
             return float.MaxValue;
         }
@@ -181,23 +174,23 @@ namespace MyGame.materiel
             }
         }
 
-        public float CostToResupplyVehicleAndBack()
+        public float CostToResupplyAndBack(MaterielContainer resupplyTarget)
         {
-            if (this.ResupplyPoint() != null)
+            if (this.TransportFrom != null)
             {
-                float distance = Vector2.Distance(this.Position, this.vicToResupply.Value.Position);
-                distance = distance + Vector2.Distance(this.ResupplyPoint().Position, this.vicToResupply.Value.Position);
+                float distance = Vector2.Distance(this.Position, resupplyTarget.Position);
+                distance = distance + Vector2.Distance(this.TransportFrom.Position, resupplyTarget.Position);
                 return this.MoveCost(distance);
             }
             return float.PositiveInfinity;
         }
 
-        public float CostToResupplyBaseAndBack()
+        public float CostToResupplyAndBack()
         {
-            if (this.ResupplyPoint() != null && this.base2.Value != null)
+            if (this.TransportFrom != null && this.TransportTo != null)
             {
-                float distance = Vector2.Distance(this.Position, this.base2.Value.Position);
-                distance = distance + Vector2.Distance(this.ResupplyPoint().Position, this.base2.Value.Position);
+                float distance = Vector2.Distance(this.Position, this.TransportTo.Position);
+                distance = distance + Vector2.Distance(this.TransportFrom.Position, this.TransportTo.Position);
                 return this.MoveCost(distance);
             }
             return float.PositiveInfinity;
@@ -205,12 +198,7 @@ namespace MyGame.materiel
 
         public float EstimatedVehicleMaterielDelivery()
         {
-            return this.Materiel - this.CostToResupplyVehicleAndBack();
-        }
-
-        public float EstimatedBaseMaterielDelivery()
-        {
-            return this.Materiel - this.CostToResupplyVehicleAndBack();
+            return this.Materiel - this.CostToResupplyAndBack(this.VicToResupply);
         }
     }
 }
