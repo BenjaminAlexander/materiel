@@ -66,7 +66,7 @@ namespace MyGame.GameStateObjects
             }
             else
             {
-                throw new FailedDereferenceException<T>(this);
+                throw new FailedDereferenceException();
             }
         }
 
@@ -95,12 +95,7 @@ namespace MyGame.GameStateObjects
         }
     }
 
-    public class FailedDereferenceException<T> : Exception where T : GameObject
+    public class FailedDereferenceException : Exception
     {
-        public GameObjectReference<T> obj;
-        public FailedDereferenceException(GameObjectReference<T> obj) 
-        {
-            this.obj = obj;
-        }
     }
 }

@@ -109,11 +109,25 @@ namespace MyGame.GameStateObjects
         public void ClientUpdate(float secondsElapsed)
         {
             GameObjectField.SetModeSimulation();
-            this.SubclassUpdate(secondsElapsed);
-            this.SimulationStateOnlyUpdate(secondsElapsed);
+            try
+            {
+                this.SubclassUpdate(secondsElapsed);
+                this.SimulationStateOnlyUpdate(secondsElapsed);
+            }
+            catch (FailedDereferenceException)
+            {
+
+            }
 
             GameObjectField.SetModePrevious();
-            this.SubclassUpdate(secondsElapsed);
+            try
+            {
+                this.SubclassUpdate(secondsElapsed);
+            }
+            catch (FailedDereferenceException)
+            {
+
+            }
 
             GameObjectField.SetModeSimulation();
             this.Smooth(secondsElapsed);

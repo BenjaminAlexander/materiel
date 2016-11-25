@@ -121,7 +121,7 @@ namespace MyGame.materiel
                         }
                     }
                 }
-                catch (FailedDereferenceException<PlayerGameObject> e)
+                catch (FailedDereferenceException)
                 {
 
                 }
