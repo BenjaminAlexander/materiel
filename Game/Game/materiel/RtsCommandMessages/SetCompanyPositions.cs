@@ -8,7 +8,7 @@ using MyGame.Client;
 using Microsoft.Xna.Framework;
 using MyGame.RtsCommands;
 
-namespace MyGame.materiel
+namespace MyGame.materiel.RtsCommandMessages
 {
     class SetCompanyPositions : RtsCommandMessage
     {

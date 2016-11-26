@@ -7,24 +7,24 @@ using MyGame.Server;
 using MyGame.Client;
 using MyGame.RtsCommands;
 
-namespace MyGame.materiel
+namespace MyGame.materiel.RtsCommandMessages
 {
-    class DeleteCompany : RtsCommandMessage
+    class BuildTransport : RtsCommandMessage
     {
-        public DeleteCompany(LocalPlayer player, Company co)
+        public BuildTransport(LocalPlayer player, Base baseObj)
         {
-            this.Append(co.ID);
+            this.Append(baseObj.ID);
             player.SendTCP(this);
         }
 
         public static void ExecuteCommand(RtsCommandMessage message, ServerGame game, RemotePlayer player)
         {
-            int coID = message.ReadInt();
+            int baseObjID = message.ReadInt();
 
-            Company obj = game.GameObjectCollection.Get<Company>(coID);
+            Base obj = game.GameObjectCollection.Get<Base>(baseObjID);
             if (player.Owns(obj))
             {
-                obj.Destroy();
+                obj.BuildTransportVehicle();
             }
         }
     }

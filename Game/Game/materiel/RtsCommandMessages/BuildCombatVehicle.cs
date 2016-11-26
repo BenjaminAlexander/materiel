@@ -7,11 +7,11 @@ using MyGame.Server;
 using MyGame.Client;
 using MyGame.RtsCommands;
 
-namespace MyGame.materiel
+namespace MyGame.materiel.RtsCommandMessages
 {
-    class BuildTransport : RtsCommandMessage
+    class BuildCombatVehicle : RtsCommandMessage
     {
-        public BuildTransport(LocalPlayer player, Base baseObj)
+        public BuildCombatVehicle(LocalPlayer player, Base baseObj)
         {
             this.Append(baseObj.ID);
             player.SendTCP(this);
@@ -24,7 +24,7 @@ namespace MyGame.materiel
             Base obj = game.GameObjectCollection.Get<Base>(baseObjID);
             if (player.Owns(obj))
             {
-                obj.BuildTransportVehicle();
+                obj.BuildCombatVehicle();
             }
         }
     }

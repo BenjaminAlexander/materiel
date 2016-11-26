@@ -7,7 +7,7 @@ using MyGame.Server;
 using MyGame.Client;
 using MyGame.RtsCommands;
 
-namespace MyGame.materiel
+namespace MyGame.materiel.RtsCommandMessages
 {
     class CreateCompany : RtsCommandMessage
     {

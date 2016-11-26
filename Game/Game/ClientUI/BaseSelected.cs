@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using MyGame.Client;
 using MyGame.materiel;
 using Microsoft.Xna.Framework;
+using MyGame.materiel.RtsCommandMessages;
 using MyGame.IO.Events;
 using MyGame.IO;
 
