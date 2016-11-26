@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MyGame.IO.Events;
+﻿using MyGame.IO.Events;
 using MyGame.IO;
 using Microsoft.Xna.Framework.Input;
 using MyGame.Client;
 using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework;
-using MyGame.materiel;
 using MyGame.materiel.GameObjects;
 
 namespace MyGame.ClientUI

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects.QuadTreeUtils;
 using MyGame.DrawingUtils;
-using MyGame.Server;
 using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.GameStateObjects

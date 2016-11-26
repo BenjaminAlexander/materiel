@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MyGame.IO
+﻿namespace MyGame.IO
 {
     public abstract class IOEvent
     {

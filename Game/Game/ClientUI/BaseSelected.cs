@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Input;
-using MyGame.Client;
-using MyGame.materiel;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using MyGame.materiel.RtsCommandMessages;
-using MyGame.IO.Events;
-using MyGame.IO;
 using MyGame.materiel.GameObjects;
 
 namespace MyGame.ClientUI

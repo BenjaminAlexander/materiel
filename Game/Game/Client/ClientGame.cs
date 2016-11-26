@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MyGame;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects;
-using MyGame.Utils;
-using MyGame.Server;
 using System.Net;
 
 namespace MyGame.Client

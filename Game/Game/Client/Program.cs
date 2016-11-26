@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MyGame;
-using System.Net;
-using System.Threading;
-using System.Net.Sockets;
-using Microsoft.Xna.Framework;
-using Microsoft.VisualBasic;
-using MyGame.Utils;
-using MyGame.Server;
+﻿using System.Net;
 
 namespace MyGame.Client
 {

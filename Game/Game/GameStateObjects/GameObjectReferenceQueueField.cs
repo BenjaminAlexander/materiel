@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using MyGame.GameStateObjects;
-using Microsoft.Xna.Framework;
-using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.GameStateObjects
 {

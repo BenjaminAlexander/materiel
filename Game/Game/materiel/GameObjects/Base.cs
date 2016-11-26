@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MyGame.GameStateObjects;
 using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework;
 using MyGame.Server;
 using MyGame.GameStateObjects.DataStuctures;
-using MyGame.materiel.GameObjects;
 
 namespace MyGame.materiel.GameObjects
 {

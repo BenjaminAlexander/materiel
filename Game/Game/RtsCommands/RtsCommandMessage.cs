@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MyGame.Networking;
 using Microsoft.Xna.Framework;
 using MyGame.Server;
 using System.Reflection;
 using System.Net.Sockets;
-using MyGame.Client;
 
 namespace MyGame.RtsCommands
 {

@@ -1,19 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects.QuadTreeUtils;
 using MyGame.Utils;
-using MyGame.GameStateObjects;
 using MyGame.DrawingUtils;
 using MyGame.Server;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 
 namespace MyGame.GameStateObjects.DataStuctures
 {

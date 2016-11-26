@@ -1,21 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net;
-using MyGame.Utils;
+﻿using System.Net;
 using MyGame.Server;
 using MyGame.GameStateObjects;
-using System.Threading;
 using Microsoft.Xna.Framework;
 using MyGame.materiel;
 using MyGame.DrawingUtils;
-using Microsoft.Xna.Framework.Input;
-using MyGame.RtsCommands;
 using MyGame.ClientUI;
 using MyGame.IO;
-using MyGame.IO.Events;
 using MyGame.materiel.GameObjects;
 
 namespace MyGame.Client
