@@ -10,6 +10,7 @@ using MyGame.Client;
 using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework;
 using MyGame.materiel;
+using MyGame.materiel.GameObjects;
 
 namespace MyGame.ClientUI
 {

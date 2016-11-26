@@ -9,7 +9,7 @@ using MyGame.Server;
 using MyGame.DrawingUtils;
 using MyGame.GameStateObjects.DataStuctures;
 
-namespace MyGame.materiel
+namespace MyGame.materiel.GameObjects
 {
     public class CombatVehicle : Vehicle
     {

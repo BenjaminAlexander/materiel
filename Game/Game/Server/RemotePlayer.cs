@@ -11,6 +11,7 @@ using MyGame.Utils;
 using MyGame.GameStateObjects;
 using MyGame.materiel;
 using MyGame.RtsCommands;
+using MyGame.materiel.GameObjects;
 
 namespace MyGame.Server
 {

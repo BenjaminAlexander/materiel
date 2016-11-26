@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects;
 using MyGame.Server;
 using MyGame.materiel;
+using MyGame.materiel.GameObjects;
 
 namespace MyGame
 {

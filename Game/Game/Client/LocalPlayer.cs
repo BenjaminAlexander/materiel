@@ -16,6 +16,7 @@ using MyGame.RtsCommands;
 using MyGame.ClientUI;
 using MyGame.IO;
 using MyGame.IO.Events;
+using MyGame.materiel.GameObjects;
 
 namespace MyGame.Client
 {

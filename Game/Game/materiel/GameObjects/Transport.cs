@@ -10,7 +10,7 @@ using MyGame.DrawingUtils;
 using MyGame.GameStateObjects.DataStuctures;
 using MyGame.materiel.GameObjects;
 
-namespace MyGame.materiel
+namespace MyGame.materiel.GameObjects
 {
     public class Transport : Vehicle
     {

@@ -10,7 +10,7 @@ using MyGame.DrawingUtils;
 using MyGame.Client;
 using MyGame.GameStateObjects.DataStuctures;
 
-namespace MyGame.materiel
+namespace MyGame.materiel.GameObjects
 {
     public class PlayerGameObject : GameObject
     {

@@ -8,7 +8,7 @@ using MyGame.Server;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects.DataStuctures;
 
-namespace MyGame.materiel
+namespace MyGame.materiel.GameObjects
 {
     public class Company : GameObject, IPlayerControlled
     {

@@ -7,6 +7,7 @@ using MyGame.Server;
 using MyGame.Client;
 using Microsoft.Xna.Framework;
 using MyGame.RtsCommands;
+using MyGame.materiel.GameObjects;
 
 namespace MyGame.materiel.RtsCommandMessages
 {

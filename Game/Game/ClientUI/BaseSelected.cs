@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using MyGame.materiel.RtsCommandMessages;
 using MyGame.IO.Events;
 using MyGame.IO;
+using MyGame.materiel.GameObjects;
 
 namespace MyGame.ClientUI
 {

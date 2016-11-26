@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MyGame.Server;
 using MyGame.Client;
 using MyGame.RtsCommands;
+using MyGame.materiel.GameObjects;
 
 namespace MyGame.materiel.RtsCommandMessages
 {
