@@ -42,7 +42,7 @@ namespace MyGame.GameStateObjects
                 {
                     Dereference();
                 }
-                catch (Exception)
+                catch (FailedDereferenceException)
                 {
                 }
             }

@@ -64,45 +64,38 @@ namespace MyGame.materiel.GameObjects
         {
             base.SubclassUpdate(seconds);
 
-            try
+            if (this.Company != null)
             {
-                if (this.Company != null)
+                this.base1.Value = null;
+                this.base2.Value = null;
+
+                if (this.vicToResupply.Value == null)
                 {
-                    this.base1.Value = null;
-                    this.base2.Value = null;
-
-                    if (this.vicToResupply.Value == null)
-                    {
-                        this.vicToResupply.Value = this.Company.NextVehicleToResupply();
-                    }
+                    this.vicToResupply.Value = this.Company.NextVehicleToResupply();
                 }
-
-                //this code should work
-                if (this.TransportFrom != null)
-                {
-                    if (this.TransportTo == null || this.CostToResupplyAndBack() >= this.Materiel)
-                    {
-                        this.vicToResupply.Value = null;
-                        this.MoveTowardAndIdle(this.TransportFrom.Position, seconds);
-                        if (this.DistanceToResupplyPoint() < 10 && !this.TransportFrom.InResupplyQueue(this))
-                        {
-                            this.TransportFrom.EnqueueTransport(this);
-                        }
-                    }
-                    else
-                    {
-                        this.MoveTowardAndIdle(this.TransportTo.Position, seconds);
-                        if (Vector2.Distance(this.Position, this.TransportTo.Position) < 10)
-                        {
-                            MaterielContainer.MaximumMaterielTransfer(this, this.TransportTo);
-                            this.vicToResupply.Value = null;
-                        }
-                    }
-                }
-
             }
-            catch (Exception)
+
+            //this code should work
+            if (this.TransportFrom != null)
             {
+                if (this.TransportTo == null || this.CostToResupplyAndBack() >= this.Materiel)
+                {
+                    this.vicToResupply.Value = null;
+                    this.MoveTowardAndIdle(this.TransportFrom.Position, seconds);
+                    if (this.DistanceToResupplyPoint() < 10 && !this.TransportFrom.InResupplyQueue(this))
+                    {
+                        this.TransportFrom.EnqueueTransport(this);
+                    }
+                }
+                else
+                {
+                    this.MoveTowardAndIdle(this.TransportTo.Position, seconds);
+                    if (Vector2.Distance(this.Position, this.TransportTo.Position) < 10)
+                    {
+                        MaterielContainer.MaximumMaterielTransfer(this, this.TransportTo);
+                        this.vicToResupply.Value = null;
+                    }
+                }
             }
         }
 

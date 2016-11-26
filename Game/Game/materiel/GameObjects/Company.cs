@@ -78,7 +78,7 @@ namespace MyGame.materiel.GameObjects
                 {
                     combatVehicles.Value[i].Dereference().TargetPosition = positions[i];
                 }
-                catch (Exception)
+                catch (FailedDereferenceException)
                 {
                 }
             }
@@ -174,7 +174,7 @@ namespace MyGame.materiel.GameObjects
 
                 return bestVic;
             }
-            catch (Exception)
+            catch (FailedDereferenceException)
             {
                 return null;
             }

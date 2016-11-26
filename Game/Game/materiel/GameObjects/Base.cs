@@ -123,27 +123,20 @@ namespace MyGame.materiel.GameObjects
                 }
             }
 
-            try
-            {
-                PlayerGameObject best = null;
-                foreach (PlayerGameObject player in vicCount.Keys)
-                {
-                    if (best == null || vicCount[best] < vicCount[player])
-                    {
-                        best = player;
-                    }
-                }
 
-                if (best != null)
+            PlayerGameObject best = null;
+            foreach (PlayerGameObject player in vicCount.Keys)
+            {
+                if (best == null || vicCount[best] < vicCount[player])
                 {
-                    this.controllingPlayer.Value = best;
+                    best = player;
                 }
             }
-            catch (Exception e)
+
+            if (best != null)
             {
-
+                this.controllingPlayer.Value = best;
             }
-
         }
 
         public override void SubclassUpdate(float secondsElapsed)
