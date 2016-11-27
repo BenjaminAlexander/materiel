@@ -187,12 +187,6 @@ namespace MyGame.GameStateObjects.DataStuctures
                 , new Vector2(0), 0, Color.Black, 1);
 
             graphics.End();
-            /*
-            foreach (GameObject obj in listManager.GetList<GameObject>())
-            {
-                obj.DrawHud(gameTime, graphics);
-            }
-            */
         }
     }
 }
