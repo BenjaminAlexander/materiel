@@ -42,28 +42,11 @@ namespace MyGame.GameStateObjects.DataStuctures
             }
         }
 
-        public QuadTree SimulationTree
+        public void MoveInTree(PhysicalObject obj)
         {
-            get
-            {
-                return simulationTree;
-            }
-        }
-
-        public QuadTree DrawTree
-        {
-            get
-            {
-                return drawTree;
-            }
-        }
-
-        public QuadTree PreviousTree
-        {
-            get
-            {
-                return previousTree;
-            }
+            this.simulationTree.Move(obj);
+            this.previousTree.Move(obj);
+            this.drawTree.Move(obj);
         }
 
         public RectangleF GetWorldRectangle()

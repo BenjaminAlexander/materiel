@@ -63,18 +63,16 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 if (GameObjectField.IsModeSimulation())
                 {
                     simulationValue = value;
-                    this.collection.SimulationTree.Move(this.obj);
                 }
                 else if (GameObjectField.IsModePrevious())
                 {
                     previousValue = value;
-                    this.collection.PreviousTree.Move(this.obj);
                 }
                 else
                 {
                     drawValue = value;
-                    this.collection.DrawTree.Move(this.obj);
                 }
+                this.collection.MoveInTree(this.obj);
             }
         }
 
@@ -97,7 +95,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         public override void Interpolate(float smoothing)
         {
             this.drawValue = Vector2.Lerp(this.SimulationValue, this.previousValue, smoothing);
-            this.collection.DrawTree.Move(this.obj);
+            this.collection.MoveInTree(this.obj);
         }
 
         public override void ApplyMessage(GameObjectUpdate message)
@@ -112,8 +110,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 this.initialized = true;
             }
 
-            this.collection.PreviousTree.Move(this.obj);
-            this.collection.SimulationTree.Move(this.obj);
+            this.collection.MoveInTree(this.obj);
         }
 
         public override GameObjectUpdate ConstructMessage(GameObjectUpdate message)
