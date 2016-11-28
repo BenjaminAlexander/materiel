@@ -69,9 +69,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 point.Y < rectangle.Y + rectangle.Height;
         }
 
-        public abstract List<PhysicalObject> GetObjectsInCircle(Vector2 center, float radius, List<PhysicalObject> list);
+        public abstract List<T> GetObjectsInCircle<T>(Vector2 center, float radius, List<T> list) where T : PhysicalObject;
 
-        public abstract List<PhysicalObject> CompleteList(ref List<PhysicalObject> list);
+        public abstract List<T> CompleteList<T>(ref List<T> list) where T : PhysicalObject;
 
         public List<PhysicalObject> CompleteList()
         {
@@ -79,9 +79,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return this.CompleteList(ref list);
         }
 
-        public List<PhysicalObject> GetObjectsInCircle(Vector2 center, float radius)
+        public List<T> GetObjectsInCircle<T>(Vector2 center, float radius) where T : PhysicalObject
         {
-            List<PhysicalObject> list = new List<PhysicalObject>();
+            List<T> list = new List<T>();
             return this.GetObjectsInCircle(center, radius, list);
         }
 

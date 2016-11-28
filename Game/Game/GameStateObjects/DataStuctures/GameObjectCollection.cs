@@ -23,7 +23,7 @@ namespace MyGame.GameStateObjects.DataStuctures
             get { return nextId++; }
         }
 
-        public QuadTree Tree
+        private QuadTree Tree
         {
             get 
             {
@@ -115,9 +115,9 @@ namespace MyGame.GameStateObjects.DataStuctures
             return (T)dictionary[id];
         }
 
-        public GameObjectListManager GetMasterList()
+        public List<T> GetObjectsInCircle<T>(Vector2 position, float radius) where T : PhysicalObject
         {
-            return listManager;
+            return this.Tree.GetObjectsInCircle<T>(position, radius);
         }
 
         public void ServerUpdate(Lobby lobby, GameTime gameTime)

@@ -45,22 +45,16 @@ namespace MyGame.ClientUI
                 Vector2 sceenPosition = IOState.MouseScreenPosition();
                 Vector2 worldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
 
-                List<PhysicalObject> clickList = this.Game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
+                List<Base> clickList = this.Game.GameObjectCollection.GetObjectsInCircle<Base>(worldPosition, 25f);
                 if (clickList.Count > 0)
                 {
-                    if (clickList[0] is Base)
+                    if(base1 == null)
                     {
-                        Base clickBase = (Base)clickList[0];
-
-                        if(base1 == null)
-                        {
-                            base1 = clickBase;
-                        }
-                        else
-                        {
-                            base2 = clickBase;
-                        }
-
+                        base1 = clickList[0];
+                    }
+                    else
+                    {
+                        base2 = clickList[0];
                     }
                 }
 

@@ -58,7 +58,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return Node.Contains(MapSpace, point);
         }
 
-        public override List<PhysicalObject> GetObjectsInCircle(Vector2 center, float radius, List<PhysicalObject> list)
+        public override List<T> GetObjectsInCircle<T>(Vector2 center, float radius, List<T> list)
         {
             if (ObjectCount() > 0)
             {
@@ -70,9 +70,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
                     foreach (PhysicalObject unit in unitList.GetList<PhysicalObject>())
                     {
-                        if (Vector2.Distance(this.GetObjPosition(unit), center) <= radius)
+                        if (unit is T && Vector2.Distance(this.GetObjPosition(unit), center) <= radius)
                         {
-                            list.Add(unit);
+                            list.Add((T)unit);
                         }
                     }
                 }
@@ -80,11 +80,14 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return list;
         }
 
-        public override List<PhysicalObject> CompleteList(ref List<PhysicalObject> list)
+        public override List<T> CompleteList<T>(ref List<T> list)
         {
             foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
             {
-                list.Add(obj);
+                if (obj is T)
+                {
+                    list.Add((T)obj);
+                }
             }
             return list;
         }

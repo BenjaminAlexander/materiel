@@ -138,7 +138,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return Node.Contains(MapSpace, point);
         }
 
-        public override List<PhysicalObject> GetObjectsInCircle(Vector2 center, float radius, List<PhysicalObject> list)
+        public override List<T> GetObjectsInCircle<T>(Vector2 center, float radius, List<T> list)
         {
             if ((new Circle(center, radius)).Contains(this.MapSpace))
             {
@@ -166,12 +166,11 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public override List<PhysicalObject> CompleteList(ref List<PhysicalObject> list)
+        public override List<T> CompleteList<T>(ref List<T> list)
         {
-
             foreach (Node child in children)
             {
-                list = child.CompleteList(ref list);
+                list = child.CompleteList<T>(ref list);
             }
             return list;
         }

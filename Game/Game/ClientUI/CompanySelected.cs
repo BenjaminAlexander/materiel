@@ -39,15 +39,11 @@ namespace MyGame.ClientUI
                 Vector2 sceenPosition = IOState.MouseScreenPosition();
 
                 Vector2 worldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
-                List<PhysicalObject> clickList = this.Game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
+                List<Base> clickList = this.Game.GameObjectCollection.GetObjectsInCircle<Base>(worldPosition, 25f);
                 if (clickList.Count > 0)
                 {
-                    if (clickList[0] is Base)
-                    {
-
-                        new SetSupplyPoint(this.LocalPlayer, (Base)clickList[0], this.selectedCompany);
-                        return;
-                    }
+                    new SetSupplyPoint(this.LocalPlayer, clickList[0], this.selectedCompany);
+                    return;
                 }
             }
             else if (ioEvent.Equals(ctrPress))
@@ -68,12 +64,11 @@ namespace MyGame.ClientUI
 
                 Vector2 worldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
 
-                List<PhysicalObject> clickList = this.Game.GameObjectCollection.Tree.GetObjectsInCircle(worldPosition, 25f);
+                List<Vehicle> clickList = this.Game.GameObjectCollection.GetObjectsInCircle<Vehicle>(worldPosition, 25f);
                 if (clickList.Count > 0)
                 {
-                    if (clickList[0] is Vehicle && (Company)((Vehicle)clickList[0]).Company == this.selectedCompany)
+                    if (clickList[0].Company == this.selectedCompany)
                     {
-
                         this.LocalPlayer.PopUIContext();
                         if (clickList[0] is CombatVehicle)
                         {

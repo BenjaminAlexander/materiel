@@ -95,26 +95,21 @@ namespace MyGame.materiel.GameObjects
         {
             base.SimulationStateOnlyUpdate(secondsElapsed);
 
-            List<PhysicalObject> objectList = this.Collection.Tree.GetObjectsInCircle(this.Position, 50);
+            List<Vehicle> objectList = this.Collection.GetObjectsInCircle<Vehicle>(this.Position, 50);
             Dictionary<PlayerGameObject, int> vicCount = new Dictionary<PlayerGameObject, int>();
 
-            foreach (PhysicalObject obj in objectList)
+            foreach (Vehicle vic in objectList)
             {
                 try
                 {
-                    if (obj is Vehicle)
+                    PlayerGameObject player = vic.ControllingPlayer;
+                    if (!vicCount.ContainsKey(player))
                     {
-                        Vehicle vic = (Vehicle)obj;
-
-                        PlayerGameObject player = vic.ControllingPlayer;
-                        if (!vicCount.ContainsKey(player))
-                        {
-                            vicCount[player] = 1;
-                        }
-                        else
-                        {
-                            vicCount[player]++;
-                        }
+                        vicCount[player] = 1;
+                    }
+                    else
+                    {
+                        vicCount[player]++;
                     }
                 }
                 catch (FailedDereferenceException)

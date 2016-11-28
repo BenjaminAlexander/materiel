@@ -36,9 +36,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public List<PhysicalObject> GetObjectsInCircle(Vector2 center, float radius)
+        public List<T> GetObjectsInCircle<T>(Vector2 center, float radius) where T : PhysicalObject
         {
-            return root.GetObjectsInCircle(center, radius);
+            return root.GetObjectsInCircle<T>(center, radius);
         }
 
         public bool Remove(PhysicalObject unit)
