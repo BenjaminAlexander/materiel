@@ -10,12 +10,19 @@ namespace MyGame.materiel.GameObjects
 {
     public class Base : MaterielContainer, IPlayerControlled
     {
-        static Collidable collidable = new Collidable(TextureLoader.GetTexture("Star"), Color.Black, new Vector2(25), .1f);
-        public override Collidable Collidable
+        public override LoadedTexture Texture
         {
             get
             {
-                return collidable;
+                return TextureLoader.GetTexture("Base");
+            }
+        }
+
+        public override Vector2 TextureOrigin
+        {
+            get
+            {
+                return TextureLoader.GetTexture("Base").CenterOfMass;
             }
         }
 
@@ -150,11 +157,11 @@ namespace MyGame.materiel.GameObjects
         {
             if (controllingPlayer.Value == null)
             {
-                this.Collidable.Draw(graphics, this.Position, this.Direction);
+                this.Texture.Draw(graphics, this.Position, this.TextureOrigin, this.Direction, Color.White, .1f);
             }
             else
             {
-                this.Collidable.Draw(graphics, this.Position, this.Direction, controllingPlayer.Value.Color);
+                this.Texture.Draw(graphics, this.Position, this.TextureOrigin, this.Direction, controllingPlayer.Value.Color, .1f);
             }
             graphics.DrawDebugFont(this.Materiel.ToString(), this.Position + new Vector2(25, 0) , 1f);
         }

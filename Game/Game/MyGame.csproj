@@ -68,7 +68,6 @@
     <Compile Include="ClientUI\RootContext.cs" />
     <Compile Include="ClientUI\UIContext.cs" />
     <Compile Include="Client\ClientGame.cs" />
-    <Compile Include="DrawingUtils\Collidable.cs" />
     <Compile Include="DrawingUtils\LoadedTexture.cs" />
     <Compile Include="DrawingUtils\MyGraphicsClass.cs" />
     <Compile Include="DrawingUtils\TextureLoader.cs" />
@@ -217,6 +216,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Content\AimPoint.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Base.xnb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Content\Bullet.xnb">

@@ -33,7 +33,12 @@ namespace MyGame.GameStateObjects
             obj.direction.Value = direction;
         }
 
-        public abstract Collidable Collidable
+        public abstract LoadedTexture Texture
+        {
+            get;
+        }
+
+        public abstract Vector2 TextureOrigin
         {
             get;
         }
@@ -69,7 +74,7 @@ namespace MyGame.GameStateObjects
 
         public Boolean CollidesWith(PhysicalObject other)
         {
-            return this.Collidable.CollidesWith(this.Position, this.Direction, other.Collidable, other.Position, other.Direction);
+            return this.Texture.CollidesWith(this.Position, this.TextureOrigin, this.Direction, other.Texture, other.Position, other.TextureOrigin, other.Direction);
         }
 
         public abstract void MoveOutsideWorld(Vector2 position, Vector2 movePosition);
@@ -77,7 +82,7 @@ namespace MyGame.GameStateObjects
         public override void Draw(Microsoft.Xna.Framework.GameTime gameTime, MyGraphicsClass graphics)
         {
             base.Draw(gameTime, graphics);
-            this.Collidable.Draw(graphics, this.Position, this.Direction);
+            this.Texture.Draw(graphics, this.Position, this.TextureOrigin, this.Direction, Color.White, 1);
         }
     }
 }

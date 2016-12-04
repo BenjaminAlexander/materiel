@@ -17,6 +17,7 @@ namespace MyGame.DrawingUtils
 
             //All textures should be loaded before runtime.
             LoadTexture("Bullet");
+            LoadTexture("Base");
             LoadTexture("Star");
             LoadTexture("Enemy");
             LoadTexture("Ship");

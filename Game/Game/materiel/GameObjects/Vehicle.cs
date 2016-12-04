@@ -9,10 +9,15 @@ namespace MyGame.materiel.GameObjects
     public abstract class Vehicle : MaterielContainer, IPlayerControlled
     {
         public const float distancePerMateriel = 400;
-        private static Collidable collidable = new Collidable(TextureLoader.GetTexture("VehicleBody"), Color.White, TextureLoader.GetTexture("VehicleBody").CenterOfMass, .9f);
-        public override Collidable Collidable
+
+        public override LoadedTexture Texture
         {
-            get { return collidable; }
+            get { return TextureLoader.GetTexture("VehicleBody"); }
+        }
+
+        public override Vector2 TextureOrigin
+        {
+            get { return TextureLoader.GetTexture("VehicleBody").CenterOfMass; }
         }
 
         private GameObjectReferenceField<Company> company;
@@ -94,11 +99,11 @@ namespace MyGame.materiel.GameObjects
         {
             if (controllingPlayer.Value == null)
             {
-                this.Collidable.Draw(graphics, this.Position, this.Direction);
+                this.Texture.Draw(graphics, this.Position, this.TextureOrigin, this.Direction, Color.White, .9f);
             }
             else
             {
-                this.Collidable.Draw(graphics, this.Position, this.Direction, controllingPlayer.Value.Color);
+                this.Texture.Draw(graphics, this.Position, this.TextureOrigin, this.Direction, controllingPlayer.Value.Color, .9f);
             }
             graphics.DrawDebugFont(this.Materiel.ToString(), this.Position + new Vector2(25, 0), 1f);
         }

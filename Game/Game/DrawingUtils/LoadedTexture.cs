@@ -53,6 +53,64 @@ namespace MyGame.DrawingUtils
             get { return nonZeroPixels; }
         }
 
+        public void Draw(MyGraphicsClass graphics, Vector2 position, Vector2 origin, float rotation, Color color, float depth)
+        {
+            graphics.getSpriteBatch().Draw(texture, position, null, color, rotation, origin, 1, SpriteEffects.None, depth);
+        }
+
+        public Rectangle TransformBoundingRectangle(Vector2 position, Vector2 origin, float rotation)
+        {
+            return LoadedTexture.CalculateBoundingRectangle(this.BoundingRectangle, LoadedTexture.GetWorldTransformation(position, origin, rotation));
+        }
+
+        public Boolean Contains(Vector2 point, Vector2 position, Vector2 origin, float rotation)
+        {
+            if (this.TransformBoundingRectangle(position, origin, rotation).Contains(new Point((int)(point.X), (int)(point.Y))))
+            {
+                Matrix inversTransform = Matrix.Invert(LoadedTexture.GetWorldTransformation(position, origin, rotation));
+                Color[] data = this.Data;
+
+                Vector2 texturePos = Vector2.Transform(point, inversTransform);
+                int x = (int)Math.Round(texturePos.X);
+                int y = (int)Math.Round(texturePos.Y);
+
+                if (0 <= x && x < this.Texture.Width &&
+                        0 <= y && y < this.Texture.Height)
+                {
+                    Color color = data[x + y * this.Texture.Width];
+                    if (color.A != 0)
+                    {
+
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public Boolean CollidesWith(Vector2 position, Vector2 origin, float rotation, LoadedTexture other, Vector2 otherPosition, Vector2 otherOrigin, float otherRotation)
+        {
+            Rectangle tb = this.TransformBoundingRectangle(position, origin, rotation);
+            Rectangle ob = other.TransformBoundingRectangle(otherPosition, otherOrigin, otherRotation);
+
+            Circle thisCirlce = Circle.CreateBounding(tb);
+            Circle otherCirlce = Circle.CreateBounding(ob);
+
+            if (thisCirlce.Intersects(otherCirlce) && tb.Intersects(ob))
+            {
+
+                Color[] thisTextureData = this.Data;
+
+                Color[] otherTextureData = other.Data;
+
+                if (LoadedTexture.MyIntersectPixels(this, other, position, origin, rotation, otherPosition, otherOrigin, otherRotation))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public LoadedTexture(Texture2D t)
         {
             this.texture = t;
@@ -157,6 +215,106 @@ namespace MyGame.DrawingUtils
                 }
                 this.boundingRectangle = new Rectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
             }
+        }
+
+        // Returns a matrix tranformation that sends a texture into it's actual position in the game world.
+        public static Matrix GetWorldTransformation(Vector2 position, Vector2 origin, float rotation)
+        {
+            Matrix originM = Matrix.CreateTranslation(-origin.X, -origin.Y, 0);
+            Matrix rotationM = Matrix.CreateRotationZ(rotation);
+            Matrix positionM = Matrix.CreateTranslation(position.X, position.Y, 0);
+            Matrix returnM = originM * rotationM * positionM;
+            return returnM;
+
+        }
+
+        /// <summary>
+        /// Microsoft XNA Community Game Platform
+        /// Copyright (C) Microsoft Corporation. All rights reserved.
+        /// 
+        /// Calculates an axis aligned rectangle which fully contains an arbitrarily
+        /// transformed axis aligned rectangle.
+        /// </summary>
+        /// <param name="rectangle">Original bounding rectangle.</param>
+        /// <param name="transform">World transform of the rectangle.</param>
+        /// <returns>A new rectangle which contains the trasnformed rectangle.</returns>
+        public static Rectangle CalculateBoundingRectangle(Rectangle rectangle,
+                                                           Matrix transform)
+        {
+            // Get all four corners in local space
+            Vector2 leftTop = new Vector2(rectangle.Left, rectangle.Top);
+            Vector2 rightTop = new Vector2(rectangle.Right, rectangle.Top);
+            Vector2 leftBottom = new Vector2(rectangle.Left, rectangle.Bottom);
+            Vector2 rightBottom = new Vector2(rectangle.Right, rectangle.Bottom);
+
+            // Transform all four corners into work space
+            Vector2.Transform(ref leftTop, ref transform, out leftTop);
+            Vector2.Transform(ref rightTop, ref transform, out rightTop);
+            Vector2.Transform(ref leftBottom, ref transform, out leftBottom);
+            Vector2.Transform(ref rightBottom, ref transform, out rightBottom);
+
+            // Find the minimum and maximum extents of the rectangle in world space
+            Vector2 min = Vector2.Min(Vector2.Min(leftTop, rightTop),
+                                      Vector2.Min(leftBottom, rightBottom));
+            Vector2 max = Vector2.Max(Vector2.Max(leftTop, rightTop),
+                                      Vector2.Max(leftBottom, rightBottom));
+
+            // Return that as a rectangle
+            return new Rectangle((int)min.X, (int)min.Y,
+                                 (int)(max.X - min.X), (int)(max.Y - min.Y));
+        }
+
+        //This one is better because it only checks the part the bounding rectangeles that intersect instead of the whole texture
+        public static bool MyIntersectPixels(LoadedTexture t1, LoadedTexture t2, Vector2 position1, Vector2 origin1, float rotation1, Vector2 position2, Vector2 origin2, float rotation2)
+        {
+            Rectangle d1Bound = t1.TransformBoundingRectangle(position1, origin1, rotation1);
+            Rectangle d2Bound = t2.TransformBoundingRectangle(position2, origin2, rotation2);
+
+            Rectangle intersectArea;
+            Rectangle.Intersect(ref d1Bound, ref d2Bound, out intersectArea);
+
+            Matrix inversTransform1 = Matrix.Invert(LoadedTexture.GetWorldTransformation(position1, origin1, rotation1));
+            Matrix inversTransform2 = Matrix.Invert(LoadedTexture.GetWorldTransformation(position2, origin2, rotation2));
+
+            Color[] data1 = t1.Data;
+            Color[] data2 = t2.Data;
+
+            //randomly selecting a pixels to check instead of iterating through rows would improve performance
+            for (int worldX = intersectArea.X; worldX < intersectArea.X + intersectArea.Width; worldX++)
+            {
+                for (int worldY = intersectArea.Y; worldY < intersectArea.Y + intersectArea.Height; worldY++)
+                {
+                    Vector3 pos = new Vector3(worldX, worldY, 0);
+
+                    Vector3 texture1Pos = Vector3.Transform(pos, inversTransform1);
+                    Vector3 texture2Pos = Vector3.Transform(pos, inversTransform2);
+
+                    int x1 = (int)Math.Round(texture1Pos.X);
+                    int y1 = (int)Math.Round(texture1Pos.Y);
+
+                    int x2 = (int)Math.Round(texture2Pos.X);
+                    int y2 = (int)Math.Round(texture2Pos.Y);
+
+
+                    if (0 <= x1 && x1 < t1.Texture.Width &&
+                        0 <= y1 && y1 < t1.Texture.Height &&
+                        0 <= x2 && x2 < t2.Texture.Width &&
+                        0 <= y2 && y2 < t2.Texture.Height)
+                    {
+                        Color color1 = data1[x1 + y1 * t1.Texture.Width];
+                        Color color2 = data2[x2 + y2 * t2.Texture.Width];
+
+                        // If both pixels are not completely transparent,
+                        if (color1.A != 0 && color2.A != 0)
+                        {
+                            // then an intersection has been found
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }
