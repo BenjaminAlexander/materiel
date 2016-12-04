@@ -23,11 +23,6 @@ namespace MyGame.DrawingUtils
             get { return texture; }
         }
 
-        public Color[] Data
-        {
-            get { return data; }
-        }
-
         public Vector2 CenterOfMass
         {
             get { return centerOfMass; }
@@ -48,11 +43,6 @@ namespace MyGame.DrawingUtils
             get { return boundingRectangle; }
         }
 
-        public List<Point> NonZeroPixels
-        {
-            get { return nonZeroPixels; }
-        }
-
         public void Draw(MyGraphicsClass graphics, Vector2 position, Vector2 origin, float rotation, Color color, float depth)
         {
             graphics.getSpriteBatch().Draw(texture, position, null, color, rotation, origin, 1, SpriteEffects.None, depth);
@@ -68,7 +58,6 @@ namespace MyGame.DrawingUtils
             if (this.TransformBoundingRectangle(position, origin, rotation).Contains(new Point((int)(point.X), (int)(point.Y))))
             {
                 Matrix inversTransform = Matrix.Invert(LoadedTexture.GetWorldTransformation(position, origin, rotation));
-                Color[] data = this.Data;
 
                 Vector2 texturePos = Vector2.Transform(point, inversTransform);
                 int x = (int)Math.Round(texturePos.X);
@@ -77,10 +66,9 @@ namespace MyGame.DrawingUtils
                 if (0 <= x && x < this.Texture.Width &&
                         0 <= y && y < this.Texture.Height)
                 {
-                    Color color = data[x + y * this.Texture.Width];
+                    Color color = this.data[x + y * this.Texture.Width];
                     if (color.A != 0)
                     {
-
                         return true;
                     }
                 }
@@ -98,11 +86,6 @@ namespace MyGame.DrawingUtils
 
             if (thisCirlce.Intersects(otherCirlce) && tb.Intersects(ob))
             {
-
-                Color[] thisTextureData = this.Data;
-
-                Color[] otherTextureData = other.Data;
-
                 if (LoadedTexture.MyIntersectPixels(this, other, position, origin, rotation, otherPosition, otherOrigin, otherRotation))
                 {
                     return true;
@@ -276,9 +259,6 @@ namespace MyGame.DrawingUtils
             Matrix inversTransform1 = Matrix.Invert(LoadedTexture.GetWorldTransformation(position1, origin1, rotation1));
             Matrix inversTransform2 = Matrix.Invert(LoadedTexture.GetWorldTransformation(position2, origin2, rotation2));
 
-            Color[] data1 = t1.Data;
-            Color[] data2 = t2.Data;
-
             //randomly selecting a pixels to check instead of iterating through rows would improve performance
             for (int worldX = intersectArea.X; worldX < intersectArea.X + intersectArea.Width; worldX++)
             {
@@ -301,8 +281,8 @@ namespace MyGame.DrawingUtils
                         0 <= x2 && x2 < t2.Texture.Width &&
                         0 <= y2 && y2 < t2.Texture.Height)
                     {
-                        Color color1 = data1[x1 + y1 * t1.Texture.Width];
-                        Color color2 = data2[x2 + y2 * t2.Texture.Width];
+                        Color color1 = t1.data[x1 + y1 * t1.Texture.Width];
+                        Color color2 = t2.data[x2 + y2 * t2.Texture.Width];
 
                         // If both pixels are not completely transparent,
                         if (color1.A != 0 && color2.A != 0)
