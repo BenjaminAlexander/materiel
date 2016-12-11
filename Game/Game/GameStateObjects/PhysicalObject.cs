@@ -46,7 +46,7 @@ namespace MyGame.GameStateObjects
                 else
                 {
                     position.Value = value;
-                    //this.Collection.MoveInTree(this);
+                    this.Collection.MoveInTree(this);
                 }
             }
             get { return this.position.Value; }
