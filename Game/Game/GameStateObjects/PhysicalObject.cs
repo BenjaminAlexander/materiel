@@ -57,10 +57,19 @@ namespace MyGame.GameStateObjects
             return this.position.GetValue(mode);
         }
 
+        public float GetDirection(GameObjectField.Modes mode)
+        {
+            return this.direction.GetValue(mode);
+        }
+
         public float Direction
         {
             get { return direction.Value; }
-            set { direction.Value = Utils.Vector2Utils.RestrictAngle(value); }
+            set
+            {
+                direction.Value = Utils.Vector2Utils.RestrictAngle(value);
+                this.Collection.MoveInTree(this);
+            }
         }
 
         public Boolean CollidesWith(PhysicalObject other)
