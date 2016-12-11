@@ -1,8 +1,8 @@
 ﻿namespace MyGame.GameStateObjects
 {
-    abstract class GameObjectField
+    public abstract class GameObjectField
     {
-        private enum Modes { Simulation, Previous, Draw };
+        public enum Modes { Simulation, Previous, Draw };
         private static Modes mode = Modes.Simulation;
 
         public static void SetModeSimulation()

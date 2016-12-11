@@ -16,8 +16,8 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return unitCount;
         }
 
-        public InternalNode(Boolean root, InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GetTreePosition positionFunc)
-            : base(parent, mapSpace, leafDictionary, positionFunc)
+        public InternalNode(Boolean root, InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GameObjectField.Modes mode)
+            : base(parent, mapSpace, leafDictionary, mode)
         {
             this.root = root;
             int halfWidth = mapSpace.Width / 2;
@@ -28,10 +28,10 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             Rectangle nwRectangle = new Rectangle(mapSpace.X, mapSpace.Y + halfHeight, halfWidth, mapSpace.Height - halfHeight);
             Rectangle neRectangle = new Rectangle(mapSpace.X + halfWidth, mapSpace.Y + halfHeight, mapSpace.Width - halfWidth, mapSpace.Height - halfHeight);
 
-            Node nw = new Leaf(this, nwRectangle, leafDictionary, positionFunc);
-            Node ne = new Leaf(this, neRectangle, leafDictionary, positionFunc);
-            Node sw = new Leaf(this, swRectangle, leafDictionary, positionFunc);
-            Node se = new Leaf(this, seRectangle, leafDictionary, positionFunc);
+            Node nw = new Leaf(this, nwRectangle, leafDictionary, mode);
+            Node ne = new Leaf(this, neRectangle, leafDictionary, mode);
+            Node sw = new Leaf(this, swRectangle, leafDictionary, mode);
+            Node se = new Leaf(this, seRectangle, leafDictionary, mode);
             children.Add(nw);
             children.Add(ne);
             children.Add(sw);
@@ -107,7 +107,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                         {
                             throw new Exception("incorrect child/parent");
                         }
-                        Leaf newNode = new Leaf(this.Parent, this.MapSpace, leafDictionary, this.PositionFunc);
+                        Leaf newNode = new Leaf(this.Parent, this.MapSpace, leafDictionary, this.Mode);
                         this.Parent.Replace(this, newNode);
 
                         foreach (Leaf leaf in children)

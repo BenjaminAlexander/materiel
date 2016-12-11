@@ -8,15 +8,14 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
     class Leaf : Node
     {
         private GameObjectListManager unitList;
-        private GetTreePosition positionFunc;
 
         public override int ObjectCount()
         {
             return unitList.GetMaster().Count;
         }
 
-        public Leaf(InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GetTreePosition positionFunc)
-            : base(parent, mapSpace, leafDictionary, positionFunc)
+        public Leaf(InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GameObjectField.Modes mode)
+            : base(parent, mapSpace, leafDictionary, mode)
         {
             unitList = new GameObjectListManager();
         }
@@ -121,7 +120,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             if (MapSpace.Width > 1 && MapSpace.Height > 1)
             {
-                Node newNode = new InternalNode(false, this.Parent, this.MapSpace, leafDictionary, this.PositionFunc);// (this.Parent, this.mapSpace, 2);
+                Node newNode = new InternalNode(false, this.Parent, this.MapSpace, leafDictionary, this.Mode);
                 this.Parent.Replace(this, newNode);
                 foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
                 {

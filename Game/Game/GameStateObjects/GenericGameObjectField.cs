@@ -76,6 +76,22 @@
             }
         }
 
+        public T GetValue(Modes mode)
+        {
+            if (mode == Modes.Simulation)
+            {
+                return simulationValue;
+            }
+            else if (mode == Modes.Previous)
+            {
+                return previousValue;
+            }
+            else
+            {
+                return drawValue;
+            }
+        }
+
         public override void ApplyMessage(GameObjectUpdate message)
         {
             this.previousValue = this.drawValue;

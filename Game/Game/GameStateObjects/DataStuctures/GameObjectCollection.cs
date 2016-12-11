@@ -57,9 +57,9 @@ namespace MyGame.GameStateObjects.DataStuctures
         public GameObjectCollection(Vector2 world)
         {
             worldRectangle = new Utils.RectangleF(new Vector2(0), world);
-            simulationTree = new QuadTree(world, new GetTreePosition(PhysicalObject.GetSimulationPosition));
-            previousTree = new QuadTree(world, new GetTreePosition(PhysicalObject.GetPreviousPosition));
-            drawTree = new QuadTree(world, new GetTreePosition(PhysicalObject.GetDrawPosition));
+            simulationTree = new QuadTree(world, GameObjectField.Modes.Simulation);
+            previousTree = new QuadTree(world, GameObjectField.Modes.Previous);
+            drawTree = new QuadTree(world, GameObjectField.Modes.Draw);
         }
 
         public Boolean Contains(GameObject obj)

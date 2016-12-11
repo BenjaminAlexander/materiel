@@ -4,23 +4,21 @@ using Microsoft.Xna.Framework;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
 {
-    public delegate Vector2 GetTreePosition(PhysicalObject obj);
-
     public class QuadTree
     {
         private Vector2 mapSize;
         private Node root;
-        private GetTreePosition positionFunc;
+        private GameObjectField.Modes mode;
 
         LeafDictionary leafDictionary;
 
-        public QuadTree(Vector2 mapSize, GetTreePosition positionFunc)
+        public QuadTree(Vector2 mapSize, GameObjectField.Modes mode)
         {
             this.mapSize = mapSize;
-            this.positionFunc = positionFunc;
+            this.mode = mode;
             leafDictionary = new LeafDictionary(this);
             Rectangle mapRectangle = new Rectangle(0, 0, (int)Math.Ceiling(mapSize.X), (int)Math.Ceiling(mapSize.Y));
-            root = new InternalNode(true, null, mapRectangle, leafDictionary, this.positionFunc);
+            root = new InternalNode(true, null, mapRectangle, leafDictionary, this.mode);
         }
 
         public bool Add(PhysicalObject unit)

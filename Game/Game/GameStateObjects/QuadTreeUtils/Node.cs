@@ -14,32 +14,31 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         protected LeafDictionary leafDictionary;
 
         private Rectangle mapSpace;
-        private GetTreePosition positionFunc;
-
+        private GameObjectField.Modes mode;
         public Rectangle MapSpace
         {
             get { return mapSpace; }
         }
 
-        public Node(InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GetTreePosition positionFunc)
+        public Node(InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GameObjectField.Modes mode)
         {
             id = nextI++;
             this.parent = parent;
             this.leafDictionary = leafDictionary;
             this.mapSpace = mapSpace;
-            this.positionFunc = positionFunc;
+            this.mode = mode;
         }
 
         protected Vector2 GetObjPosition(PhysicalObject obj)
         {
-            return positionFunc(obj);
+            return obj.GetPosition(this.mode);
         }
 
-        protected GetTreePosition PositionFunc
+        protected GameObjectField.Modes Mode
         {
             get
             {
-                return this.positionFunc;
+                return this.mode;
             }
         }
 

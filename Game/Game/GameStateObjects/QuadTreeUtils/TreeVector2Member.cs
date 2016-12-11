@@ -35,11 +35,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             this.obj = obj;
             this.collection = obj.Collection;
         }
-
-        public static implicit operator Vector2(TreeVector2Member m)
-        {
-            return m.Value;
-        }
         
         public Vector2 Value
         {
@@ -89,6 +84,22 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             get
             {
                 return this.previousValue;
+            }
+        }
+
+        public Vector2 GetValue(Modes mode)
+        {
+            if (mode == Modes.Simulation)
+            {
+                return simulationValue;
+            }
+            else if (mode == Modes.Previous)
+            {
+                return previousValue;
+            }
+            else
+            {
+                return drawValue;
             }
         }
 

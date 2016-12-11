@@ -149,7 +149,7 @@ namespace MyGame.GameStateObjects
             }
         }
 
-        private void Smooth(float secondsElapsed)
+        protected virtual void Smooth(float secondsElapsed)
         {
             this.secondsUntilUpdateMessage = this.secondsUntilUpdateMessage - secondsElapsed;
             if (this.secondsUntilUpdateMessage < -this.SecondsBetweenUpdateMessage * 10)
@@ -177,5 +177,7 @@ namespace MyGame.GameStateObjects
         public virtual void SimulationStateOnlyUpdate(float secondsElapsed) { }
 
         public virtual void Draw(GameTime gameTime, MyGraphicsClass graphics) { }
+
+        public virtual void ApplyMessageComplete() { }
     }
 }
