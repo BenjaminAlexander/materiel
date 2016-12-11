@@ -9,7 +9,7 @@ namespace MyGame.GameStateObjects
 
     public abstract class PhysicalObject : GameObject
     {
-        private TreeVector2Member position;
+        private InterpolatedVector2GameObjectMember position;
         private InterpolatedAngleGameObjectMember direction;
 
         public static void ServerInitialize(PhysicalObject obj, Vector2 position, float direction)
@@ -31,7 +31,7 @@ namespace MyGame.GameStateObjects
         public PhysicalObject(GameObjectCollection collection)
             : base(collection)
         {
-            position = new TreeVector2Member(this, new Vector2(0));
+            position = new InterpolatedVector2GameObjectMember(this, new Vector2(0));
             direction = new InterpolatedAngleGameObjectMember(this, 0);
         }
 
