@@ -9,21 +9,6 @@ namespace MyGame.GameStateObjects
 
     public abstract class PhysicalObject : GameObject
     {
-        public static Vector2 GetSimulationPosition(PhysicalObject obj)
-        {
-            return obj.position.SimulationValue;
-        }
-
-        public static Vector2 GetPreviousPosition(PhysicalObject obj)
-        {
-            return obj.position.PreviousValue;
-        }
-
-        public static Vector2 GetDrawPosition(PhysicalObject obj)
-        {
-            return obj.position.DrawValue;
-        }
-
         private TreeVector2Member position;
         private InterpolatedAngleGameObjectMember direction;
 
@@ -61,9 +46,15 @@ namespace MyGame.GameStateObjects
                 else
                 {
                     position.Value = value;
+                    //this.Collection.MoveInTree(this);
                 }
             }
             get { return this.position.Value; }
+        }
+
+        public Vector2 GetPosition(GameObjectField.Modes mode)
+        {
+            return this.position.GetValue(mode);
         }
 
         public float Direction
@@ -77,12 +68,37 @@ namespace MyGame.GameStateObjects
             return this.Texture.CollidesWith(this.Position, this.TextureOrigin, this.Direction, other.Texture, other.Position, other.TextureOrigin, other.Direction);
         }
 
+        public Boolean CollidesWith(Vector2 point)
+        {
+            return this.Texture.Contains(point, this.Position, this.TextureOrigin, this.Direction);
+        }
+
+        public Rectangle BoundingRectangle
+        {
+            get
+            {
+                return this.Texture.TransformBoundingRectangle(this.Position, this.TextureOrigin, this.Direction);
+            }
+        }
+
         public abstract void MoveOutsideWorld(Vector2 position, Vector2 movePosition);
 
         public override void Draw(Microsoft.Xna.Framework.GameTime gameTime, MyGraphicsClass graphics)
         {
             base.Draw(gameTime, graphics);
             this.Texture.Draw(graphics, this.Position, this.TextureOrigin, this.Direction, Color.White, 1);
+        }
+
+        protected override void Smooth(float secondsElapsed)
+        {
+            base.Smooth(secondsElapsed);
+            this.Collection.MoveInTree(this);
+        }
+
+        public override void ApplyMessageComplete()
+        {
+            base.ApplyMessageComplete();
+            this.Collection.MoveInTree(this);
         }
     }
 }

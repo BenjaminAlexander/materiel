@@ -4,9 +4,6 @@ namespace MyGame.GameStateObjects
 {
     class InterpolatedVector2GameObjectMember : GenericGameObjectField<Vector2>
     {
-        //TODO: is this method the best?
-        private bool initialized = false;
-
         public InterpolatedVector2GameObjectMember(GameObject obj, Vector2 v) : base(obj, v)
         {
         }

@@ -67,7 +67,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 {
                     drawValue = value;
                 }
-                this.collection.MoveInTree(this.obj);
             }
         }
 
@@ -106,7 +105,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         public override void Interpolate(float smoothing)
         {
             this.drawValue = Vector2.Lerp(this.SimulationValue, this.previousValue, smoothing);
-            this.collection.MoveInTree(this.obj);
         }
 
         public override void ApplyMessage(GameObjectUpdate message)
@@ -120,8 +118,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 this.drawValue = this.simulationValue;
                 this.initialized = true;
             }
-
-            this.collection.MoveInTree(this.obj);
         }
 
         public override GameObjectUpdate ConstructMessage(GameObjectUpdate message)

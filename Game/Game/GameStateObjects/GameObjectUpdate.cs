@@ -85,6 +85,7 @@ namespace MyGame.GameStateObjects
             }
 
             obj.LatencyAdjustment(gameTime, this.TimeStamp);
+            obj.ApplyMessageComplete();
             GameObjectField.SetModeDraw();
         }
     }
