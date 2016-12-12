@@ -8,6 +8,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
     class Leaf : Node
     {
         private GameObjectListManager unitList;
+        private Rectangle objectBounds;
 
         public override int ObjectCount()
         {
@@ -18,6 +19,20 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             : base(parent, mapSpace, leafDictionary, mode)
         {
             unitList = new GameObjectListManager();
+            objectBounds = new Rectangle(mapSpace.X, mapSpace.Y, 0, 0);
+        }
+
+        private void ComputeObjectBounds()
+        {
+            List<PhysicalObject> units = unitList.GetList<PhysicalObject>();
+            if (units.Count > 0)
+            {
+                Rectangle bounds = units[0].BoundingRectangle;
+            }
+            else
+            {
+                objectBounds = new Rectangle(this.MapSpace.X, this.MapSpace.Y, 0, 0);
+            }
         }
 
         public override bool Add(PhysicalObject unit)

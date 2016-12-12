@@ -90,6 +90,11 @@ namespace MyGame.GameStateObjects
             }
         }
 
+        public Rectangle GetBoundingRectangle(GameObjectField.Modes mode)
+        {
+            return this.Texture.TransformBoundingRectangle(this.GetPosition(mode), this.TextureOrigin, this.GetDirection(mode));
+        }
+
         public abstract void MoveOutsideWorld(Vector2 position, Vector2 movePosition);
 
         public override void Draw(Microsoft.Xna.Framework.GameTime gameTime, MyGraphicsClass graphics)

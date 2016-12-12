@@ -37,5 +37,16 @@ namespace MyGame.Utils
         {
             return (float)(Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2)));
         }
+
+        public static Rectangle RectangleUnion(Rectangle r1, Rectangle r2)
+        {
+            int left = Math.Min(Math.Min(r1.X, r2.X), Math.Min(r1.Right, r2.Right));
+            int right = Math.Max(Math.Max(r1.X, r2.X), Math.Max(r1.Right, r2.Right));
+
+            int top = Math.Min(Math.Min(r1.Y, r2.Y), Math.Min(r1.Bottom, r2.Bottom));
+            int bottom = Math.Max(Math.Max(r1.Y, r2.Y), Math.Max(r1.Bottom, r2.Bottom));
+
+            return new Rectangle(left, top, right - left, bottom - top);
+        }
     }
 }

@@ -106,6 +106,7 @@ namespace MyGame.materiel.GameObjects
                 this.Texture.Draw(graphics, this.Position, this.TextureOrigin, this.Direction, controllingPlayer.Value.Color, .9f);
             }
             graphics.DrawDebugFont(this.Materiel.ToString(), this.Position + new Vector2(25, 0), 1f);
+            graphics.DrawRectangle(this.BoundingRectangle, Color.Red, 1f);
         }
 
         public virtual void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics, Camera camera, Color color, float depth)
