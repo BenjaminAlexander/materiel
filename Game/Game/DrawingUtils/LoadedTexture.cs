@@ -196,7 +196,8 @@ namespace MyGame.DrawingUtils
                     minY = Math.Min(minY, pixel.Y);
                     maxY = Math.Max(maxY, pixel.Y);
                 }
-                this.boundingRectangle = new Rectangle(minX, minY, maxX - minX + 1, maxY - minY + 1);
+                //TODO: why does they +2 seem to make the bounding rectangle most correct
+                this.boundingRectangle = new Rectangle(minX, minY, maxX - minX + 2, maxY - minY + 2);
             }
         }
 
@@ -243,8 +244,8 @@ namespace MyGame.DrawingUtils
                                       Vector2.Max(leftBottom, rightBottom));
 
             // Return that as a rectangle
-            return new Rectangle((int)min.X, (int)min.Y,
-                                 (int)(max.X - min.X), (int)(max.Y - min.Y));
+            return new Rectangle((int)Math.Floor(min.X), (int)Math.Floor(min.Y),
+                                 (int)Math.Ceiling(max.X - min.X), (int)Math.Ceiling(max.Y - min.Y));
         }
 
         //This one is better because it only checks the part the bounding rectangeles that intersect instead of the whole texture

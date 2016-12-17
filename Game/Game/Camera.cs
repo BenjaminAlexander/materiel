@@ -23,7 +23,7 @@ namespace MyGame
         private float rotation = 0;
 
         private float zoomIncrement = (float).001;
-        private float maxZoom = 1;
+        private float maxZoom = 10;
         private float minZoom = (float).1;
 
         public Camera(Vector2 position, float zoom, float rotation, GraphicsDeviceManager graphics, InputManager ioManager)
