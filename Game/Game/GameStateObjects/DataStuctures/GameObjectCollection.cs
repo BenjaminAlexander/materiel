@@ -162,6 +162,7 @@ namespace MyGame.GameStateObjects.DataStuctures
             {
                 obj.Draw(gameTime, graphics);
             }
+            drawTree.Draw(gameTime, graphics);
             graphics.EndWorld();
 
             graphics.Begin();            

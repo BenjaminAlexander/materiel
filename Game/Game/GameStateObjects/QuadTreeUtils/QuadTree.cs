@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MyGame.DrawingUtils;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
 {
@@ -23,7 +24,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public bool Add(PhysicalObject unit)
         {
-            if(root.Add(unit))
+            if (root.Add(unit))
             {
                 return true;
             }
@@ -69,5 +70,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             get { return root; }
         }
 
+        public void Draw(GameTime gameTime, MyGraphicsClass graphics)
+        {
+            root.Draw(gameTime, graphics);
+        }
     }
 }

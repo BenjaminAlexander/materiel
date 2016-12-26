@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MyGame.DrawingUtils;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
 {
@@ -85,5 +86,11 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         }
 
         public abstract void Move(PhysicalObject obj);
+
+        public virtual void Draw(GameTime gameTime, MyGraphicsClass graphics)
+        {
+            graphics.DrawRectangle(this.mapSpace, Color.Red, 1f);
+        }
+
     }
 }

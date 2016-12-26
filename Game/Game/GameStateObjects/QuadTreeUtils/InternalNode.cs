@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MyGame.DrawingUtils;
 using MyGame.Geometry;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
@@ -231,6 +232,15 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         public bool IsChild(Node node)
         {
             return this.children.Contains(node);
+        }
+
+        public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
+        {
+            base.Draw(gameTime, graphics);
+            foreach(Node n in children)
+            {
+                n.Draw(gameTime, graphics);
+            }
         }
 
     }
