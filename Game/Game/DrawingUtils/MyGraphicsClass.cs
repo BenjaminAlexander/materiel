@@ -120,6 +120,24 @@ namespace MyGame.DrawingUtils
             spriteBatch.DrawString(font, str, position, Color.Black,0,new Vector2(0),1, SpriteEffects.None, depth);
         }
 
+        public void DrawWorldRectangleOnScreen(Rectangle rectangle, Color color, double depth)
+        {
+            Vector2 point1 = new Vector2(rectangle.X, rectangle.Y);
+            Vector2 point2 = new Vector2(rectangle.X, rectangle.Y) + new Vector2(rectangle.Width, 0);
+            Vector2 point3 = new Vector2(rectangle.X, rectangle.Y) + new Vector2(rectangle.Width, rectangle.Height);
+            Vector2 point4 = new Vector2(rectangle.X, rectangle.Y) + new Vector2(0, rectangle.Height);
+
+            point1 = camera.WorldToScreenPosition(point1);
+            point2 = camera.WorldToScreenPosition(point2);
+            point3 = camera.WorldToScreenPosition(point3);
+            point4 = camera.WorldToScreenPosition(point4);
+
+            DrawLine(point1, point2, color, depth);
+            DrawLine(point2, point3, color, depth);
+            DrawLine(point3, point4, color, depth);
+            DrawLine(point4, point1, color, depth);
+        }
+
         public void BeginWorld()
         {
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, camera.GetWorldToScreenTransformation()); // greater on top

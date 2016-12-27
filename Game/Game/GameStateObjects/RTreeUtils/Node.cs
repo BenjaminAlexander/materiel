@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using MyGame.DrawingUtils;
 
-namespace MyGame.GameStateObjects.QuadTreeUtils
+namespace MyGame.GameStateObjects.RTreeUtils
 {
     abstract class Node
     {

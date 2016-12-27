@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using MyGame.GameStateObjects.QuadTreeUtils;
+using MyGame.GameStateObjects.RTreeUtils;
 using MyGame.Utils;
 using MyGame.DrawingUtils;
 using MyGame.Server;
@@ -12,9 +12,9 @@ namespace MyGame.GameStateObjects.DataStuctures
     {
         private int nextId = 1;
         private GameObjectListManager listManager = new GameObjectListManager();
-        private QuadTree simulationTree;
-        private QuadTree previousTree;
-        private QuadTree drawTree;
+        private RTree simulationTree;
+        private RTree previousTree;
+        private RTree drawTree;
         private Dictionary<int, GameObject> dictionary = new Dictionary<int, GameObject>();
         private Utils.RectangleF worldRectangle;
         
@@ -23,7 +23,7 @@ namespace MyGame.GameStateObjects.DataStuctures
             get { return nextId++; }
         }
 
-        private QuadTree Tree
+        private RTree Tree
         {
             get 
             {
@@ -57,9 +57,9 @@ namespace MyGame.GameStateObjects.DataStuctures
         public GameObjectCollection(Vector2 world)
         {
             worldRectangle = new Utils.RectangleF(new Vector2(0), world);
-            simulationTree = new QuadTree(world, GameObjectField.Modes.Simulation);
-            previousTree = new QuadTree(world, GameObjectField.Modes.Previous);
-            drawTree = new QuadTree(world, GameObjectField.Modes.Draw);
+            simulationTree = new RTree(world, GameObjectField.Modes.Simulation);
+            previousTree = new RTree(world, GameObjectField.Modes.Previous);
+            drawTree = new RTree(world, GameObjectField.Modes.Draw);
         }
 
         public Boolean Contains(GameObject obj)
@@ -162,13 +162,19 @@ namespace MyGame.GameStateObjects.DataStuctures
             {
                 obj.Draw(gameTime, graphics);
             }
-            drawTree.Draw(gameTime, graphics);
+            
             graphics.EndWorld();
 
             graphics.Begin();            
             graphics.DrawRectangle(camera.WorldToScreenPosition(new Vector2(0)),
                 camera.WorldToScreenPosition(this.worldRectangle.Size) - camera.WorldToScreenPosition(new Vector2(0))
                 , new Vector2(0), 0, Color.Black, 1);
+            drawTree.Draw(gameTime, graphics);
+
+            foreach (GameObject obj in listManager.GetList<GameObject>())
+            {
+                obj.DrawScreen(gameTime, graphics);
+            }
 
             graphics.End();
         }

@@ -178,6 +178,8 @@ namespace MyGame.GameStateObjects
 
         public virtual void Draw(GameTime gameTime, MyGraphicsClass graphics) { }
 
+        public virtual void DrawScreen(GameTime gameTime, MyGraphicsClass graphics) { }
+
         public virtual void ApplyMessageComplete() { }
     }
 }

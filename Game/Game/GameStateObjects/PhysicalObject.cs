@@ -114,5 +114,11 @@ namespace MyGame.GameStateObjects
             base.ApplyMessageComplete();
             this.Collection.MoveInTree(this);
         }
+
+        public override void DrawScreen(GameTime gameTime, MyGraphicsClass graphics)
+        {
+            base.DrawScreen(gameTime, graphics);
+            graphics.DrawWorldRectangleOnScreen(this.BoundingRectangle, Color.Red, 1f);
+        }
     }
 }
