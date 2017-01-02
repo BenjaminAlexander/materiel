@@ -120,6 +120,11 @@ namespace MyGame.GameStateObjects.DataStuctures
             return this.Tree.GetObjectsInCircle<T>(position, radius);
         }
 
+        public List<T> GetObjects<T>(Vector2 position) where T : PhysicalObject
+        {
+            return this.Tree.GetObjects<T>(position);
+        }
+
         public void ServerUpdate(Lobby lobby, GameTime gameTime)
         {
             float secondsElapsed = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;

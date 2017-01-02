@@ -167,6 +167,18 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
+        public override List<T> GetObjects<T>(Vector2 point, List<T> list)
+        {
+            if(this.Bounds.Contains(point) && unitCount > 0)
+            {
+                foreach (Node child in children)
+                {
+                    child.GetObjects(point, list);
+                }
+            }
+            return list;
+        }
+
         public override List<T> CompleteList<T>(ref List<T> list)
         {
             foreach (Node child in children)

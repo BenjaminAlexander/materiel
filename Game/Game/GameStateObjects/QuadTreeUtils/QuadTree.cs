@@ -40,6 +40,11 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return root.GetObjectsInCircle<T>(center, radius);
         }
 
+        public List<T> GetObjects<T>(Vector2 center) where T : PhysicalObject
+        {
+            return root.GetObjects<T>(center);
+        }
+
         public bool Remove(PhysicalObject unit)
         {
             Leaf removeFrom = root.Remove(unit);

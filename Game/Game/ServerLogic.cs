@@ -57,7 +57,6 @@ namespace MyGame
                 Transport.TransportFactory(game.GameObjectCollection, player1.GameObject, player1Base.Position + new Vector2(i * 20, 200));
             }
 
-
             player2Base.SetPlayerInControll(player2);
         }
     }

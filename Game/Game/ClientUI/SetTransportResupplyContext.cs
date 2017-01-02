@@ -45,7 +45,7 @@ namespace MyGame.ClientUI
                 Vector2 sceenPosition = IOState.MouseScreenPosition();
                 Vector2 worldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
 
-                List<Base> clickList = this.Game.GameObjectCollection.GetObjectsInCircle<Base>(worldPosition, 25f);
+                List<Base> clickList = this.Game.GameObjectCollection.GetObjects<Base>(worldPosition);
                 if (clickList.Count > 0)
                 {
                     if(base1 == null)

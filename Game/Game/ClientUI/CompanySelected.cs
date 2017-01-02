@@ -39,7 +39,7 @@ namespace MyGame.ClientUI
                 Vector2 sceenPosition = IOState.MouseScreenPosition();
 
                 Vector2 worldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
-                List<Base> clickList = this.Game.GameObjectCollection.GetObjectsInCircle<Base>(worldPosition, 25f);
+                List<Base> clickList = this.Game.GameObjectCollection.GetObjects<Base>(worldPosition);
                 if (clickList.Count > 0)
                 {
                     new SetSupplyPoint(this.LocalPlayer, clickList[0], this.selectedCompany);
@@ -64,7 +64,7 @@ namespace MyGame.ClientUI
 
                 Vector2 worldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
 
-                List<Vehicle> clickList = this.Game.GameObjectCollection.GetObjectsInCircle<Vehicle>(worldPosition, 25f);
+                List<Vehicle> clickList = this.Game.GameObjectCollection.GetObjects<Vehicle>(worldPosition);
                 if (clickList.Count > 0)
                 {
                     if (clickList[0].Company == this.selectedCompany)

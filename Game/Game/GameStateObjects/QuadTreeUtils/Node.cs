@@ -73,6 +73,8 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public abstract List<T> GetObjectsInCircle<T>(Vector2 center, float radius, List<T> list) where T : PhysicalObject;
 
+        public abstract List<T> GetObjects<T>(Vector2 point, List<T> list) where T : PhysicalObject;
+
         public abstract List<T> CompleteList<T>(ref List<T> list) where T : PhysicalObject;
 
         public List<PhysicalObject> CompleteList()
@@ -85,6 +87,12 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             List<T> list = new List<T>();
             return this.GetObjectsInCircle(center, radius, list);
+        }
+
+        public List<T> GetObjects<T>(Vector2 point) where T : PhysicalObject
+        {
+            List<T> list = new List<T>();
+            return this.GetObjects(point, list);
         }
 
         public abstract void Move(PhysicalObject obj);

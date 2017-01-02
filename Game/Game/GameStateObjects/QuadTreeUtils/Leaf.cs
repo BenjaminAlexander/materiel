@@ -104,6 +104,21 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return list;
         }
 
+        public override List<T> GetObjects<T>(Vector2 point, List<T> list)
+        {
+            if (this.Bounds.Contains(point) && ObjectCount() > 0)
+            {
+                foreach (PhysicalObject unit in unitList.GetList<PhysicalObject>())
+                {
+                    if (unit is T && unit.CollidesWith(point))
+                    {
+                        list.Add((T)unit);
+                    }
+                }
+            }
+            return list;
+        }
+
         public override List<T> CompleteList<T>(ref List<T> list)
         {
             foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())

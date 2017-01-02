@@ -35,7 +35,7 @@ namespace MyGame.ClientUI
                 {
                     Vector2 worldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
 
-                    List<PhysicalObject> clickList = this.Game.GameObjectCollection.GetObjectsInCircle<PhysicalObject>(worldPosition, 25f);
+                    List<PhysicalObject> clickList = this.Game.GameObjectCollection.GetObjects<PhysicalObject>(worldPosition);
                     if (clickList.Count > 0)
                     {
                         if (clickList[0] is Base)
