@@ -236,12 +236,34 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
         {
-            base.Draw(gameTime, graphics);
-            foreach(Node n in children)
+            graphics.DrawWorldRectangleOnScreen(this.ComputeBounds(), Color.Red, 1f);
+            foreach (Node n in children)
             {
                 n.Draw(gameTime, graphics);
             }
         }
 
+        public Rectangle ComputeBounds()
+        {
+            if (children.Count > 0)
+            {
+                Rectangle bounds = children[0].Bounds;
+                foreach (Node obj in children)
+                {
+                    bounds = Utils.MathUtils.RectangleUnion(bounds, obj.Bounds);
+                }
+                this.Bounds = bounds;
+            }
+            else
+            {
+                this.Bounds = new Rectangle(this.MapSpace.X, this.MapSpace.Y, 0, 0);
+            }
+
+            if (this.Parent != null)
+            {
+                this.Parent.ComputeBounds();
+            }
+            return this.Bounds;
+        }
     }
 }

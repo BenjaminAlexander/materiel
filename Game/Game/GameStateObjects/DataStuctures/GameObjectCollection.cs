@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using MyGame.GameStateObjects.RTreeUtils;
+using MyGame.GameStateObjects.QuadTreeUtils;
 using MyGame.Utils;
 using MyGame.DrawingUtils;
 using MyGame.Server;
@@ -12,9 +12,9 @@ namespace MyGame.GameStateObjects.DataStuctures
     {
         private int nextId = 1;
         private GameObjectListManager listManager = new GameObjectListManager();
-        private RTree simulationTree;
-        private RTree previousTree;
-        private RTree drawTree;
+        private QuadTree simulationTree;
+        private QuadTree previousTree;
+        private QuadTree drawTree;
         private Dictionary<int, GameObject> dictionary = new Dictionary<int, GameObject>();
         private Utils.RectangleF worldRectangle;
         
@@ -23,7 +23,7 @@ namespace MyGame.GameStateObjects.DataStuctures
             get { return nextId++; }
         }
 
-        private RTree Tree
+        private QuadTree Tree
         {
             get 
             {
@@ -57,9 +57,9 @@ namespace MyGame.GameStateObjects.DataStuctures
         public GameObjectCollection(Vector2 world)
         {
             worldRectangle = new Utils.RectangleF(new Vector2(0), world);
-            simulationTree = new RTree(world, GameObjectField.Modes.Simulation);
-            previousTree = new RTree(world, GameObjectField.Modes.Previous);
-            drawTree = new RTree(world, GameObjectField.Modes.Draw);
+            simulationTree = new QuadTree(world, GameObjectField.Modes.Simulation);
+            previousTree = new QuadTree(world, GameObjectField.Modes.Previous);
+            drawTree = new QuadTree(world, GameObjectField.Modes.Draw);
         }
 
         public Boolean Contains(GameObject obj)
