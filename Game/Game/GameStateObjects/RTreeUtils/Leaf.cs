@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using MyGame.DrawingUtils;
 using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.GameStateObjects.RTreeUtils
@@ -8,7 +9,7 @@ namespace MyGame.GameStateObjects.RTreeUtils
     class Leaf : Node
     {
         private GameObjectListManager unitList;
-        private Rectangle objectBounds;
+        
 
         public override int ObjectCount()
         {
@@ -19,20 +20,27 @@ namespace MyGame.GameStateObjects.RTreeUtils
             : base(parent, mapSpace, leafDictionary, mode)
         {
             unitList = new GameObjectListManager();
-            objectBounds = new Rectangle(mapSpace.X, mapSpace.Y, 0, 0);
+            this.Bounds = new Rectangle(mapSpace.X, mapSpace.Y, 0, 0);
         }
 
-        private void ComputeObjectBounds()
+        public Rectangle ComputeBounds()
         {
             List<PhysicalObject> units = unitList.GetList<PhysicalObject>();
             if (units.Count > 0)
             {
                 Rectangle bounds = units[0].BoundingRectangle;
+                foreach(PhysicalObject obj in units)
+                {
+                    bounds = Utils.MathUtils.RectangleUnion(bounds, obj.BoundingRectangle);
+                }
+                this.Bounds = bounds;
             }
             else
             {
-                objectBounds = new Rectangle(this.MapSpace.X, this.MapSpace.Y, 0, 0);
+                this.Bounds = new Rectangle(this.MapSpace.X, this.MapSpace.Y, 0, 0);
             }
+            this.Parent.ComputeBounds();
+            return this.Bounds;
         }
 
         public override bool Add(PhysicalObject unit)
@@ -46,6 +54,7 @@ namespace MyGame.GameStateObjects.RTreeUtils
                 {
                     this.Expand();
                 }
+                this.ComputeBounds();
                 return true;
             }
             return false;
@@ -57,6 +66,7 @@ namespace MyGame.GameStateObjects.RTreeUtils
             {
                 leafDictionary.SetLeaf(unit, null);
                 unitList.Remove(unit);
+                this.ComputeBounds();
                 return this;
             }
             return null;
@@ -154,6 +164,12 @@ namespace MyGame.GameStateObjects.RTreeUtils
         public Boolean Contains(PhysicalObject obj)
         {
             return this.unitList.Contains(obj);
+        }
+
+        public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
+        {
+            graphics.DrawWorldRectangleOnScreen(this.ComputeBounds(), Color.Red, 1f);
+
         }
     }
 }
