@@ -174,7 +174,9 @@ namespace MyGame.GameStateObjects.DataStuctures
             graphics.DrawRectangle(camera.WorldToScreenPosition(new Vector2(0)),
                 camera.WorldToScreenPosition(this.worldRectangle.Size) - camera.WorldToScreenPosition(new Vector2(0))
                 , new Vector2(0), 0, Color.Black, 1);
-            drawTree.Draw(gameTime, graphics);
+
+            //This call draws debug information for the tree
+            //drawTree.Draw(gameTime, graphics);
 
             foreach (GameObject obj in listManager.GetList<GameObject>())
             {

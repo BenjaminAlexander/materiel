@@ -118,7 +118,7 @@ namespace MyGame.GameStateObjects
         public override void DrawScreen(GameTime gameTime, MyGraphicsClass graphics)
         {
             base.DrawScreen(gameTime, graphics);
-            graphics.DrawWorldRectangleOnScreen(this.BoundingRectangle, Color.Red, 1f);
+            //graphics.DrawWorldRectangleOnScreen(this.BoundingRectangle, Color.Red, 1f);
         }
     }
 }

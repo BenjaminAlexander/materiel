@@ -143,10 +143,10 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                     {
                         throw new Exception("Move failed");
                     }
-                    if (!this.Parent.IsChild(this))
+                    /*if (!this.Parent.IsChild(this))
                     {
                         throw new Exception("incorrect child/parent");
-                    }
+                    }*/
                     this.Parent.Collapse();
                 }
             }

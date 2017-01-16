@@ -60,7 +60,10 @@ namespace MyGame.Client
 
         public void UpdateWithIOEvent(IOEvent ioEvent)
         {
-            this.topOfStack.UpdateWithIOEvent(ioEvent);
+            if (this.topOfStack != null)
+            {
+                this.topOfStack.UpdateWithIOEvent(ioEvent);
+            }
         }
 
         public bool Owns(IPlayerControlled obj)

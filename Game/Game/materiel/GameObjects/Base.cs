@@ -171,7 +171,7 @@ namespace MyGame.materiel.GameObjects
  	        throw new NotImplementedException();
         }
 
-        public void SetPlayerInControll(RemotePlayer player)
+        public void SetPlayerInControll(PlayerGameObject player)
         {
             if (player == null)
             {
@@ -179,7 +179,7 @@ namespace MyGame.materiel.GameObjects
             }
             else
             {
-                controllingPlayer.Value = player.GameObject;
+                controllingPlayer.Value = player;
             }
         }
 

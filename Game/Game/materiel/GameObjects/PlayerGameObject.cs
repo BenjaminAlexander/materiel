@@ -20,6 +20,8 @@ namespace MyGame.materiel.GameObjects
 
         private GameObjectReferenceListField<Company> companies;
 
+        private static int nextSpoofID = 10001;
+
         public PlayerGameObject(GameObjectCollection collection)
             : base(collection)
         {
@@ -40,6 +42,14 @@ namespace MyGame.materiel.GameObjects
             PlayerGameObject obj = new PlayerGameObject(game.GameObjectCollection);
             game.GameObjectCollection.Add(obj);
             PlayerGameObject.ServerInitialize(obj, player.Id);
+            return obj;
+        }
+
+        public static PlayerGameObject Factory(ServerGame game)
+        {
+            PlayerGameObject obj = new PlayerGameObject(game.GameObjectCollection);
+            game.GameObjectCollection.Add(obj);
+            PlayerGameObject.ServerInitialize(obj, nextSpoofID++);
             return obj;
         }
 
