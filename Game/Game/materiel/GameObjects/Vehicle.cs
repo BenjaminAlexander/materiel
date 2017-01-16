@@ -17,7 +17,7 @@ namespace MyGame.materiel.GameObjects
 
         public override Vector2 TextureOrigin
         {
-            get { return TextureLoader.GetTexture("VehicleBody").CenterOfMass; }
+            get { return new Vector2(20, 10); }
         }
 
         private GameObjectReferenceField<Company> company;
@@ -105,6 +105,7 @@ namespace MyGame.materiel.GameObjects
             {
                 this.Texture.Draw(graphics, this.Position, this.TextureOrigin, this.Direction, controllingPlayer.Value.Color, .9f);
             }
+
             graphics.DrawDebugFont(this.Materiel.ToString(), this.Position + new Vector2(25, 0), 1f);
         }
 

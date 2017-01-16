@@ -21,7 +21,7 @@ namespace MyGame.materiel
 
             Company co = game.GameObjectCollection.Get<Company>(companyId);
             CombatVehicle vic = game.GameObjectCollection.Get<CombatVehicle>(vehicleId);
-            if (player.Owns(co) && player.Owns(co))
+            if (player.Owns(co) && player.Owns(vic))
             {
                 co.AddVehicle(vic);
             }

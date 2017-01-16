@@ -69,6 +69,11 @@ namespace MyGame
                 CombatVehicle.CombatVehicleFactory(game.GameObjectCollection, player2, player2Base.Position + new Vector2(i * 20, 100));
                 Transport.TransportFactory(game.GameObjectCollection, player2, player2Base.Position + new Vector2(i * 20, 200));
             }
+
+            for (int i = 0; i < 5; i++)
+            {
+                CombatVehicle.CombatVehicleFactory(game.GameObjectCollection, player2, player1Base.Position + new Vector2(1000, i * 50 + 100));
+            }
         }
     }
 }
