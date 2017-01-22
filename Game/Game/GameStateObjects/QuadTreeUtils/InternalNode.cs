@@ -14,6 +14,10 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override int ObjectCount()
         {
+            if(unitCount != this.CompleteList().Count)
+            {
+                throw new Exception("Count mismatch");
+            }
             return unitCount;
         }
 
@@ -149,7 +153,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             else
             {
                 //List<CompositePhysicalObject> returnList = new List<CompositePhysicalObject>();
-                if (unitCount > 0)
+                if (this.ObjectCount() > 0)
                 {
                     Vector2 rectangleCenter = new Vector2((((float)MapSpace.X) + ((float)MapSpace.Width) / 2), (((float)MapSpace.Y) + ((float)MapSpace.Height) / 2));
                     float rectangleRadius = Vector2.Distance(rectangleCenter, new Vector2(MapSpace.X, MapSpace.Y));
@@ -169,7 +173,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override List<T> GetObjects<T>(Vector2 point, List<T> list)
         {
-            if(this.Bounds.Contains(point) && unitCount > 0)
+            if(this.Bounds.Contains(point) && this.ObjectCount() > 0)
             {
                 foreach (Node child in children)
                 {
@@ -276,6 +280,38 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 this.Parent.ComputeBounds();
             }
             return this.Bounds;
+        }
+
+        public override T GetClosest<T>(Vector2 point, Select<T> selectFunc, T best)
+        {
+            float bestDistance;
+            if (best == null)
+            {
+                bestDistance = float.PositiveInfinity;
+            }
+            else
+            {
+                bestDistance = Vector2.Distance(point, best.Position);
+            }
+
+            foreach(Node node in children)
+            {
+                if(node.MinimumPositionDistance(point) < bestDistance)
+                {
+                    T newBest = node.GetClosest<T>(point, selectFunc, best);
+                    if(newBest != null)
+                    {
+                        float newBestDistance = Vector2.Distance(point, newBest.Position);
+                        if(newBestDistance < bestDistance)
+                        {
+                            best = newBest;
+                            bestDistance = newBestDistance;
+                        }
+                    }
+                }
+            }
+
+            return best;
         }
     }
 }

@@ -5,8 +5,12 @@ using MyGame.DrawingUtils;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
 {
+    public delegate bool Select<T>(T obj) where T : PhysicalObject;
+
     public class QuadTree
     {
+        
+
         private Vector2 mapSize;
         private Node root;
         private GameObjectField.Modes mode;
@@ -43,6 +47,11 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         public List<T> GetObjects<T>(Vector2 center) where T : PhysicalObject
         {
             return root.GetObjects<T>(center);
+        }
+
+        public T GetClosest<T>(Vector2 point, Select<T> selectFunc) where T : PhysicalObject
+        {
+            return root.GetClosest<T>(point, selectFunc, null);
         }
 
         public bool Remove(PhysicalObject unit)

@@ -9,7 +9,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
     class Leaf : Node
     {
         private GameObjectListManager unitList;
-        
+
 
         public override int ObjectCount()
         {
@@ -29,7 +29,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             if (units.Count > 0)
             {
                 Rectangle bounds = units[0].BoundingRectangle;
-                foreach(PhysicalObject obj in units)
+                foreach (PhysicalObject obj in units)
                 {
                     bounds = Utils.MathUtils.RectangleUnion(bounds, obj.BoundingRectangle);
                 }
@@ -133,7 +133,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override void Move(PhysicalObject obj)
         {
-            if(unitList.Contains(obj))
+            if (unitList.Contains(obj))
             {
                 if (!this.Contains(this.GetObjPosition(obj)))
                 {
@@ -185,6 +185,37 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             graphics.DrawWorldRectangleOnScreen(this.ComputeBounds(), Color.Red, 1f);
 
+        }
+
+        public override T GetClosest<T>(Vector2 point, Select<T> selectFunc, T best)
+        {
+            List<T> objList = new List<T>();
+            objList = this.CompleteList<T>(ref objList);
+
+            float bestDistance;
+            if (best == null)
+            {
+                bestDistance = float.PositiveInfinity;
+            }
+            else
+            {
+                bestDistance = Vector2.Distance(point, best.Position);
+            }
+
+            foreach (T obj in objList)
+            {
+                float newBestDistance = Vector2.Distance(point, obj.Position);
+                if (selectFunc(obj))
+                {
+                    if (newBestDistance < bestDistance)
+                    {
+                        best = obj;
+                        bestDistance = newBestDistance;
+                    }
+                }
+            }
+
+            return best;
         }
     }
 }

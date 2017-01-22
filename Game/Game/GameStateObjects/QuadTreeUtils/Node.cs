@@ -75,6 +75,8 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public abstract List<T> GetObjects<T>(Vector2 point, List<T> list) where T : PhysicalObject;
 
+        public abstract T GetClosest<T>(Vector2 point, Select<T> selectFunc, T best) where T : PhysicalObject;
+
         public abstract List<T> CompleteList<T>(ref List<T> list) where T : PhysicalObject;
 
         public List<PhysicalObject> CompleteList()
@@ -113,6 +115,11 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             {
                 objectBounds = value;
             }
+        }
+
+        public float MinimumPositionDistance(Vector2 point)
+        {
+            return Utils.Vector2Utils.Distance(this.MapSpace, point);
         }
     }
 }

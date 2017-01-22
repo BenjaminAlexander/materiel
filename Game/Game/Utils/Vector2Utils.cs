@@ -105,5 +105,14 @@ namespace MyGame.Utils
         {
             return (v1.X - center.X) * (v2.Y - center.Y) - (v2.X - center.X) * (v1.Y - center.Y);
         }
+
+        public static float Distance(Rectangle rect, Vector2 point)
+        {
+            Vector2 rectCenter = new Vector2(rect.X + rect.Width / 2f, rect.Y + rect.Height / 2f);
+
+            float dx = Math.Max(Math.Abs(rectCenter.X - point.X) - rect.Width / 2f, 0);
+            float dy = Math.Max(Math.Abs(rectCenter.Y - point.Y) - rect.Height / 2f, 0);
+            return (float)(Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2)));
+        }
     } 
 }

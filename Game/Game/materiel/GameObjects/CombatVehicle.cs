@@ -9,6 +9,7 @@ namespace MyGame.materiel.GameObjects
     {
         public const float maxMateriel = 5;
         private Vector2GameObjectMember targetPosition;
+        private GameObjectReferenceField<Vehicle> targetVehicle;
 
         //angle of the turret relative to the vehicle body
         private InterpolatedAngleGameObjectMember turretAngle;
@@ -18,6 +19,7 @@ namespace MyGame.materiel.GameObjects
         {
             targetPosition = new Vector2GameObjectMember(this, new Vector2(0));
             turretAngle = new InterpolatedAngleGameObjectMember(this, 0);
+            targetVehicle = new GameObjectReferenceField<Vehicle>(this);
         }
 
         public static void ServerInitialize(CombatVehicle vic, PlayerGameObject controllingPlayer, Vector2 position)
@@ -47,10 +49,25 @@ namespace MyGame.materiel.GameObjects
             }
         }
 
+        public bool SelectEnemyVehicle(Vehicle vic)
+        {
+            PlayerGameObject player = this.ControllingPlayer;
+            if (player != null)
+            {
+                return !player.Owns(vic);
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         public override void SubclassUpdate(float seconds)
         {
             base.SubclassUpdate(seconds);
             this.MoveTowardAndIdle(this.TargetPosition, seconds);
+
+            this.targetVehicle.Value = Collection.GetClosest<Vehicle>(this.Position, this.SelectEnemyVehicle);
         }
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
@@ -59,6 +76,11 @@ namespace MyGame.materiel.GameObjects
 
             LoadedTexture gun = TextureLoader.GetTexture("Gun");
             gun.Draw(graphics, this.Position + Utils.Vector2Utils.RotateVector2(new Vector2(-5, 0), this.Direction), new Vector2(13, 5), turretAngle + this.Direction, Color.White, .91f);
+
+            if (this.targetVehicle.Value != null)
+            {
+                graphics.DrawLine(this.targetVehicle.Value.Position, this.Position, Color.Red, 1f);
+            }
         }
     }
 }

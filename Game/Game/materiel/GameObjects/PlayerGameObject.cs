@@ -164,5 +164,11 @@ namespace MyGame.materiel.GameObjects
             }
             return null;
         }
+
+        public bool Owns(IPlayerControlled obj)
+        {
+            PlayerGameObject playerObject = obj.ControllingPlayer;
+            return playerObject == this;
+        }
     }
 }
