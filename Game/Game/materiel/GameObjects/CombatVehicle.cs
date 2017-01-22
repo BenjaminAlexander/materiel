@@ -68,7 +68,7 @@ namespace MyGame.materiel.GameObjects
         public override void ServerOnlyUpdate(float secondsElapsed)
         {
             base.ServerOnlyUpdate(secondsElapsed);
-            if (gunCoolDown == 0 && this.targetVehicle != null)
+            if (gunCoolDown == 0 && this.targetVehicle.Value != null && Vector2.Distance(this.Position, this.targetVehicle.Value.Position) < 1500)
             {
                 Vector2 bulletPosition = this.Position; //start with vic position
                 bulletPosition = bulletPosition + Utils.Vector2Utils.RotateVector2(new Vector2(-5, 0), this.Direction);// add the position of the turret on the vehicle
@@ -99,11 +99,6 @@ namespace MyGame.materiel.GameObjects
 
             LoadedTexture gun = TextureLoader.GetTexture("Gun");
             gun.Draw(graphics, this.Position + Utils.Vector2Utils.RotateVector2(new Vector2(-5, 0), this.Direction), new Vector2(13, 5), turretAngle + this.Direction, Color.White, .91f);
-
-            if (this.targetVehicle.Value != null)
-            {
-                graphics.DrawLine(this.targetVehicle.Value.Position, this.Position, Color.Red, 1f);
-            }
         }
     }
 }

@@ -12,6 +12,8 @@ namespace MyGame.materiel.GameObjects
 {
     class Bullet : PhysicalObject
     {
+        private Vector2GameObjectMember startPosition;
+
         public override LoadedTexture Texture
         {
             get
@@ -36,12 +38,13 @@ namespace MyGame.materiel.GameObjects
         public Bullet(GameObjectCollection collection)
             : base(collection)
         {
-
+            startPosition = new Vector2GameObjectMember(this, new Vector2(0));
         }
 
         public static void ServerInitialize(Bullet bullet, Vector2 position, float direction)
         {
             PhysicalObject.ServerInitialize(bullet, position, direction);
+            bullet.startPosition.Value = position;
         }
 
         public static Bullet BulletFactory(GameObjectCollection collection, Vector2 position, float direction)
@@ -56,6 +59,11 @@ namespace MyGame.materiel.GameObjects
         {
             base.SubclassUpdate(secondsElapsed);
             this.Position = this.Position + Utils.Vector2Utils.RotateVector2(new Vector2(1000f * secondsElapsed, 0), this.Direction);
+
+            if(Vector2.Distance(this.startPosition, this.Position) > 1500)
+            {
+                this.Destroy();
+            }
         }
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
