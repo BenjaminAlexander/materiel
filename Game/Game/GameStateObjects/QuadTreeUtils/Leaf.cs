@@ -147,6 +147,10 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                     {
                         throw new Exception("incorrect child/parent");
                     }*/
+                    if (this.ObjectCount() != this.Parent.ObjectCount())
+                    {
+                        int i;
+                    }
                     this.Parent.Collapse();
                 }
             }

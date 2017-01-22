@@ -1,4 +1,5 @@
-﻿using MyGame.GameStateObjects;
+﻿using System;
+using MyGame.GameStateObjects;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects.DataStuctures;
 using MyGame.DrawingUtils;
@@ -10,6 +11,7 @@ namespace MyGame.materiel.GameObjects
         public const float maxMateriel = 5;
         private Vector2GameObjectMember targetPosition;
         private GameObjectReferenceField<Vehicle> targetVehicle;
+        private FloatGameObjectMember gunCoolDown;
 
         //angle of the turret relative to the vehicle body
         private InterpolatedAngleGameObjectMember turretAngle;
@@ -20,6 +22,7 @@ namespace MyGame.materiel.GameObjects
             targetPosition = new Vector2GameObjectMember(this, new Vector2(0));
             turretAngle = new InterpolatedAngleGameObjectMember(this, 0);
             targetVehicle = new GameObjectReferenceField<Vehicle>(this);
+            gunCoolDown = new FloatGameObjectMember(this, 0);
         }
 
         public static void ServerInitialize(CombatVehicle vic, PlayerGameObject controllingPlayer, Vector2 position)
@@ -62,12 +65,32 @@ namespace MyGame.materiel.GameObjects
             }
         }
 
+        public override void ServerOnlyUpdate(float secondsElapsed)
+        {
+            base.ServerOnlyUpdate(secondsElapsed);
+            if (gunCoolDown == 0 && this.targetVehicle != null)
+            {
+                Vector2 bulletPosition = this.Position; //start with vic position
+                bulletPosition = bulletPosition + Utils.Vector2Utils.RotateVector2(new Vector2(-5, 0), this.Direction);// add the position of the turret on the vehicle
+                bulletPosition = bulletPosition + Utils.Vector2Utils.RotateVector2(new Vector2(27, 0), this.Direction + this.turretAngle);// add the position of the end of the turret
+
+                Bullet.BulletFactory(this.Collection, bulletPosition, this.Direction + this.turretAngle);
+                this.gunCoolDown.Value = 1f;
+            }
+        }
+
         public override void SubclassUpdate(float seconds)
         {
             base.SubclassUpdate(seconds);
             this.MoveTowardAndIdle(this.TargetPosition, seconds);
 
             this.targetVehicle.Value = Collection.GetClosest<Vehicle>(this.Position, this.SelectEnemyVehicle);
+            if(this.targetVehicle.Value != null)
+            {
+                Vector2 turretPosition = this.Position + Utils.Vector2Utils.RotateVector2(new Vector2(-5, 0), this.Direction);
+                this.turretAngle.Value = Utils.Vector2Utils.Vector2Angle(this.targetVehicle.Value.Position - turretPosition) - this.Direction;
+            }
+            gunCoolDown.Value = Math.Max(gunCoolDown - seconds, 0);
         }
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)

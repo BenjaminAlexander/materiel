@@ -84,6 +84,7 @@
     <Compile Include="GameStateObjects\QuadTreeUtils\QuadTree.cs" />
     <Compile Include="GameStateObjects\Vector2ListMember.cs" />
     <Compile Include="IO\Events\KeyReleaseEvent.cs" />
+    <Compile Include="materiel\GameObjects\Bullet.cs" />
     <Compile Include="materiel\RtsCommandMessages\AddTransportVehicleToCompany.cs" />
     <Compile Include="materiel\RtsCommandMessages\BuildTransport.cs" />
     <Compile Include="materiel\GameObjects\CombatVehicle.cs" />
