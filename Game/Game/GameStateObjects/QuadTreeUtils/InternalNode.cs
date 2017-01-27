@@ -10,6 +10,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
     {
         private List<Node> children = new List<Node>();
         private int unitCount = 0;
+        private GameObjectField.Modes mode;
 
         public override int ObjectCount()
         {
@@ -23,22 +24,27 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         public InternalNode(InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GameObjectField.Modes mode)
             : base(parent, mapSpace, leafDictionary, mode)
         {
+            this.mode = mode;
+
             int halfWidth = mapSpace.Width / 2;
             int halfHeight = mapSpace.Height / 2;
 
-            Rectangle swRectangle = new Rectangle(mapSpace.X, mapSpace.Y, halfWidth, halfHeight);
-            Rectangle seRectangle = new Rectangle(mapSpace.X + halfWidth, mapSpace.Y, mapSpace.Width - halfWidth, halfHeight);
-            Rectangle nwRectangle = new Rectangle(mapSpace.X, mapSpace.Y + halfHeight, halfWidth, mapSpace.Height - halfHeight);
-            Rectangle neRectangle = new Rectangle(mapSpace.X + halfWidth, mapSpace.Y + halfHeight, mapSpace.Width - halfWidth, mapSpace.Height - halfHeight);
+            this.AddLeaf(mapSpace.X, mapSpace.Y, halfWidth, halfHeight);
+            this.AddLeaf(mapSpace.X + halfWidth, mapSpace.Y, mapSpace.Width - halfWidth, halfHeight);
+            this.AddLeaf(mapSpace.X, mapSpace.Y + halfHeight, halfWidth, mapSpace.Height - halfHeight);
+            this.AddLeaf(mapSpace.X + halfWidth, mapSpace.Y + halfHeight, mapSpace.Width - halfWidth, mapSpace.Height - halfHeight);
+        }
 
-            Node nw = new Leaf(this, nwRectangle, leafDictionary, mode);
-            Node ne = new Leaf(this, neRectangle, leafDictionary, mode);
-            Node sw = new Leaf(this, swRectangle, leafDictionary, mode);
-            Node se = new Leaf(this, seRectangle, leafDictionary, mode);
-            children.Add(nw);
-            children.Add(ne);
-            children.Add(sw);
-            children.Add(se);
+        private void AddLeaf(int x, int y, int width, int height)
+        {
+            Rectangle rectangle = new Rectangle(x, y, width, height);
+            Leaf leaf = new Leaf(this, rectangle, leafDictionary, this.mode);
+            children.Add(leaf);
+
+            if (children.Count > 4)
+            {
+                throw new Exception("To many children");
+            }
         }
 
         public override bool Add(PhysicalObject obj)
