@@ -9,8 +9,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
     public class QuadTree
     {
-        
-
         private Vector2 mapSize;
         private Node root;
         private GameObjectField.Modes mode;
@@ -21,9 +19,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             this.mapSize = mapSize;
             this.mode = mode;
-            leafDictionary = new LeafDictionary(this);
+            leafDictionary = new LeafDictionary();
             Rectangle mapRectangle = new Rectangle(0, 0, (int)Math.Ceiling(mapSize.X), (int)Math.Ceiling(mapSize.Y));
-            root = new InternalNode(true, null, mapRectangle, leafDictionary, this.mode);
+            root = new InternalNode(null, mapRectangle, leafDictionary, this.mode);
         }
 
         public bool Add(PhysicalObject unit)

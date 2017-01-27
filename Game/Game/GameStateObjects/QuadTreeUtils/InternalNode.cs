@@ -8,7 +8,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 {
     class InternalNode : Node
     {
-        private Boolean root;
         private List<Node> children = new List<Node>();
         private int unitCount = 0;
 
@@ -21,10 +20,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return unitCount;
         }
 
-        public InternalNode(Boolean root, InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GameObjectField.Modes mode)
+        public InternalNode(InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GameObjectField.Modes mode)
             : base(parent, mapSpace, leafDictionary, mode)
         {
-            this.root = root;
             int halfWidth = mapSpace.Width / 2;
             int halfHeight = mapSpace.Height / 2;
 
@@ -136,11 +134,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                     throw new Exception("Children did not collapse");
                 }
             }
-        }
-
-        public override bool Contains(Vector2 point)
-        {
-            return Node.Contains(MapSpace, point);
         }
 
         public override List<T> GetObjectsInCircle<T>(Vector2 center, float radius, List<T> list)

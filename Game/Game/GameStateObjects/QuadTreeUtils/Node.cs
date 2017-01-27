@@ -8,7 +8,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
     {
         protected static int max_count = 10;
 
-        //private static int treeDepth = 10;
         private InternalNode parent;
         public int id;
         public static int nextI = 0;
@@ -52,23 +51,16 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             get { return parent; }
         }
 
-        public void DisconnectFromParent()
-        {
-            parent = null;
-        }
-
         public abstract bool Add(PhysicalObject unit);
 
         public abstract Leaf Remove(PhysicalObject unit);
 
-        public abstract bool Contains(Vector2 point);
-
-        public static bool Contains(Rectangle rectangle, Vector2 point)
+        public bool Contains(Vector2 point)
         {
-            return rectangle.X <= point.X &&
-                point.X < rectangle.X + rectangle.Width &&
-                rectangle.Y <= point.Y &&
-                point.Y < rectangle.Y + rectangle.Height;
+            return this.mapSpace.X <= point.X &&
+                point.X < this.mapSpace.X + this.mapSpace.Width &&
+                this.mapSpace.Y <= point.Y &&
+                point.Y < this.mapSpace.Y + this.mapSpace.Height;
         }
 
         public abstract List<T> GetObjectsInCircle<T>(Vector2 center, float radius, List<T> list) where T : PhysicalObject;

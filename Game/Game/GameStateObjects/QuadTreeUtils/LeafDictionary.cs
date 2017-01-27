@@ -5,13 +5,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 {
     class LeafDictionary
     {
-        private QuadTree tree;
         private Dictionary<PhysicalObject, Leaf> leafDictionary = new Dictionary<PhysicalObject, Leaf>();
-
-        public LeafDictionary(QuadTree tree)
-        {
-            this.tree = tree;
-        }
 
         public void SetLeaf(PhysicalObject obj, Leaf leaf)
         {

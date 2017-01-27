@@ -10,7 +10,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
     {
         private GameObjectListManager unitList;
 
-
         public override int ObjectCount()
         {
             return unitList.GetMaster().Count;
@@ -77,9 +76,50 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             this.Parent.Collapse();
         }
 
-        public override bool Contains(Vector2 point)
+        public override void Move(PhysicalObject obj)
         {
-            return Node.Contains(MapSpace, point);
+            if (unitList.Contains(obj))
+            {
+                if (!this.Contains(this.GetObjPosition(obj)))
+                {
+                    this.Remove(obj);
+                    this.Parent.Move(obj);
+                    if (unitList.Contains(obj))
+                    {
+                        throw new Exception("Move failed");
+                    }
+
+                    this.Parent.Collapse();
+                }
+            }
+            else
+            {
+                throw new Exception("No such object");
+            }
+        }
+
+        private void Expand()
+        {
+            if (MapSpace.Width > 1 && MapSpace.Height > 1)
+            {
+                Node newNode = new InternalNode(this.Parent, this.MapSpace, leafDictionary, this.Mode);
+                this.Parent.Replace(this, newNode);
+                foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
+                {
+                    this.Remove(obj);
+                    if (!newNode.Add(obj))
+                    {
+                        throw new Exception("Failed to add after move");
+                    }
+                }
+
+                leafDictionary.DestroyLeaf(this);
+            }
+        }
+
+        public Boolean Contains(PhysicalObject obj)
+        {
+            return this.unitList.Contains(obj);
         }
 
         public override List<T> GetObjectsInCircle<T>(Vector2 center, float radius, List<T> list)
@@ -129,60 +169,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 }
             }
             return list;
-        }
-
-        public override void Move(PhysicalObject obj)
-        {
-            if (unitList.Contains(obj))
-            {
-                if (!this.Contains(this.GetObjPosition(obj)))
-                {
-                    this.Remove(obj);
-                    this.Parent.Move(obj);
-                    if (unitList.Contains(obj))
-                    {
-                        throw new Exception("Move failed");
-                    }
-                    /*if (!this.Parent.IsChild(this))
-                    {
-                        throw new Exception("incorrect child/parent");
-                    }*/
-                    if (this.ObjectCount() != this.Parent.ObjectCount())
-                    {
-                        int i;
-                    }
-                    this.Parent.Collapse();
-                }
-            }
-            else
-            {
-                throw new Exception("No such object");
-            }
-        }
-
-        private void Expand()
-        {
-            if (MapSpace.Width > 1 && MapSpace.Height > 1)
-            {
-                Node newNode = new InternalNode(false, this.Parent, this.MapSpace, leafDictionary, this.Mode);
-                this.Parent.Replace(this, newNode);
-                foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
-                {
-                    this.Remove(obj);
-                    if (!newNode.Add(obj))
-                    {
-                        this.Parent.Move(obj);
-                        //throw new Exception("Failed to add after move");
-                    }
-                }
-
-                leafDictionary.DestroyLeaf(this);
-            }
-        }
-
-        public Boolean Contains(PhysicalObject obj)
-        {
-            return this.unitList.Contains(obj);
         }
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)

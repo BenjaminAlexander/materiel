@@ -16,6 +16,7 @@ namespace MyGame.GameStateObjects
         {
             obj.position.Value = position;
             obj.direction.Value = direction;
+            obj.Collection.MoveInTree(obj);
         }
 
         public abstract LoadedTexture Texture
