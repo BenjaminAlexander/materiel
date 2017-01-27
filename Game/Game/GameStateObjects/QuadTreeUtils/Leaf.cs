@@ -22,6 +22,12 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             this.Bounds = new Rectangle(mapSpace.X, mapSpace.Y, 0, 0);
         }
 
+        public Leaf(InternalNode parent, int x, int y, int width, int height, LeafDictionary leafDictionary, GameObjectField.Modes mode)
+            : this(parent, new Rectangle(x, y, width, height), leafDictionary, mode)
+        {
+
+        }
+
         public Rectangle ComputeBounds()
         {
             List<PhysicalObject> units = unitList.GetList<PhysicalObject>();

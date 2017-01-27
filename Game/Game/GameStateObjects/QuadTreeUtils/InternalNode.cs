@@ -29,22 +29,10 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             int halfWidth = mapSpace.Width / 2;
             int halfHeight = mapSpace.Height / 2;
 
-            this.AddLeaf(mapSpace.X, mapSpace.Y, halfWidth, halfHeight);
-            this.AddLeaf(mapSpace.X + halfWidth, mapSpace.Y, mapSpace.Width - halfWidth, halfHeight);
-            this.AddLeaf(mapSpace.X, mapSpace.Y + halfHeight, halfWidth, mapSpace.Height - halfHeight);
-            this.AddLeaf(mapSpace.X + halfWidth, mapSpace.Y + halfHeight, mapSpace.Width - halfWidth, mapSpace.Height - halfHeight);
-        }
-
-        private void AddLeaf(int x, int y, int width, int height)
-        {
-            Rectangle rectangle = new Rectangle(x, y, width, height);
-            Leaf leaf = new Leaf(this, rectangle, leafDictionary, this.mode);
-            children.Add(leaf);
-
-            if (children.Count > 4)
-            {
-                throw new Exception("To many children");
-            }
+            children.Add(new Leaf(this, mapSpace.X, mapSpace.Y, halfWidth, halfHeight, leafDictionary, this.mode));
+            children.Add(new Leaf(this, mapSpace.X + halfWidth, mapSpace.Y, mapSpace.Width - halfWidth, halfHeight, leafDictionary, this.mode));
+            children.Add(new Leaf(this, mapSpace.X, mapSpace.Y + halfHeight, halfWidth, mapSpace.Height - halfHeight, leafDictionary, this.mode));
+            children.Add(new Leaf(this, mapSpace.X + halfWidth, mapSpace.Y + halfHeight, mapSpace.Width - halfWidth, mapSpace.Height - halfHeight, leafDictionary, this.mode));
         }
 
         public override bool Add(PhysicalObject obj)
@@ -61,11 +49,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 }
                 throw new Exception("failed adds to QuadTree");
             }
-            if (Parent == null)
-            {
-                //throw new Exception("move out of bounds");
-            }
-
             return false;
         }
 
