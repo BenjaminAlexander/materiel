@@ -54,6 +54,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             {
                 unitList.Add(unit);
                 leafDictionary.SetLeaf(unit, this);
+                this.Parent.IncrementCount();
 
                 if (ObjectCount() > max_count)
                 {
@@ -71,6 +72,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             {
                 leafDictionary.SetLeaf(unit, null);
                 unitList.Remove(unit);
+                this.Parent.DecrementCount();
                 this.ComputeBounds();
                 return this;
             }

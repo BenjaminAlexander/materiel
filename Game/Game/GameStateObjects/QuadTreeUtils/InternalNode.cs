@@ -21,6 +21,24 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return unitCount;
         }
 
+        public void IncrementCount()
+        {
+            unitCount++;
+            if(this.Parent != null)
+            {
+                this.Parent.IncrementCount();
+            }
+        }
+
+        public void DecrementCount()
+        {
+            unitCount--;
+            if (this.Parent != null)
+            {
+                this.Parent.DecrementCount();
+            }
+        }
+
         public InternalNode(InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GameObjectField.Modes mode)
             : base(parent, mapSpace, leafDictionary, mode)
         {
@@ -43,7 +61,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 {
                     if (child.Add(obj))
                     {
-                        unitCount++;
                         return true;
                     }
                 }
@@ -73,7 +90,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
                 if (removedFrom != null)
                 {
-                    unitCount--;
                     return removedFrom;
                 }
                 else
@@ -176,7 +192,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override void Move(PhysicalObject obj)
         {
-            unitCount--;
             if (this.Contains(this.GetObjPosition(obj)))
             {
                 this.Add(obj);
