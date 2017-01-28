@@ -110,17 +110,18 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             if (MapSpace.Width > 1 && MapSpace.Height > 1)
             {
-                Node newNode = new InternalNode(this.Parent, this.MapSpace, leafDictionary, this.Mode);
-                this.Parent.Replace(this, newNode);
+                Node newNode = new InternalNode(null, this.MapSpace, leafDictionary, this.Mode);
+                
                 foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
                 {
-                    this.Remove(obj);
+                    leafDictionary.SetLeaf(obj, null);
+                    unitList.Remove(obj);
                     if (!newNode.Add(obj))
                     {
                         throw new Exception("Failed to add after move");
                     }
                 }
-
+                this.Parent.Replace(this, newNode);
                 leafDictionary.DestroyLeaf(this);
             }
         }

@@ -221,6 +221,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 throw new Exception("Cannot replace a non child");
             }
 
+            newNode.Parent = this;
             children.Remove(current);
             children.Add(newNode);
 

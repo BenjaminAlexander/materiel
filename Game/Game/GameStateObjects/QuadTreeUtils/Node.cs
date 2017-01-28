@@ -46,9 +46,13 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public abstract int ObjectCount();
 
-        protected InternalNode Parent
+        public InternalNode Parent
         {
             get { return parent; }
+            set
+            {
+                this.parent = value;
+            }
         }
 
         public abstract bool Add(PhysicalObject unit);

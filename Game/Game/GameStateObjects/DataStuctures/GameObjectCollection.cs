@@ -181,7 +181,7 @@ namespace MyGame.GameStateObjects.DataStuctures
                 , new Vector2(0), 0, Color.Black, 1);
 
             //This call draws debug information for the tree
-            //drawTree.Draw(gameTime, graphics);
+            drawTree.Draw(gameTime, graphics);
 
             foreach (GameObject obj in listManager.GetList<GameObject>())
             {
