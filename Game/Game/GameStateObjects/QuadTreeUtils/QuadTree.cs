@@ -54,17 +54,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public bool Remove(PhysicalObject unit)
         {
-            Leaf removeFrom = root.Remove(unit);
-            if (removeFrom != null)
-            {
-                //removeFrom.Collapse();
-                return true;
-            }
-            else
-            {
-                //throw new Exception("No object to remove");
-                return false;
-            }
+            return root.Remove(unit);
         }
 
         public List<PhysicalObject> CompleteList()

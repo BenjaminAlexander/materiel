@@ -57,7 +57,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public abstract bool Add(PhysicalObject unit);
 
-        public abstract Leaf Remove(PhysicalObject unit);
+        public abstract bool Remove(PhysicalObject unit);
 
         public bool Contains(Vector2 point)
         {

@@ -91,7 +91,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return false;
         }
 
-        public override Leaf Remove(PhysicalObject unit)
+        public override bool Remove(PhysicalObject unit)
         {
             if (unitList.Contains(unit))
             {
@@ -100,9 +100,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 this.Parent.DecrementCount();
                 this.ComputeBounds();
                 this.Collapse();
-                return this;
+                return true;
             }
-            return null;
+            return false;
         }
 
         public void Collapse()

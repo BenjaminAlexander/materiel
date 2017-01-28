@@ -69,7 +69,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return false;
         }
 
-        public override Leaf Remove(PhysicalObject obj)
+        public override bool Remove(PhysicalObject obj)
         {
             if (this.Contains(this.GetObjPosition(obj)))
             {
@@ -78,29 +78,15 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                     throw new Exception("child");
                 }
 
-                Leaf removedFrom = null;
                 foreach (Node child in children)
                 {
-                    removedFrom = child.Remove(obj);
-                    if (removedFrom != null)
+                    if (child.Remove(obj))
                     {
-                        break;
+                        return true;
                     }
                 }
-
-                if (removedFrom != null)
-                {
-                    return removedFrom;
-                }
-                else
-                {
-                    return null;
-                }
             }
-            else
-            {
-                return null;
-            }
+            return false;
         }
         
         public void Collapse()
