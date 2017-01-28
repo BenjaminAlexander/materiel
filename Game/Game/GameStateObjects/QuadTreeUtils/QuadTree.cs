@@ -57,7 +57,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             Leaf removeFrom = root.Remove(unit);
             if (removeFrom != null)
             {
-                removeFrom.Collapse();
+                //removeFrom.Collapse();
                 return true;
             }
             else

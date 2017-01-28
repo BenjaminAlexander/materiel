@@ -99,6 +99,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 unitList.Remove(unit);
                 this.Parent.DecrementCount();
                 this.ComputeBounds();
+                this.Collapse();
                 return this;
             }
             return null;
@@ -115,7 +116,12 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             {
                 if (!this.Contains(this.GetObjPosition(obj)))
                 {
-                    this.Remove(obj);
+                    
+                    leafDictionary.SetLeaf(obj, null);
+                    unitList.Remove(obj);
+                    this.Parent.DecrementCount();
+                    this.ComputeBounds();
+                    
                     this.Parent.Move(obj);
                     if (unitList.Contains(obj))
                     {
