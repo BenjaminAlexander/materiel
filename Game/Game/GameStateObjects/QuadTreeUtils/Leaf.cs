@@ -10,6 +10,31 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
     {
         private GameObjectListManager unitList;
 
+        public void CollapseBuild(Leaf other, InternalNode oldInternal)
+        {
+            foreach (PhysicalObject myObjects in other.CompleteList())
+            {
+                leafDictionary.SetLeaf(myObjects, null);
+                other.unitList.Remove(myObjects);
+                if (this.Contains(this.GetObjPosition(myObjects)))
+                {
+                    unitList.Add(myObjects);
+                    leafDictionary.SetLeaf(myObjects, this);
+                }
+                else
+                {
+                    throw new Exception("object/node mismatch");
+                }
+
+                if (ObjectCount() > max_count)
+                {
+                    throw new Exception("you should never need to expand while collapsing");
+                }
+            }
+
+            leafDictionary.DestroyLeaf(other);
+        }
+
         public override int ObjectCount()
         {
             return unitList.GetMaster().Count;

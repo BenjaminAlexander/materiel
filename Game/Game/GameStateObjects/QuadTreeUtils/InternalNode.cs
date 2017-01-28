@@ -115,22 +115,15 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                         {
                             throw new Exception("incorrect child/parent");
                         }
-                        Leaf newNode = new Leaf(this.Parent, this.MapSpace, leafDictionary, this.Mode);
-                        this.Parent.Replace(this, newNode);
+                        Leaf newNode = new Leaf(null, this.MapSpace, leafDictionary, this.Mode);
+                        
 
                         foreach (Leaf leaf in children)
                         {
-                            foreach (PhysicalObject myObjects in leaf.CompleteList())
-                            {
-                                this.Remove(myObjects);
-                                if (!newNode.Add(myObjects))
-                                {
-                                    this.Parent.Move(myObjects);
-                                }
-                            }
-
-                            leafDictionary.DestroyLeaf(leaf);
+                            newNode.CollapseBuild(leaf, this);
                         }
+                        this.Parent.Replace(this, newNode);
+                        newNode.ComputeBounds();
                         this.Parent.Collapse();
                     }
                 }
