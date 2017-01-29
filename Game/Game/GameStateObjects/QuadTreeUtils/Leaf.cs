@@ -10,12 +10,11 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
     {
         private GameObjectListManager unitList;
 
-        public void CollapseBuild(Leaf other, InternalNode oldInternal)
+        public Leaf(InternalNode oldNode)
+            : this(oldNode.Parent, oldNode.MapSpace, oldNode.LeafDictionary, oldNode.Mode)
         {
-            foreach (PhysicalObject myObjects in other.CompleteList())
+            foreach (PhysicalObject myObjects in oldNode.CompleteList())
             {
-                //leafDictionary.SetLeaf(myObjects, null);
-                //other.unitList.Remove(myObjects);
                 if (this.Contains(this.GetObjPosition(myObjects)))
                 {
                     unitList.Add(myObjects);
@@ -32,7 +31,29 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 }
             }
 
-            //leafDictionary.DestroyLeaf(other);
+            oldNode.Parent.Replace(oldNode, this);
+            this.ComputeBounds();
+        }
+
+        public void CollapseBuild(Leaf other)
+        {
+            foreach (PhysicalObject myObjects in other.CompleteList())
+            {
+                if (this.Contains(this.GetObjPosition(myObjects)))
+                {
+                    unitList.Add(myObjects);
+                    leafDictionary.SetLeaf(myObjects, this);
+                }
+                else
+                {
+                    throw new Exception("object/node mismatch");
+                }
+
+                if (ObjectCount() > max_count)
+                {
+                    throw new Exception("you should never need to expand while collapsing");
+                }
+            }
         }
 
         public override int ObjectCount()
@@ -120,7 +141,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             {
                 if (!this.Contains(this.GetObjPosition(obj)))
                 {
-                    
                     leafDictionary.SetLeaf(obj, null);
                     unitList.Remove(obj);
                     this.ComputeBounds();
@@ -130,8 +150,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                     {
                         throw new Exception("Move failed");
                     }
-
-                    //this.Parent.Collapse();
                 }
             }
             else
@@ -148,15 +166,12 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 
                 foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
                 {
-                    //leafDictionary.SetLeaf(obj, null);
-                    //unitList.Remove(obj);
                     if (!newNode.Add(obj))
                     {
                         throw new Exception("Failed to add after move");
                     }
                 }
                 this.Parent.Replace(this, newNode);
-                //leafDictionary.DestroyLeaf(this);
                 return newNode;
             }
             return null;

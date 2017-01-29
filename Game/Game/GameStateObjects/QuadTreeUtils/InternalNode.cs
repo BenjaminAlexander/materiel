@@ -14,29 +14,12 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override int ObjectCount()
         {
-            if(unitCount != this.CompleteList().Count)
+            int listCount = this.CompleteList().Count;
+            if (unitCount != listCount)
             {
                 throw new Exception("Count mismatch");
             }
             return unitCount;
-        }
-
-        public void IncrementCount()
-        {
-            unitCount++;
-            if(this.Parent != null)
-            {
-                this.Parent.IncrementCount();
-            }
-        }
-
-        public void DecrementCount()
-        {
-            unitCount--;
-            if (this.Parent != null)
-            {
-                this.Parent.DecrementCount();
-            }
         }
 
         public InternalNode(InternalNode parent, Rectangle mapSpace, LeafDictionary leafDictionary, GameObjectField.Modes mode)
@@ -57,6 +40,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             if (this.Contains(this.GetObjPosition(obj)))
             {
+                unitCount++;
                 foreach (Node child in new List<Node>(children))
                 {
                     if (child.Add(obj))
@@ -73,15 +57,12 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             if (this.Contains(this.GetObjPosition(obj)))
             {
-                if (children.Count != 4)
-                {
-                    throw new Exception("child");
-                }
-
                 foreach (Node child in children)
                 {
                     if (child.Remove(obj))
                     {
+                        unitCount--;
+                        this.Collapse();
                         return true;
                     }
                 }
@@ -97,20 +78,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 {
                     if (this.Parent != null)
                     {
-                        if (!this.Parent.IsChild(this))
-                        {
-                            throw new Exception("incorrect child/parent");
-                        }
-                        Leaf newNode = new Leaf(null, this.MapSpace, leafDictionary, this.Mode);
-                        
-
-                        foreach (Leaf leaf in children)
-                        {
-                            newNode.CollapseBuild(leaf, this);
-                        }
-                        this.Parent.Replace(this, newNode);
-                        newNode.ComputeBounds();
-                        this.Parent.Collapse();
+                        Leaf newNode = new Leaf(this);
+                        //this.Parent.Replace(this, newNode);
+                        //newNode.ComputeBounds();
                     }
                 }
                 else
@@ -169,22 +139,22 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return list;
         }
 
-        public override void Move(PhysicalObject obj)
+        public void Move(PhysicalObject obj)
         {
+            unitCount--;
             if (this.Contains(this.GetObjPosition(obj)))
             {
                 this.Add(obj);
             }
+            else if (this.Parent != null)
+            {
+                InternalNode parent = this.Parent;
+                this.Collapse();
+                parent.Move(obj);
+            }
             else
             {
-                if (this.Parent != null)
-                {
-                    this.Parent.Move(obj);
-                }
-                else
-                {
-                    throw new Exception("move out of bounds");
-                }
+                throw new Exception("move out of bounds");
             }
         }
 
@@ -203,6 +173,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             newNode.Parent = this;
             children.Remove(current);
             children.Add(newNode);
+            current.Parent = null;
 
             if (children.Count != 4)
             {
@@ -222,14 +193,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return true;
         }
 
-        public bool IsChild(Node node)
-        {
-            return this.children.Contains(node);
-        }
-
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
         {
-            graphics.DrawWorldRectangleOnScreen(this.ComputeBounds(), Color.Red, 1f);
+            graphics.DrawWorldRectangleOnScreen(this.MapSpace, Color.Red, 1f);
             foreach (Node n in children)
             {
                 n.Draw(gameTime, graphics);

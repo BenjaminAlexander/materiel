@@ -36,11 +36,19 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return obj.GetPosition(this.mode);
         }
 
-        protected GameObjectField.Modes Mode
+        public GameObjectField.Modes Mode
         {
             get
             {
                 return this.mode;
+            }
+        }
+
+        public LeafDictionary LeafDictionary
+        {
+            get
+            {
+                return this.leafDictionary;
             }
         }
 
