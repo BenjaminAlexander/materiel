@@ -131,7 +131,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                         throw new Exception("Move failed");
                     }
 
-                    this.Parent.Collapse();
+                    //this.Parent.Collapse();
                 }
             }
             else
@@ -218,7 +218,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
         {
-            graphics.DrawWorldRectangleOnScreen(this.ComputeBounds(), Color.Red, 1f);
+            graphics.DrawWorldRectangleOnScreen(this.MapSpace, Color.Red, 1f);
 
         }
 
