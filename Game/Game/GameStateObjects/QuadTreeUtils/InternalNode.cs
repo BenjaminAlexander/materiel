@@ -36,6 +36,18 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             children.Add(new Leaf(this, mapSpace.X + halfWidth, mapSpace.Y + halfHeight, mapSpace.Width - halfWidth, mapSpace.Height - halfHeight, leafDictionary, this.mode));
         }
 
+        public InternalNode(Leaf node) : this(node.Parent, node.MapSpace, node.LeafDictionary, node.Mode)
+        {
+            foreach (PhysicalObject obj in node.CompleteList())
+            {
+                if (!this.Add(obj))
+                {
+                    throw new Exception("Failed to add after move");
+                }
+            }
+            node.Parent.Replace(node, this);
+        }
+
         public override bool Add(PhysicalObject obj)
         {
             if (this.Contains(this.GetObjPosition(obj)))
@@ -79,8 +91,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                     if (this.Parent != null)
                     {
                         Leaf newNode = new Leaf(this);
-                        //this.Parent.Replace(this, newNode);
-                        //newNode.ComputeBounds();
                     }
                 }
                 else
@@ -170,7 +180,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 throw new Exception("Cannot replace a non child");
             }
 
-            newNode.Parent = this;
             children.Remove(current);
             children.Add(newNode);
             current.Parent = null;

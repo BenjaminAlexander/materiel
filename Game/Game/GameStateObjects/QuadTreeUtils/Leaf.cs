@@ -35,27 +35,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             this.ComputeBounds();
         }
 
-        public void CollapseBuild(Leaf other)
-        {
-            foreach (PhysicalObject myObjects in other.CompleteList())
-            {
-                if (this.Contains(this.GetObjPosition(myObjects)))
-                {
-                    unitList.Add(myObjects);
-                    leafDictionary.SetLeaf(myObjects, this);
-                }
-                else
-                {
-                    throw new Exception("object/node mismatch");
-                }
-
-                if (ObjectCount() > max_count)
-                {
-                    throw new Exception("you should never need to expand while collapsing");
-                }
-            }
-        }
-
         public override int ObjectCount()
         {
             return unitList.GetMaster().Count;
@@ -100,16 +79,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             {
                 if (ObjectCount() > max_count && MapSpace.Width > 1 && MapSpace.Height > 1)
                 {
-                    InternalNode newNode = new InternalNode(null, this.MapSpace, leafDictionary, this.Mode);
-
-                    foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
-                    {
-                        if (!newNode.Add(obj))
-                        {
-                            throw new Exception("Failed to add after move");
-                        }
-                    }
-                    this.Parent.Replace(this, newNode);
+                    InternalNode newNode = new InternalNode(this);
                     return newNode.Add(unit);
                 }
                 else
@@ -156,25 +126,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             {
                 throw new Exception("No such object");
             }
-        }
-
-        private InternalNode Expand()
-        {
-            if (MapSpace.Width > 1 && MapSpace.Height > 1)
-            {
-                InternalNode newNode = new InternalNode(null, this.MapSpace, leafDictionary, this.Mode);
-                
-                foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
-                {
-                    if (!newNode.Add(obj))
-                    {
-                        throw new Exception("Failed to add after move");
-                    }
-                }
-                this.Parent.Replace(this, newNode);
-                return newNode;
-            }
-            return null;
         }
 
         public Boolean Contains(PhysicalObject obj)
