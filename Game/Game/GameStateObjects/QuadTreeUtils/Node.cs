@@ -93,8 +93,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return this.GetObjects(point, list);
         }
 
-        public abstract void Move(PhysicalObject obj);
-
         public virtual void Draw(GameTime gameTime, MyGraphicsClass graphics)
         {
             graphics.DrawWorldRectangleOnScreen(this.mapSpace, Color.Red, 1f);

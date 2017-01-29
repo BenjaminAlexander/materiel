@@ -14,8 +14,8 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             foreach (PhysicalObject myObjects in other.CompleteList())
             {
-                leafDictionary.SetLeaf(myObjects, null);
-                other.unitList.Remove(myObjects);
+                //leafDictionary.SetLeaf(myObjects, null);
+                //other.unitList.Remove(myObjects);
                 if (this.Contains(this.GetObjPosition(myObjects)))
                 {
                     unitList.Add(myObjects);
@@ -32,7 +32,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 }
             }
 
-            leafDictionary.DestroyLeaf(other);
+            //leafDictionary.DestroyLeaf(other);
         }
 
         public override int ObjectCount()
@@ -77,16 +77,27 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             if (this.Contains(this.GetObjPosition(unit)))
             {
-                unitList.Add(unit);
-                leafDictionary.SetLeaf(unit, this);
-                this.Parent.IncrementCount();
-
-                if (ObjectCount() > max_count)
+                if (ObjectCount() > max_count && MapSpace.Width > 1 && MapSpace.Height > 1)
                 {
-                    this.Expand();
+                    InternalNode newNode = new InternalNode(null, this.MapSpace, leafDictionary, this.Mode);
+
+                    foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
+                    {
+                        if (!newNode.Add(obj))
+                        {
+                            throw new Exception("Failed to add after move");
+                        }
+                    }
+                    this.Parent.Replace(this, newNode);
+                    return newNode.Add(unit);
                 }
-                this.ComputeBounds();
-                return true;
+                else
+                {
+                    unitList.Add(unit);
+                    leafDictionary.SetLeaf(unit, this);
+                    this.ComputeBounds();
+                    return true;
+                }
             }
             return false;
         }
@@ -97,20 +108,13 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             {
                 leafDictionary.SetLeaf(unit, null);
                 unitList.Remove(unit);
-                this.Parent.DecrementCount();
                 this.ComputeBounds();
-                this.Collapse();
                 return true;
             }
             return false;
         }
 
-        public void Collapse()
-        {
-            this.Parent.Collapse();
-        }
-
-        public override void Move(PhysicalObject obj)
+        public void Move(PhysicalObject obj)
         {
             if (unitList.Contains(obj))
             {
@@ -119,7 +123,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                     
                     leafDictionary.SetLeaf(obj, null);
                     unitList.Remove(obj);
-                    this.Parent.DecrementCount();
                     this.ComputeBounds();
                     
                     this.Parent.Move(obj);
@@ -137,24 +140,26 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        private void Expand()
+        private InternalNode Expand()
         {
             if (MapSpace.Width > 1 && MapSpace.Height > 1)
             {
-                Node newNode = new InternalNode(null, this.MapSpace, leafDictionary, this.Mode);
+                InternalNode newNode = new InternalNode(null, this.MapSpace, leafDictionary, this.Mode);
                 
                 foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
                 {
-                    leafDictionary.SetLeaf(obj, null);
-                    unitList.Remove(obj);
+                    //leafDictionary.SetLeaf(obj, null);
+                    //unitList.Remove(obj);
                     if (!newNode.Add(obj))
                     {
                         throw new Exception("Failed to add after move");
                     }
                 }
                 this.Parent.Replace(this, newNode);
-                leafDictionary.DestroyLeaf(this);
+                //leafDictionary.DestroyLeaf(this);
+                return newNode;
             }
+            return null;
         }
 
         public Boolean Contains(PhysicalObject obj)
