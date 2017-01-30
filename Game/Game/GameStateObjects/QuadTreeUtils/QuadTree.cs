@@ -44,12 +44,16 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public List<T> GetObjects<T>(Vector2 center) where T : PhysicalObject
         {
-            return root.GetObjects<T>(center);
+            PointIntersectionSearch<T> searchObj = new PointIntersectionSearch<T>(center);
+            root.SearchNode(searchObj);
+            return searchObj.List;
         }
 
         public T GetClosest<T>(Vector2 point, Select<T> selectFunc) where T : PhysicalObject
         {
-            return root.GetClosest<T>(point, selectFunc, null);
+            ClosestSearch<T> searchObj = new ClosestSearch<T>(point, selectFunc);
+            root.SearchNode(searchObj);
+            return searchObj.Closest;
         }
 
         public bool Remove(PhysicalObject unit)

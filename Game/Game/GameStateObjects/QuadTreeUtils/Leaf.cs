@@ -155,68 +155,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return list;
         }
 
-        public override List<T> GetObjects<T>(Vector2 point, List<T> list)
-        {
-            if (this.Bounds.Contains(point) && ObjectCount() > 0)
-            {
-                foreach (PhysicalObject unit in unitList.GetList<PhysicalObject>())
-                {
-                    if (unit is T && unit.CollidesWith(point))
-                    {
-                        list.Add((T)unit);
-                    }
-                }
-            }
-            return list;
-        }
-        /*
-        public override List<T> CompleteList<T>(ref List<T> list)
-        {
-            foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
-            {
-                if (obj is T)
-                {
-                    list.Add((T)obj);
-                }
-            }
-            return list;
-        }*/
-
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
         {
             graphics.DrawWorldRectangleOnScreen(this.MapSpace, Color.Red, 1f);
-
-        }
-
-        public override T GetClosest<T>(Vector2 point, Select<T> selectFunc, T best)
-        {
-            List<T> objList = new List<T>();
-            objList = this.CompleteList<T>(objList);
-
-            float bestDistance;
-            if (best == null)
-            {
-                bestDistance = float.PositiveInfinity;
-            }
-            else
-            {
-                bestDistance = Vector2.Distance(point, best.Position);
-            }
-
-            foreach (T obj in objList)
-            {
-                float newBestDistance = Vector2.Distance(point, obj.Position);
-                if (selectFunc(obj))
-                {
-                    if (newBestDistance < bestDistance)
-                    {
-                        best = obj;
-                        bestDistance = newBestDistance;
-                    }
-                }
-            }
-
-            return best;
         }
 
         public override void SearchNode<T>(QuadTreeSearch<T> searchObj)

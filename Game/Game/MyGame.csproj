@@ -77,11 +77,13 @@
     <Compile Include="GameStateObjects\BoolGameObjectMember.cs" />
     <Compile Include="GameStateObjects\GameObjectReferenceCollectionField.cs" />
     <Compile Include="GameStateObjects\GameObjectReferenceQueueField.cs" />
+    <Compile Include="GameStateObjects\QuadTreeUtils\ClosestSearch.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\InternalNode.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\Leaf.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\LeafDictionary.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\ListAllSearch.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\Node.cs" />
+    <Compile Include="GameStateObjects\QuadTreeUtils\PointIntersectionSearch.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\QuadTree.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\QuadTreeSearch.cs" />
     <Compile Include="GameStateObjects\Vector2ListMember.cs" />

@@ -128,27 +128,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public override List<T> GetObjects<T>(Vector2 point, List<T> list)
-        {
-            if(this.Bounds.Contains(point) && this.ObjectCount() > 0)
-            {
-                foreach (Node child in children)
-                {
-                    child.GetObjects(point, list);
-                }
-            }
-            return list;
-        }
-
-        /*public override List<T> CompleteList<T>(ref List<T> list)
-        {
-            foreach (Node child in children)
-            {
-                list = child.CompleteList<T>(ref list);
-            }
-            return list;
-        }*/
-
         public void Move(PhysicalObject obj)
         {
             unitCount--;
@@ -232,38 +211,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 this.Parent.ComputeBounds();
             }
             return this.Bounds;
-        }
-
-        public override T GetClosest<T>(Vector2 point, Select<T> selectFunc, T best)
-        {
-            float bestDistance;
-            if (best == null)
-            {
-                bestDistance = float.PositiveInfinity;
-            }
-            else
-            {
-                bestDistance = Vector2.Distance(point, best.Position);
-            }
-
-            foreach(Node node in children)
-            {
-                if(node.MinimumPositionDistance(point) < bestDistance)
-                {
-                    T newBest = node.GetClosest<T>(point, selectFunc, best);
-                    if(newBest != null)
-                    {
-                        float newBestDistance = Vector2.Distance(point, newBest.Position);
-                        if(newBestDistance < bestDistance)
-                        {
-                            best = newBest;
-                            bestDistance = newBestDistance;
-                        }
-                    }
-                }
-            }
-
-            return best;
         }
 
         public override void SearchNode<T>(QuadTreeSearch<T> searchObj)
