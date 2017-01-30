@@ -169,7 +169,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
             return list;
         }
-
+        /*
         public override List<T> CompleteList<T>(ref List<T> list)
         {
             foreach (PhysicalObject obj in unitList.GetList<PhysicalObject>())
@@ -180,7 +180,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 }
             }
             return list;
-        }
+        }*/
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
         {
@@ -191,7 +191,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         public override T GetClosest<T>(Vector2 point, Select<T> selectFunc, T best)
         {
             List<T> objList = new List<T>();
-            objList = this.CompleteList<T>(ref objList);
+            objList = this.CompleteList<T>(objList);
 
             float bestDistance;
             if (best == null)
@@ -217,6 +217,14 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
 
             return best;
+        }
+
+        public override void SearchNode<T>(QuadTreeSearch<T> searchObj)
+        {
+            foreach(T obj in unitList.GetList<T>())
+            {
+                searchObj.ExamineObject(obj);
+            }
         }
     }
 }

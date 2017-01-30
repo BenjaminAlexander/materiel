@@ -81,12 +81,20 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public abstract T GetClosest<T>(Vector2 point, Select<T> selectFunc, T best) where T : PhysicalObject;
 
-        public abstract List<T> CompleteList<T>(ref List<T> list) where T : PhysicalObject;
+        public List<T> CompleteList<T>(List<T> list) where T : PhysicalObject
+        {
+            ListAllSearch<T> searchObj = new ListAllSearch<T>(list);
+            this.SearchNode(searchObj);
+            return searchObj.List;
+        }
 
         public List<PhysicalObject> CompleteList()
         {
-            List<PhysicalObject> list = new List<PhysicalObject>();
-            return this.CompleteList(ref list);
+            //List<PhysicalObject> list = new List<PhysicalObject>();
+            //return this.CompleteList(ref list);
+            ListAllSearch<PhysicalObject> searchObj = new ListAllSearch<PhysicalObject>();
+            this.SearchNode(searchObj);
+            return searchObj.List;
         }
 
         public List<T> GetObjectsInCircle<T>(Vector2 center, float radius) where T : PhysicalObject
@@ -123,5 +131,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             return Utils.Vector2Utils.Distance(this.MapSpace, point);
         }
+
+        public abstract void SearchNode<T>(QuadTreeSearch<T> searchObj) where T : PhysicalObject;
     }
 }

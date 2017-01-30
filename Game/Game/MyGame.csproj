@@ -80,8 +80,10 @@
     <Compile Include="GameStateObjects\QuadTreeUtils\InternalNode.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\Leaf.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\LeafDictionary.cs" />
+    <Compile Include="GameStateObjects\QuadTreeUtils\ListAllSearch.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\Node.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\QuadTree.cs" />
+    <Compile Include="GameStateObjects\QuadTreeUtils\QuadTreeSearch.cs" />
     <Compile Include="GameStateObjects\Vector2ListMember.cs" />
     <Compile Include="IO\Events\KeyReleaseEvent.cs" />
     <Compile Include="materiel\GameObjects\Bullet.cs" />

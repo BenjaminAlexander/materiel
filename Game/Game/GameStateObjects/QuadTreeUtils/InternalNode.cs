@@ -105,7 +105,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             if ((new Circle(center, radius)).Contains(this.MapSpace))
             {
                 //return everything
-                return this.CompleteList(ref list);
+                return this.CompleteList(list);
             }
             else
             {
@@ -140,14 +140,14 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return list;
         }
 
-        public override List<T> CompleteList<T>(ref List<T> list)
+        /*public override List<T> CompleteList<T>(ref List<T> list)
         {
             foreach (Node child in children)
             {
                 list = child.CompleteList<T>(ref list);
             }
             return list;
-        }
+        }*/
 
         public void Move(PhysicalObject obj)
         {
@@ -264,6 +264,17 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
 
             return best;
+        }
+
+        public override void SearchNode<T>(QuadTreeSearch<T> searchObj)
+        {
+            foreach (Node node in children)
+            {
+                if(searchObj.SelectNode(node))
+                {
+                    node.SearchNode<T>(searchObj);
+                }
+            }
         }
     }
 }
