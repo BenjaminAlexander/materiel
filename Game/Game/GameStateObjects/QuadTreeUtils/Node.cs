@@ -75,26 +75,18 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 point.Y < this.mapSpace.Y + this.mapSpace.Height;
         }
 
-        public abstract List<T> GetObjectsInCircle<T>(Vector2 center, float radius, List<T> list) where T : PhysicalObject;
-
         public List<T> CompleteList<T>(List<T> list) where T : PhysicalObject
         {
-            ListAllSearch<T> searchObj = new ListAllSearch<T>(list);
+            ListAllSearch<T> searchObj = new ListAllSearch<T>(this.Mode, list);
             this.SearchNode(searchObj);
             return searchObj.List;
         }
 
         public List<PhysicalObject> CompleteList()
         {
-            ListAllSearch<PhysicalObject> searchObj = new ListAllSearch<PhysicalObject>();
+            ListAllSearch<PhysicalObject> searchObj = new ListAllSearch<PhysicalObject>(this.Mode);
             this.SearchNode(searchObj);
             return searchObj.List;
-        }
-
-        public List<T> GetObjectsInCircle<T>(Vector2 center, float radius) where T : PhysicalObject
-        {
-            List<T> list = new List<T>();
-            return this.GetObjectsInCircle(center, radius, list);
         }
 
         public virtual void Draw(GameTime gameTime, MyGraphicsClass graphics)

@@ -53,16 +53,6 @@ namespace MyGame.GameStateObjects
             get { return this.position.Value; }
         }
 
-        public Vector2 GetPosition(GameObjectField.Modes mode)
-        {
-            return this.position.GetValue(mode);
-        }
-
-        public float GetDirection(GameObjectField.Modes mode)
-        {
-            return this.direction.GetValue(mode);
-        }
-
         public float Direction
         {
             get { return direction.Value; }
@@ -73,14 +63,34 @@ namespace MyGame.GameStateObjects
             }
         }
 
+        public Vector2 GetPosition(GameObjectField.Modes mode)
+        {
+            return this.position.GetValue(mode);
+        }
+
+        public float GetDirection(GameObjectField.Modes mode)
+        {
+            return this.direction.GetValue(mode);
+        }
+
         public Boolean CollidesWith(PhysicalObject other)
         {
             return this.Texture.CollidesWith(this.Position, this.TextureOrigin, this.Direction, other.Texture, other.Position, other.TextureOrigin, other.Direction);
         }
 
+        public Boolean CollidesWith(PhysicalObject other, GameObjectField.Modes mode)
+        {
+            return this.Texture.CollidesWith(this.GetPosition(mode), this.TextureOrigin, this.GetDirection(mode), other.Texture, other.GetPosition(mode), other.TextureOrigin, other.GetDirection(mode));
+        }
+
         public Boolean CollidesWith(Vector2 point)
         {
             return this.Texture.Contains(point, this.Position, this.TextureOrigin, this.Direction);
+        }
+
+        public Boolean CollidesWith(Vector2 point, GameObjectField.Modes mode)
+        {
+            return this.Texture.Contains(point, this.GetPosition(mode), this.TextureOrigin, this.GetDirection(mode));
         }
 
         public Rectangle BoundingRectangle

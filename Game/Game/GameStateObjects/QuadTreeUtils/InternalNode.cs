@@ -100,34 +100,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public override List<T> GetObjectsInCircle<T>(Vector2 center, float radius, List<T> list)
-        {
-            if ((new Circle(center, radius)).Contains(this.MapSpace))
-            {
-                //return everything
-                return this.CompleteList(list);
-            }
-            else
-            {
-                //List<CompositePhysicalObject> returnList = new List<CompositePhysicalObject>();
-                if (this.ObjectCount() > 0)
-                {
-                    Vector2 rectangleCenter = new Vector2((((float)MapSpace.X) + ((float)MapSpace.Width) / 2), (((float)MapSpace.Y) + ((float)MapSpace.Height) / 2));
-                    float rectangleRadius = Vector2.Distance(rectangleCenter, new Vector2(MapSpace.X, MapSpace.Y));
-
-
-                    if (Vector2.Distance(rectangleCenter, center) <= radius + rectangleRadius)
-                    {
-                        foreach (Node child in children)
-                        {
-                            child.GetObjectsInCircle(center, radius, list);
-                        }
-                    }
-                }
-                return list;
-            }
-        }
-
         public void Move(PhysicalObject obj)
         {
             unitCount--;

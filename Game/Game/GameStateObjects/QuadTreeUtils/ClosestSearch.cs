@@ -22,7 +22,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public ClosestSearch(Vector2 point, Select<T> selectFunc)
+        public ClosestSearch(GameObjectField.Modes mode, Vector2 point, Select<T> selectFunc) : base(mode)
         {
             this.selectFunc = selectFunc;
             this.point = point;
@@ -30,7 +30,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override void ExamineObject(T obj)
         {
-            float newBestDistance = Vector2.Distance(point, obj.Position);
+            float newBestDistance = Vector2.Distance(point, obj.GetPosition(this.Mode));
             if (selectFunc(obj) && newBestDistance < bestDistance)
             {
                 best = obj;

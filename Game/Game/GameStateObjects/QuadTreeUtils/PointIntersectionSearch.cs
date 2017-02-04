@@ -20,14 +20,14 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public PointIntersectionSearch(Vector2 point)
+        public PointIntersectionSearch(GameObjectField.Modes mode, Vector2 point) : base(mode)
         {
             this.point = point;
         }
 
         public override void ExamineObject(T obj)
         {
-            if (obj.CollidesWith(point))
+            if (obj.CollidesWith(point, this.Mode))
             {
                 rtn.Add(obj);
             }
