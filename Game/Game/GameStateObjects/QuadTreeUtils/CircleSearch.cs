@@ -45,5 +45,16 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
             return Vector2.Distance(rectangleCenter, this.circle.Center) <= this.circle.Radius + rectangleRadius;
         }
+
+        public override bool SelectParentNode(Node currentNode)
+        {
+            //true if currentNode does not completely contain the circle
+            Rectangle r = currentNode.MapSpace;
+
+            float x = Math.Min(circle.Center.X - r.X, r.X + r.Width - circle.Center.X);
+            float y = Math.Min(circle.Center.Y - r.Y, r.Y + r.Height - circle.Center.Y);
+
+            return x < circle.Radius || y < circle.Radius;
+        }
     }
 }

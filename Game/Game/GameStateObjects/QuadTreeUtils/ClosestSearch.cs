@@ -22,6 +22,19 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
+        public ClosestSearch(GameObjectField.Modes mode, Vector2 point, Select<T> selectFunc, T best) : this(mode, point, selectFunc)
+        {
+            this.best = best;
+            if (this.best != null)
+            {
+                this.bestDistance = Vector2.Distance(point, this.best.GetPosition(this.Mode));
+            }
+            else
+            {
+                this.bestDistance = float.PositiveInfinity;
+            }
+        }
+
         public ClosestSearch(GameObjectField.Modes mode, Vector2 point, Select<T> selectFunc) : base(mode)
         {
             this.selectFunc = selectFunc;
@@ -41,6 +54,12 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         public override bool SelectNode(Node node)
         {
             return node.MinimumPositionDistance(point) < bestDistance;
+        }
+
+        public override bool SelectParentNode(Node currentNode)
+        {
+            //return false if the minimum distance out of the current node is more then the best distance
+            return Utils.Vector2Utils.DistanceInside(currentNode.MapSpace, this.point) <= this.bestDistance;
         }
     }
 }

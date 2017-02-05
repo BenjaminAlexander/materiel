@@ -21,7 +21,7 @@ namespace MyGame.Geometry
         public Circle(Vector2 center, float radius)
         {
             this.center = center;
-            this.radius = radius;
+            this.radius = Math.Abs(radius);
         }
 
         public Boolean Intersects(Circle other)

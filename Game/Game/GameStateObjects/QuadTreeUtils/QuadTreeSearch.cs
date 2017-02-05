@@ -23,6 +23,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             this.mode = mode;
         }
 
+        //return true if we should search currentNode.Parent
+        public abstract bool SelectParentNode(Node currentNode);
+
         public abstract bool SelectNode(Node node);
 
         public abstract void ExamineObject(T obj);

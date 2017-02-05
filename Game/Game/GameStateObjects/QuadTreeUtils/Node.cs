@@ -78,14 +78,14 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         public List<T> CompleteList<T>(List<T> list) where T : PhysicalObject
         {
             ListAllSearch<T> searchObj = new ListAllSearch<T>(this.Mode, list);
-            this.SearchNode(searchObj);
+            this.SearchDown(searchObj);
             return searchObj.List;
         }
 
         public List<PhysicalObject> CompleteList()
         {
             ListAllSearch<PhysicalObject> searchObj = new ListAllSearch<PhysicalObject>(this.Mode);
-            this.SearchNode(searchObj);
+            this.SearchDown(searchObj);
             return searchObj.List;
         }
 
@@ -112,6 +112,8 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return Utils.Vector2Utils.Distance(this.MapSpace, point);
         }
 
-        public abstract void SearchNode<T>(QuadTreeSearch<T> searchObj) where T : PhysicalObject;
+        //public abstract void SearchNode<T>(QuadTreeSearch<T> searchObj) where T : PhysicalObject;
+
+        public abstract void SearchDown<T>(QuadTreeSearch<T> searchObj) where T : PhysicalObject;
     }
 }

@@ -42,5 +42,10 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
             return false;
         }
+
+        public override bool SelectParentNode(Node currentNode)
+        {
+            return true;
+        }
     }
 }

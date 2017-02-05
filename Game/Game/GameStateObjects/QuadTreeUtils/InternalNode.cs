@@ -197,14 +197,30 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return this.Bounds;
         }
 
-        public override void SearchNode<T>(QuadTreeSearch<T> searchObj)
+        public override void SearchDown<T>(QuadTreeSearch<T> searchObj)
         {
             foreach (Node node in children)
             {
-                if(searchObj.SelectNode(node))
+                if (searchObj.SelectNode(node))
                 {
-                    node.SearchNode<T>(searchObj);
+                    node.SearchDown<T>(searchObj);
                 }
+            }
+        }
+
+        public void SearchUp<T>(QuadTreeSearch<T> searchObj, Node child) where T : PhysicalObject
+        {
+            foreach (Node node in children)
+            {
+                if (node != child && searchObj.SelectNode(node))
+                {
+                    node.SearchDown<T>(searchObj);
+                }
+            }
+
+            if(this.Parent != null && searchObj.SelectParentNode(this))
+            {
+                this.Parent.SearchUp<T>(searchObj, this);
             }
         }
     }

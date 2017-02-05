@@ -114,5 +114,14 @@ namespace MyGame.Utils
             float dy = Math.Max(Math.Abs(rectCenter.Y - point.Y) - rect.Height / 2f, 0);
             return (float)(Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2)));
         }
+
+        public static float DistanceInside(Rectangle rect, Vector2 point)
+        {
+            Vector2 rectCenter = new Vector2(rect.X + rect.Width / 2f, rect.Y + rect.Height / 2f);
+
+            float dx = Math.Max(rect.Width / 2f - Math.Abs(rectCenter.X - point.X), 0);
+            float dy = Math.Max(rect.Height / 2f - Math.Abs(rectCenter.Y - point.Y), 0);
+            return Math.Min(dx, dy);
+        }
     } 
 }
