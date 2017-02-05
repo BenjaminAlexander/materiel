@@ -58,10 +58,10 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             List<PhysicalObject> units = unitList.GetList<PhysicalObject>();
             if (units.Count > 0)
             {
-                Rectangle bounds = units[0].BoundingRectangle;
+                Rectangle bounds = units[0].GetFastBoundingRectangle(this.Mode);
                 foreach (PhysicalObject obj in units)
                 {
-                    bounds = Utils.MathUtils.RectangleUnion(bounds, obj.GetBoundingRectangle(this.Mode));
+                    bounds = Utils.MathUtils.RectangleUnion(bounds, obj.GetFastBoundingRectangle(this.Mode));
                 }
                 this.Bounds = bounds;
             }
@@ -139,10 +139,10 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             {
                 graphics.DrawWorldRectangleOnScreen((Rectangle)this.Bounds, Color.Blue, 1f);
             }
-            /*foreach(PhysicalObject obj in unitList.GetList<PhysicalObject>())
+            foreach(PhysicalObject obj in unitList.GetList<PhysicalObject>())
             {
-                graphics.DrawWorldRectangleOnScreen(obj.GetBoundingRectangle(this.Mode), Color.Blue, 1f);
-            }*/
+                graphics.DrawWorldRectangleOnScreen(obj.GetFastBoundingRectangle(this.Mode), Color.Blue, 1f);
+            }
         }
 
         public override void SearchNode<T>(QuadTreeSearch<T> searchObj)

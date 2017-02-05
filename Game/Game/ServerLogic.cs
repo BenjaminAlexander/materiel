@@ -56,7 +56,7 @@ namespace MyGame
             player1Base.SetPlayerInControll(player1);
 
             Company co = player1.AddCompany(game);
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 20; i++)
             {
                 CombatVehicle vic = CombatVehicle.CombatVehicleFactory(game.GameObjectCollection, player1, player1Base.Position + new Vector2(i * 20, 100));
                 Transport.TransportFactory(game.GameObjectCollection, player1, player1Base.Position + new Vector2(i * 20, 200));

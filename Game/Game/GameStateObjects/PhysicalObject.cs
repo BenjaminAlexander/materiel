@@ -12,6 +12,8 @@ namespace MyGame.GameStateObjects
         private InterpolatedVector2GameObjectMember position;
         private InterpolatedAngleGameObjectMember direction;
 
+        private float maxRadiusFromOrigin;
+
         public static void ServerInitialize(PhysicalObject obj, Vector2 position, float direction)
         {
             obj.position.Value = position;
@@ -34,6 +36,18 @@ namespace MyGame.GameStateObjects
         {
             position = new InterpolatedVector2GameObjectMember(this, new Vector2(0));
             direction = new InterpolatedAngleGameObjectMember(this, 0);
+
+            Rectangle r = this.Texture.BoundingRectangle;
+
+            Vector2 p1 = new Vector2(r.X, r.Y);
+            Vector2 p2 = new Vector2(r.X, r.Y + r.Height);
+            Vector2 p3 = new Vector2(r.X + r.Width, r.Y);
+            Vector2 p4 = new Vector2(r.X + r.Width, r.Y + r.Height);
+
+            maxRadiusFromOrigin = Vector2.Distance(p1, this.TextureOrigin);
+            maxRadiusFromOrigin = Math.Max(maxRadiusFromOrigin, Vector2.Distance(p2, this.TextureOrigin));
+            maxRadiusFromOrigin = Math.Max(maxRadiusFromOrigin, Vector2.Distance(p3, this.TextureOrigin));
+            maxRadiusFromOrigin = Math.Max(maxRadiusFromOrigin, Vector2.Distance(p4, this.TextureOrigin));
         }
 
         public Vector2 Position
@@ -108,7 +122,9 @@ namespace MyGame.GameStateObjects
 
         public Rectangle GetFastBoundingRectangle(GameObjectField.Modes mode)
         {
-            return this.Texture.TransformBoundingRectangle(this.GetPosition(mode), this.TextureOrigin, this.GetDirection(mode));
+            Vector2 p = this.GetPosition(mode);
+            Rectangle r = new Rectangle((int)Math.Floor(p.X - maxRadiusFromOrigin), (int)Math.Floor(p.Y - maxRadiusFromOrigin), (int)Math.Ceiling(maxRadiusFromOrigin * 2), (int)Math.Ceiling(maxRadiusFromOrigin * 2));
+            return r;
         }
 
         public abstract void MoveOutsideWorld(Vector2 position, Vector2 movePosition);
