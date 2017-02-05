@@ -6,7 +6,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 {
     abstract class Node
     {
-        protected static int max_count = 10;
+        protected static int max_count = 4;
 
         private InternalNode parent;
         public int id;
@@ -15,7 +15,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         private Rectangle mapSpace;
         private GameObjectField.Modes mode;
-        private Rectangle objectBounds;
+        private Rectangle? objectBounds;
 
         public Rectangle MapSpace
         {
@@ -94,7 +94,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             graphics.DrawWorldRectangleOnScreen(this.mapSpace, Color.Red, 1f);
         }
 
-        public Rectangle Bounds
+        public Rectangle? Bounds
         {
             get
             {

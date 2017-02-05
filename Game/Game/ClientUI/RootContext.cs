@@ -17,7 +17,14 @@ namespace MyGame.ClientUI
 
         public override void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics)
         {
-            this.PlayerObject.DrawCompanyList(gameTime, graphics, this.Game.Camera);
+            try
+            {
+                this.PlayerObject.DrawCompanyList(gameTime, graphics, this.Game.Camera);
+            }
+            catch (FailedDereferenceException e)
+            {
+                //I don't know what to do here, probably just let it slide
+            }
         }
 
         public override void UpdateWithIOEvent(IO.IOEvent ioEvent)

@@ -35,7 +35,12 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override bool SelectNode(Node node)
         {
-            return node.Bounds.Contains(point);
+            if (node.Bounds != null)
+            {
+                Rectangle bound = (Rectangle)node.Bounds;
+                return bound.Contains(point);
+            }
+            return false;
         }
     }
 }

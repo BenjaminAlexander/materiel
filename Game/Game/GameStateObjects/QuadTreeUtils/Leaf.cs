@@ -44,7 +44,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             : base(parent, mapSpace, leafDictionary, mode)
         {
             unitList = new GameObjectListManager();
-            this.Bounds = new Rectangle(mapSpace.X, mapSpace.Y, 0, 0);
+            this.Bounds = null;
         }
 
         public Leaf(InternalNode parent, int x, int y, int width, int height, LeafDictionary leafDictionary, GameObjectField.Modes mode)
@@ -53,7 +53,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         }
 
-        public Rectangle ComputeBounds()
+        public Rectangle? ComputeBounds()
         {
             List<PhysicalObject> units = unitList.GetList<PhysicalObject>();
             if (units.Count > 0)
@@ -61,13 +61,13 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 Rectangle bounds = units[0].BoundingRectangle;
                 foreach (PhysicalObject obj in units)
                 {
-                    bounds = Utils.MathUtils.RectangleUnion(bounds, obj.BoundingRectangle);
+                    bounds = Utils.MathUtils.RectangleUnion(bounds, obj.GetBoundingRectangle(this.Mode));
                 }
                 this.Bounds = bounds;
             }
             else
             {
-                this.Bounds = new Rectangle(this.MapSpace.X, this.MapSpace.Y, 0, 0);
+                this.Bounds = null;
             }
             this.Parent.ComputeBounds();
             return this.Bounds;
@@ -77,7 +77,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             if (this.Contains(this.GetObjPosition(unit)))
             {
-                if (ObjectCount() > max_count && MapSpace.Width > 1 && MapSpace.Height > 1)
+                if (ObjectCount() >= max_count && MapSpace.Width > 1 && MapSpace.Height > 1)
                 {
                     InternalNode newNode = new InternalNode(this);
                     return newNode.Add(unit);
@@ -113,7 +113,6 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                 {
                     leafDictionary.SetLeaf(obj, null);
                     unitList.Remove(obj);
-                    this.ComputeBounds();
                     
                     this.Parent.Move(obj);
                     if (unitList.Contains(obj))
@@ -121,6 +120,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
                         throw new Exception("Move failed");
                     }
                 }
+                this.ComputeBounds();
             }
             else
             {
@@ -135,7 +135,14 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
         {
-            graphics.DrawWorldRectangleOnScreen(this.MapSpace, Color.Red, 1f);
+            if (this.Bounds != null)
+            {
+                graphics.DrawWorldRectangleOnScreen((Rectangle)this.Bounds, Color.Blue, 1f);
+            }
+            /*foreach(PhysicalObject obj in unitList.GetList<PhysicalObject>())
+            {
+                graphics.DrawWorldRectangleOnScreen(obj.GetBoundingRectangle(this.Mode), Color.Blue, 1f);
+            }*/
         }
 
         public override void SearchNode<T>(QuadTreeSearch<T> searchObj)

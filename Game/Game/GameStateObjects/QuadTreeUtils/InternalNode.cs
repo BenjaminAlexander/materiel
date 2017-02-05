@@ -84,7 +84,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         
         public void Collapse()
         {
-            if (this.ObjectCount() < Node.max_count)
+            if (this.ObjectCount() <= Node.max_count)
             {
                 if (AllChildrenAreLeaves())
                 {
@@ -155,30 +155,42 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
         {
-            graphics.DrawWorldRectangleOnScreen(this.MapSpace, Color.Red, 1f);
+            if (this.Bounds != null)
+            {
+                graphics.DrawWorldRectangleOnScreen((Rectangle)this.Bounds, Color.Red, 1f);
+            }
             foreach (Node n in children)
             {
                 n.Draw(gameTime, graphics);
             }
         }
 
-        public Rectangle ComputeBounds()
+        public Rectangle? ComputeBounds()
         {
-            if (children.Count > 0)
+            if (this.unitCount > 0)
             {
-                Rectangle bounds = children[0].Bounds;
+                this.Bounds = null;
                 foreach (Node obj in children)
                 {
-                    bounds = Utils.MathUtils.RectangleUnion(bounds, obj.Bounds);
+                    if (obj.Bounds != null)
+                    {
+                        Rectangle nodeBound = (Rectangle)obj.Bounds;
+                        if (this.Bounds == null)
+                        {
+                            this.Bounds = nodeBound;
+                        }
+                        else
+                        {
+                            this.Bounds = Utils.MathUtils.RectangleUnion((Rectangle)this.Bounds, nodeBound);
+                        }
+                    }
                 }
-                this.Bounds = bounds;
             }
             else
             {
-                this.Bounds = new Rectangle(this.MapSpace.X, this.MapSpace.Y, 0, 0);
+                this.Bounds = null;
             }
-
-            if (this.Parent != null)
+            if(this.Parent != null)
             {
                 this.Parent.ComputeBounds();
             }
