@@ -84,7 +84,7 @@ namespace MyGame.materiel.GameObjects
             base.SubclassUpdate(seconds);
             this.MoveTowardAndIdle(this.TargetPosition, seconds);
 
-            this.targetVehicle.Value = Collection.GetClosest<Vehicle>(this.Position, this.SelectEnemyVehicle);
+            this.targetVehicle.Value = Collection.GetClosest<Vehicle>(this.Position, this.SelectEnemyVehicle, this.targetVehicle.Value);
             if(this.targetVehicle.Value != null)
             {
                 Vector2 turretPosition = this.Position + Utils.Vector2Utils.RotateVector2(new Vector2(-5, 0), this.Direction);
