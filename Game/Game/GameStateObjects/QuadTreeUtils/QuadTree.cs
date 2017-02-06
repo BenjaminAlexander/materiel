@@ -65,6 +65,13 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return searchObj.Closest;
         }
 
+        public T GetClosest<T>(PhysicalObject obj, Select<T> selectFunc, T best) where T : PhysicalObject
+        {
+            ClosestSearch<T> searchObj = new ClosestSearch<T>(this.mode, obj.GetPosition(this.mode), selectFunc, best);
+            this.leafDictionary.GetLeaf(obj).SearchUP<T>(searchObj);
+            return searchObj.Closest;
+        }
+
         public bool Remove(PhysicalObject unit)
         {
             return root.Remove(unit);

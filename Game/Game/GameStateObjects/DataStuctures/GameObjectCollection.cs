@@ -135,6 +135,11 @@ namespace MyGame.GameStateObjects.DataStuctures
             return this.Tree.GetClosest<T>(point, selectFunc, best);
         }
 
+        public T GetClosest<T>(PhysicalObject obj, Select<T> selectFunc, T best) where T : PhysicalObject
+        {
+            return this.Tree.GetClosest<T>(obj, selectFunc, best);
+        }
+
         public void ServerUpdate(Lobby lobby, GameTime gameTime)
         {
             float secondsElapsed = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;

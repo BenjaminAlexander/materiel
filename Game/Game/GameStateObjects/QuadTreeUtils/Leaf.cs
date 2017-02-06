@@ -58,10 +58,10 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             List<PhysicalObject> units = unitList.GetList<PhysicalObject>();
             if (units.Count > 0)
             {
-                Rectangle bounds = units[0].GetBoundingRectangle(this.Mode);
+                Rectangle bounds = units[0].GetFastBoundingRectangle(this.Mode);
                 foreach (PhysicalObject obj in units)
                 {
-                    bounds = Utils.MathUtils.RectangleUnion(bounds, obj.GetBoundingRectangle(this.Mode));
+                    bounds = Utils.MathUtils.RectangleUnion(bounds, obj.GetFastBoundingRectangle(this.Mode));
                 }
                 this.Bounds = bounds;
             }

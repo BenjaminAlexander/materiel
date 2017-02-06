@@ -84,13 +84,17 @@ namespace MyGame.materiel.GameObjects
             base.SubclassUpdate(seconds);
             this.MoveTowardAndIdle(this.TargetPosition, seconds);
 
-            this.targetVehicle.Value = Collection.GetClosest<Vehicle>(this.Position, this.SelectEnemyVehicle, this.targetVehicle.Value);
+            gunCoolDown.Value = Math.Max(gunCoolDown - seconds, 0);
+            if (gunCoolDown.Value == 0)
+            {
+                this.targetVehicle.Value = Collection.GetClosest<Vehicle>(this, this.SelectEnemyVehicle, this.targetVehicle.Value);
+            }
             if(this.targetVehicle.Value != null)
             {
                 Vector2 turretPosition = this.Position + Utils.Vector2Utils.RotateVector2(new Vector2(-5, 0), this.Direction);
                 this.turretAngle.Value = Utils.Vector2Utils.Vector2Angle(this.targetVehicle.Value.Position - turretPosition) - this.Direction;
             }
-            gunCoolDown.Value = Math.Max(gunCoolDown - seconds, 0);
+            
         }
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
