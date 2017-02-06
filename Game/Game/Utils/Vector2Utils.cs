@@ -115,6 +115,26 @@ namespace MyGame.Utils
             return (float)(Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2)));
         }
 
+        public static float Distance(Rectangle rect1, Rectangle rect2)
+        {
+            Vector2 rectCenter1 = new Vector2(rect1.X + rect1.Width / 2f, rect1.Y + rect1.Height / 2f);
+            Vector2 rectCenter2 = new Vector2(rect2.X + rect2.Width / 2f, rect2.Y + rect2.Height / 2f);
+
+            float dx = Math.Max(Math.Abs(rectCenter1.X - rectCenter2.X) - rect1.Width / 2f - rect2.Width / 2f, 0);
+            float dy = Math.Max(Math.Abs(rectCenter1.Y - rectCenter2.Y) - rect1.Height / 2f - rect2.Height / 2f, 0);
+            return (float)(Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2)));
+        }
+
+        public static bool Intersects(Rectangle rect1, Rectangle rect2)
+        {
+            Vector2 rectCenter1 = new Vector2(rect1.X + rect1.Width / 2f, rect1.Y + rect1.Height / 2f);
+            Vector2 rectCenter2 = new Vector2(rect2.X + rect2.Width / 2f, rect2.Y + rect2.Height / 2f);
+
+            float dx = Math.Max(Math.Abs(rectCenter1.X - rectCenter2.X) - rect1.Width / 2f - rect2.Width / 2f, 0);
+            float dy = Math.Max(Math.Abs(rectCenter1.Y - rectCenter2.Y) - rect1.Height / 2f - rect2.Height / 2f, 0);
+            return dx == 0 && dy == 0;
+        }
+
         public static float DistanceInside(Rectangle rect, Vector2 point)
         {
             Vector2 rectCenter = new Vector2(rect.X + rect.Width / 2f, rect.Y + rect.Height / 2f);

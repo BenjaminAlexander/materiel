@@ -84,6 +84,7 @@
     <Compile Include="GameStateObjects\QuadTreeUtils\LeafDictionary.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\ListAllSearch.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\Node.cs" />
+    <Compile Include="GameStateObjects\QuadTreeUtils\ObjectIntersectionSearch.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\PointIntersectionSearch.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\QuadTree.cs" />
     <Compile Include="GameStateObjects\QuadTreeUtils\QuadTreeSearch.cs" />

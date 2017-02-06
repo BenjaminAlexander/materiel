@@ -14,11 +14,11 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public override int ObjectCount()
         {
-            int listCount = this.CompleteList().Count;
+            /*int listCount = this.CompleteList().Count;
             if (unitCount != listCount)
             {
                 throw new Exception("Count mismatch");
-            }
+            }*/
             return unitCount;
         }
 

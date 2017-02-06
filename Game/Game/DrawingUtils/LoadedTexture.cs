@@ -81,10 +81,7 @@ namespace MyGame.DrawingUtils
             Rectangle tb = this.TransformBoundingRectangle(position, origin, rotation);
             Rectangle ob = other.TransformBoundingRectangle(otherPosition, otherOrigin, otherRotation);
 
-            Circle thisCirlce = Circle.CreateBounding(tb);
-            Circle otherCirlce = Circle.CreateBounding(ob);
-
-            if (thisCirlce.Intersects(otherCirlce) && tb.Intersects(ob))
+            if (Utils.Vector2Utils.Intersects(tb, ob))
             {
                 if (LoadedTexture.MyIntersectPixels(this, other, position, origin, rotation, otherPosition, otherOrigin, otherRotation))
                 {
