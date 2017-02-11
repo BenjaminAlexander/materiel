@@ -13,6 +13,14 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         private Rectangle bound;
         private List<T> rtn = new List<T>();
 
+        public List<T> List
+        {
+            get
+            {
+                return rtn;
+            }
+        }
+
         public ObjectIntersectionSearch(GameObjectField.Modes mode, PhysicalObject obj) : base(mode)
         {
             this.obj = obj;

@@ -140,6 +140,11 @@ namespace MyGame.GameStateObjects.DataStuctures
             return this.Tree.GetClosest<T>(obj, selectFunc, best);
         }
 
+        public List<T> GetColliding<T>(PhysicalObject obj) where T : PhysicalObject
+        {
+            return this.Tree.GetColliding<T>(obj);
+        }
+
         public void ServerUpdate(Lobby lobby, GameTime gameTime)
         {
             float secondsElapsed = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;

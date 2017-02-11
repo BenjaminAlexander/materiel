@@ -64,6 +64,11 @@ namespace MyGame.materiel.GameObjects
             {
                 this.Destroy();
             }
+
+            if(this.Collection.GetColliding<Vehicle>(this).Count > 0)
+            {
+                this.Destroy();
+            }
         }
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)

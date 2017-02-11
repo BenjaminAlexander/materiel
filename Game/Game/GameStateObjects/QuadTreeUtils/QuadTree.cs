@@ -72,6 +72,13 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return searchObj.Closest;
         }
 
+        public List<T> GetColliding<T>(PhysicalObject obj) where T : PhysicalObject
+        {
+            ObjectIntersectionSearch<T> searchObj = new ObjectIntersectionSearch<T>(this.mode, obj);
+            this.leafDictionary.GetLeaf(obj).SearchUP<T>(searchObj);
+            return searchObj.List;
+        }
+
         public bool Remove(PhysicalObject unit)
         {
             return root.Remove(unit);
