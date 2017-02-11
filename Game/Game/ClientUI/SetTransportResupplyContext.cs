@@ -4,6 +4,7 @@ using MyGame.IO;
 using MyGame.GameStateObjects;
 using MyGame.materiel.RtsCommandMessages;
 using MyGame.materiel.GameObjects;
+using MyGame.GameStateObjects.QuadTreeUtils;
 
 namespace MyGame.ClientUI
 {
@@ -45,7 +46,7 @@ namespace MyGame.ClientUI
                 Vector2 sceenPosition = IOState.MouseScreenPosition();
                 Vector2 worldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
 
-                List<Base> clickList = this.Game.GameObjectCollection.GetObjects<Base>(worldPosition);
+                List<Base> clickList = PointIntersectionSearch<Base>.GetObjects(this.Game.GameObjectCollection, worldPosition);
                 if (clickList.Count > 0)
                 {
                     if(base1 == null)

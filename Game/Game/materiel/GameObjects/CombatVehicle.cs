@@ -3,6 +3,7 @@ using MyGame.GameStateObjects;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects.DataStuctures;
 using MyGame.DrawingUtils;
+using MyGame.GameStateObjects.QuadTreeUtils;
 
 namespace MyGame.materiel.GameObjects
 {
@@ -87,7 +88,7 @@ namespace MyGame.materiel.GameObjects
             gunCoolDown.Value = Math.Max(gunCoolDown - seconds, 0);
             if (gunCoolDown.Value == 0)
             {
-                this.targetVehicle.Value = Collection.GetClosest<Vehicle>(this, this.SelectEnemyVehicle, this.targetVehicle.Value);
+                this.targetVehicle.Value = ClosestSearch<Vehicle>.GetObject(this.Collection, this, this.SelectEnemyVehicle, this.targetVehicle.Value);
             }
             if(this.targetVehicle.Value != null)
             {

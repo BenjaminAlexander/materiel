@@ -10,11 +10,11 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
     {
         private List<T> rtn;
 
-        public ListAllSearch(GameObjectField.Modes mode) : this(mode, new List<T>())
+        public ListAllSearch() : this(new List<T>())
         {
         }
 
-        public ListAllSearch(GameObjectField.Modes mode, List<T> list) : base(mode)
+        public ListAllSearch(List<T> list)
         {
             rtn = list;
         }
@@ -27,7 +27,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public override void ExamineObject(T obj)
+        public override void ExamineObject(T obj, GameObjectField.Modes mode)
         {
             rtn.Add(obj);
         }

@@ -6,7 +6,7 @@ using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
 {
-    class Leaf : Node
+    public class Leaf : Node
     {
         private GameObjectListManager unitList;
 
@@ -149,7 +149,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             foreach (T obj in unitList.GetList<T>())
             {
-                searchObj.ExamineObject(obj);
+                searchObj.ExamineObject(obj, this.Mode);
             }
         }
 
@@ -157,7 +157,7 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
         {
             foreach (T obj in unitList.GetList<T>())
             {
-                searchObj.ExamineObject(obj);
+                searchObj.ExamineObject(obj, this.Mode);
             }
 
             if (this.Parent != null && searchObj.SelectParentNode(this))

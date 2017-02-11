@@ -6,7 +6,7 @@ using MyGame.Geometry;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
 {
-    class InternalNode : Node
+    public class InternalNode : Node
     {
         private List<Node> children = new List<Node>();
         private int unitCount = 0;

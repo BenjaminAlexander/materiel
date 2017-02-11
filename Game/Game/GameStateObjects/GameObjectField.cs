@@ -5,6 +5,14 @@
         public enum Modes { Simulation, Previous, Draw };
         private static Modes mode = Modes.Simulation;
 
+        public static Modes Mode
+        {
+            get
+            {
+                return mode;
+            }
+        }
+
         public static void SetModeSimulation()
         {
             mode = Modes.Simulation;

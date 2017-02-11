@@ -4,7 +4,7 @@ using MyGame.DrawingUtils;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
 {
-    abstract class Node
+    public abstract class Node
     {
         protected static int max_count = 4;
 
@@ -77,14 +77,14 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
 
         public List<T> CompleteList<T>(List<T> list) where T : PhysicalObject
         {
-            ListAllSearch<T> searchObj = new ListAllSearch<T>(this.Mode, list);
+            ListAllSearch<T> searchObj = new ListAllSearch<T>(list);
             this.SearchDown(searchObj);
             return searchObj.List;
         }
 
         public List<PhysicalObject> CompleteList()
         {
-            ListAllSearch<PhysicalObject> searchObj = new ListAllSearch<PhysicalObject>(this.Mode);
+            ListAllSearch<PhysicalObject> searchObj = new ListAllSearch<PhysicalObject>();
             this.SearchDown(searchObj);
             return searchObj.List;
         }

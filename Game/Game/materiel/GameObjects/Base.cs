@@ -5,6 +5,7 @@ using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework;
 using MyGame.Server;
 using MyGame.GameStateObjects.DataStuctures;
+using MyGame.GameStateObjects.QuadTreeUtils;
 
 namespace MyGame.materiel.GameObjects
 {
@@ -102,7 +103,7 @@ namespace MyGame.materiel.GameObjects
         {
             base.SimulationStateOnlyUpdate(secondsElapsed);
 
-            List<Vehicle> objectList = this.Collection.GetObjectsInCircle<Vehicle>(this.Position, 50);
+            List<Vehicle> objectList = CircleSearch<Vehicle>.GetObjects(this.Collection, this.Position, 100);
             Dictionary<PlayerGameObject, int> vicCount = new Dictionary<PlayerGameObject, int>();
 
             foreach (Vehicle vic in objectList)

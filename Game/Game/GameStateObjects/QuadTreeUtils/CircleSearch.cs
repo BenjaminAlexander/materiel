@@ -5,13 +5,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MyGame.GameStateObjects.DataStuctures;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
 {
-    class CircleSearch<T> : QuadTreeSearch<T> where T : PhysicalObject
+    public class CircleSearch<T> : QuadTreeSearch<T> where T : PhysicalObject
     {
         private Circle circle;
         private List<T> rtn = new List<T>();
+
+        public static List<T> GetObjects(GameObjectCollection collection, Vector2 center, float radius)
+        {
+            CircleSearch<T> searchObj = new CircleSearch<T>(center, radius);
+            collection.SearchDownFromRoot<T>(searchObj);
+            return searchObj.List;
+        }
 
         public List<T> List
         {
@@ -21,18 +29,18 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public CircleSearch(GameObjectField.Modes mode, Vector2 point, float radius) : this(mode, new Circle(point, radius))
+        public CircleSearch(Vector2 point, float radius) : this(new Circle(point, radius))
         {
         }
 
-        public CircleSearch(GameObjectField.Modes mode, Circle circle) : base(mode)
+        public CircleSearch(Circle circle)
         {
             this.circle = circle;
         }
 
-        public override void ExamineObject(T obj)
+        public override void ExamineObject(T obj, GameObjectField.Modes mode)
         {
-            if (Vector2.Distance(obj.GetPosition(this.Mode), circle.Center) <= circle.Radius)
+            if (Vector2.Distance(obj.GetPosition(mode), circle.Center) <= circle.Radius)
             {
                 rtn.Add(obj);
             }

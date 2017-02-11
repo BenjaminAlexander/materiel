@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MyGame.GameStateObjects.QuadTreeUtils
 {
-    class LeafDictionary
+    public class LeafDictionary
     {
         private Dictionary<PhysicalObject, Leaf> leafDictionary = new Dictionary<PhysicalObject, Leaf>();
 

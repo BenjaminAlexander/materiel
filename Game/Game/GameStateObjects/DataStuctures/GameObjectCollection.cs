@@ -115,34 +115,14 @@ namespace MyGame.GameStateObjects.DataStuctures
             return (T)dictionary[id];
         }
 
-        public List<T> GetObjectsInCircle<T>(Vector2 position, float radius) where T : PhysicalObject
+        public void SearchDownFromRoot<T>(QuadTreeSearch<T> searchObj) where T : PhysicalObject
         {
-            return this.Tree.GetObjectsInCircle<T>(position, radius);
+            this.Tree.SearchDownFromRoot(searchObj);
         }
 
-        public List<T> GetObjects<T>(Vector2 position) where T : PhysicalObject
+        public void SearchUpFromLeaf<T>(QuadTreeSearch<T> searchObj, PhysicalObject leafObject) where T : PhysicalObject
         {
-            return this.Tree.GetObjects<T>(position);
-        }
-
-        public T GetClosest<T>(Vector2 point, Select<T> selectFunc) where T : PhysicalObject
-        {
-            return this.Tree.GetClosest<T>(point, selectFunc);
-        }
-
-        public T GetClosest<T>(Vector2 point, Select<T> selectFunc, T best) where T : PhysicalObject
-        {
-            return this.Tree.GetClosest<T>(point, selectFunc, best);
-        }
-
-        public T GetClosest<T>(PhysicalObject obj, Select<T> selectFunc, T best) where T : PhysicalObject
-        {
-            return this.Tree.GetClosest<T>(obj, selectFunc, best);
-        }
-
-        public List<T> GetColliding<T>(PhysicalObject obj) where T : PhysicalObject
-        {
-            return this.Tree.GetColliding<T>(obj);
+            this.Tree.SearchUpFromLeaf(searchObj, leafObject);
         }
 
         public void ServerUpdate(Lobby lobby, GameTime gameTime)

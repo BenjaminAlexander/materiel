@@ -5,6 +5,7 @@ using MyGame.IO;
 using MyGame.GameStateObjects;
 using MyGame.materiel.RtsCommandMessages;
 using MyGame.materiel.GameObjects;
+using MyGame.GameStateObjects.QuadTreeUtils;
 
 namespace MyGame.ClientUI
 {
@@ -42,7 +43,7 @@ namespace MyGame.ClientUI
                 {
                     Vector2 worldPosition = this.Game.Camera.ScreenToWorldPosition(sceenPosition);
 
-                    List<PhysicalObject> clickList = this.Game.GameObjectCollection.GetObjects<PhysicalObject>(worldPosition);
+                    List<PhysicalObject> clickList = PointIntersectionSearch<PhysicalObject>.GetObjects(this.Game.GameObjectCollection, worldPosition);
                     if (clickList.Count > 0)
                     {
                         if (clickList[0] is Base)

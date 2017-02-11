@@ -7,6 +7,7 @@ using MyGame.GameStateObjects;
 using MyGame.DrawingUtils;
 using Microsoft.Xna.Framework;
 using MyGame.GameStateObjects.DataStuctures;
+using MyGame.GameStateObjects.QuadTreeUtils;
 
 namespace MyGame.materiel.GameObjects
 {
@@ -65,7 +66,7 @@ namespace MyGame.materiel.GameObjects
                 this.Destroy();
             }
 
-            if(this.Collection.GetColliding<Vehicle>(this).Count > 0)
+            if(ObjectIntersectionSearch<Vehicle>.GetObjects(this.Collection, this).Count > 0)
             {
                 this.Destroy();
             }

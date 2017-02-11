@@ -37,46 +37,14 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             }
         }
 
-        public List<T> GetObjectsInCircle<T>(Vector2 center, float radius) where T : PhysicalObject
+        public void SearchDownFromRoot<T>(QuadTreeSearch<T> searchObj) where T : PhysicalObject
         {
-            CircleSearch<T> searchObj = new CircleSearch<T>(this.mode, center, radius);
             root.SearchDown(searchObj);
-            return searchObj.List;
         }
 
-        public List<T> GetObjects<T>(Vector2 center) where T : PhysicalObject
+        public void SearchUpFromLeaf<T>(QuadTreeSearch<T> searchObj, PhysicalObject leafObject) where T : PhysicalObject
         {
-            PointIntersectionSearch<T> searchObj = new PointIntersectionSearch<T>(this.mode, center);
-            root.SearchDown(searchObj);
-            return searchObj.List;
-        }
-
-        public T GetClosest<T>(Vector2 point, Select<T> selectFunc) where T : PhysicalObject
-        {
-            ClosestSearch<T> searchObj = new ClosestSearch<T>(this.mode, point, selectFunc);
-            root.SearchDown(searchObj);
-            return searchObj.Closest;
-        }
-
-        public T GetClosest<T>(Vector2 point, Select<T> selectFunc, T best) where T : PhysicalObject
-        {
-            ClosestSearch<T> searchObj = new ClosestSearch<T>(this.mode, point, selectFunc, best);
-            root.SearchDown(searchObj);
-            return searchObj.Closest;
-        }
-
-        public T GetClosest<T>(PhysicalObject obj, Select<T> selectFunc, T best) where T : PhysicalObject
-        {
-            ClosestSearch<T> searchObj = new ClosestSearch<T>(this.mode, obj.GetPosition(this.mode), selectFunc, best);
-            this.leafDictionary.GetLeaf(obj).SearchUP<T>(searchObj);
-            return searchObj.Closest;
-        }
-
-        public List<T> GetColliding<T>(PhysicalObject obj) where T : PhysicalObject
-        {
-            ObjectIntersectionSearch<T> searchObj = new ObjectIntersectionSearch<T>(this.mode, obj);
-            this.leafDictionary.GetLeaf(obj).SearchUP<T>(searchObj);
-            return searchObj.List;
+            this.leafDictionary.GetLeaf(leafObject).SearchUP<T>(searchObj);
         }
 
         public bool Remove(PhysicalObject unit)
@@ -84,19 +52,9 @@ namespace MyGame.GameStateObjects.QuadTreeUtils
             return root.Remove(unit);
         }
 
-        public List<PhysicalObject> CompleteList()
-        {
-            return root.CompleteList();
-        }
-
         public void Move(PhysicalObject obj)
         {
             leafDictionary.GetLeaf(obj).Move(obj);
-        }
-
-        internal Node Root
-        {
-            get { return root; }
         }
 
         public void Draw(GameTime gameTime, MyGraphicsClass graphics)
