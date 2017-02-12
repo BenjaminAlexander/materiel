@@ -146,8 +146,8 @@ namespace MyGame.materiel.GameObjects
         {
             try
             {
-                List<CombatVehicle> combatVics = this.combatVehicles.DereferenceAll();
-                List<Transport> transportVics = this.transportVehicles.DereferenceAll();
+                List<CombatVehicle> combatVics = this.combatVehicles.DereferenceAllPossible();
+                List<Transport> transportVics = this.transportVehicles.DereferenceAllPossible();
                 Dictionary<CombatVehicle, float> combatVicsMateriel = new Dictionary<CombatVehicle, float>();
 
                 CombatVehicle bestVic = null;

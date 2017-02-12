@@ -24,6 +24,14 @@ namespace MyGame.GameStateObjects
             return this.value.ConstructMessage(message);
         }
 
+        public bool CanDereference
+        {
+            get
+            {
+                return this.value.CanDereference;
+            }
+        }
+
         public T Value
         {
             get

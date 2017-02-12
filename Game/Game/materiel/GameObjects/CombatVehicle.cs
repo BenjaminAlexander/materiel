@@ -87,11 +87,11 @@ namespace MyGame.materiel.GameObjects
             this.MoveTowardAndIdle(this.TargetPosition, seconds);
 
             gunCoolDown.Value = Math.Max(gunCoolDown - seconds, 0);
-            if (gunCoolDown.Value == 0)
+            if (gunCoolDown.Value == 0 && this.targetVehicle.CanDereference)
             {
                 this.targetVehicle.Value = ClosestSearch<Vehicle>.GetObject(this.Collection, this, this.SelectEnemyVehicle, this.targetVehicle.Value);
             }
-            if(this.targetVehicle.Value != null)
+            if(this.targetVehicle.CanDereference && this.targetVehicle.Value != null)
             {
                 Vector2 turretPosition = this.Position + Utils.Vector2Utils.RotateVector2(new Vector2(-5, 0), this.Direction);
                 this.turretAngle.Value = Utils.Vector2Utils.Vector2Angle(this.targetVehicle.Value.Position - turretPosition) - this.Direction;

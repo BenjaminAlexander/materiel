@@ -48,6 +48,30 @@ namespace MyGame.GameStateObjects
             }
         }
 
+        public bool CanDereference
+        {
+            get
+            {
+                if(hasDereferenced)
+                {
+                    return true;
+                }
+                else
+                {
+                    if (this.collection.Contains(id))
+                    {
+                        obj = (T)this.collection.Get<T>(id);
+                        hasDereferenced = true;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
         public T Dereference() 
         {
             if(hasDereferenced)

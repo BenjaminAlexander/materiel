@@ -55,15 +55,16 @@ namespace MyGame.materiel.GameObjects
         public void TakeDamage()
         {
             this.health.Value = this.health.Value - 1;
-        }
-
-        public override void ServerOnlyUpdate(float secondsElapsed)
-        {
-            base.ServerOnlyUpdate(secondsElapsed);
             if (this.health.Value <= 0)
             {
                 this.Destroy();
             }
+        }
+
+        public override void Destroy()
+        {
+            //this.company.Value.RemoveVehicle(this);
+            base.Destroy();
         }
 
         public void MoveToward(Vector2 targetPos, float seconds, out Vector2 resultPosition, out float secondsRemaining, out float cost)

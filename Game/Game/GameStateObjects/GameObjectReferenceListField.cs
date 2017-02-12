@@ -70,5 +70,18 @@ namespace MyGame.GameStateObjects
             }
             return rtn;
         }
+
+        public List<T> DereferenceAllPossible()
+        {
+            List<T> rtn = new List<T>();
+            foreach (GameObjectReference<T> reference in this.value)
+            {
+                if (reference.CanDereference)
+                {
+                    rtn.Add(reference.Dereference());
+                }
+            }
+            return rtn;
+        }
     }
 }
