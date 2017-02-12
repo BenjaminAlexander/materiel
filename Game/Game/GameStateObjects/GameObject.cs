@@ -143,8 +143,16 @@ namespace MyGame.GameStateObjects
             float timeDeviation = (float)(deltaSpan.TotalSeconds) - averageLatency.AverageValue;
             if (timeDeviation > 0)
             {
-                this.SubclassUpdate(timeDeviation);
-                this.SimulationStateOnlyUpdate(timeDeviation);
+                GameObjectField.SetModeSimulation();
+                try
+                {
+                    this.SubclassUpdate(timeDeviation);
+                    this.SimulationStateOnlyUpdate(timeDeviation);
+                }
+                catch (FailedDereferenceException)
+                {
+
+                }
                 this.Smooth(timeDeviation);
             }
         }

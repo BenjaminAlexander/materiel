@@ -22,13 +22,15 @@ namespace MyGame.materiel.GameObjects
 
         private GameObjectReferenceField<Company> company;
         private GameObjectReferenceField<PlayerGameObject> controllingPlayer;
+        private FloatGameObjectMember health;
         public const float maxSpeed = 100;
 
         public Vehicle(GameObjectCollection collection)
             : base(collection)
         {
             controllingPlayer = new GameObjectReferenceField<PlayerGameObject>(this);
-            company = new GameObjectReferenceField<Company>(this);            
+            company = new GameObjectReferenceField<Company>(this);
+            health = new FloatGameObjectMember(this, 3);
         }
 
         public static void ServerInitialize(Vehicle vic, PlayerGameObject controllingPlayer, Vector2 position, float maxMateriel)
@@ -50,7 +52,19 @@ namespace MyGame.materiel.GameObjects
             }
         }
 
+        public void TakeDamage()
+        {
+            this.health.Value = this.health.Value - 1;
+        }
 
+        public override void ServerOnlyUpdate(float secondsElapsed)
+        {
+            base.ServerOnlyUpdate(secondsElapsed);
+            if (this.health.Value <= 0)
+            {
+                this.Destroy();
+            }
+        }
 
         public void MoveToward(Vector2 targetPos, float seconds, out Vector2 resultPosition, out float secondsRemaining, out float cost)
         {

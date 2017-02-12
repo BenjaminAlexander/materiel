@@ -66,9 +66,11 @@ namespace MyGame.materiel.GameObjects
                 this.Destroy();
             }
 
-            if(ObjectIntersectionSearch<Vehicle>.GetObjects(this.Collection, this).Count > 0)
+            List<Vehicle> hitList = ObjectIntersectionSearch<Vehicle>.GetObjects(this.Collection, this);
+            if (hitList.Count > 0)
             {
                 this.Destroy();
+                hitList[0].TakeDamage();
             }
         }
 

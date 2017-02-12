@@ -69,8 +69,9 @@ namespace MyGame.materiel.GameObjects
         public override void ServerOnlyUpdate(float secondsElapsed)
         {
             base.ServerOnlyUpdate(secondsElapsed);
-            if (gunCoolDown == 0 && this.targetVehicle.Value != null && Vector2.Distance(this.Position, this.targetVehicle.Value.Position) < 1500)
+            if (this.Materiel >= .5f && gunCoolDown == 0 && this.targetVehicle.Value != null && Vector2.Distance(this.Position, this.targetVehicle.Value.Position) < 1500)
             {
+                this.Materiel = this.Materiel - .5f;
                 Vector2 bulletPosition = this.Position; //start with vic position
                 bulletPosition = bulletPosition + Utils.Vector2Utils.RotateVector2(new Vector2(-5, 0), this.Direction);// add the position of the turret on the vehicle
                 bulletPosition = bulletPosition + Utils.Vector2Utils.RotateVector2(new Vector2(27, 0), this.Direction + this.turretAngle);// add the position of the end of the turret
@@ -95,7 +96,6 @@ namespace MyGame.materiel.GameObjects
                 Vector2 turretPosition = this.Position + Utils.Vector2Utils.RotateVector2(new Vector2(-5, 0), this.Direction);
                 this.turretAngle.Value = Utils.Vector2Utils.Vector2Angle(this.targetVehicle.Value.Position - turretPosition) - this.Direction;
             }
-            
         }
 
         public override void Draw(GameTime gameTime, MyGraphicsClass graphics)
