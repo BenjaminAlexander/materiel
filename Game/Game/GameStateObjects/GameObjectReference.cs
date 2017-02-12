@@ -36,15 +36,10 @@ namespace MyGame.GameStateObjects
             {
                 hasDereferenced = true;
             }
-            else
+            else if (this.collection.Contains(id))
             {
-                try
-                {
-                    Dereference();
-                }
-                catch (FailedDereferenceException)
-                {
-                }
+                obj = (T)this.collection.Get<T>(id);
+                hasDereferenced = true;
             }
         }
 

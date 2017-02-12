@@ -14,6 +14,7 @@ namespace MyGame.materiel.GameObjects
     class Bullet : PhysicalObject
     {
         private Vector2GameObjectMember startPosition;
+        private GameObjectReferenceField<CombatVehicle> parent;
 
         public override LoadedTexture Texture
         {
@@ -40,19 +41,21 @@ namespace MyGame.materiel.GameObjects
             : base(collection)
         {
             startPosition = new Vector2GameObjectMember(this, new Vector2(0));
+            parent = new GameObjectReferenceField<CombatVehicle>(this);
         }
 
-        public static void ServerInitialize(Bullet bullet, Vector2 position, float direction)
+        public static void ServerInitialize(Bullet bullet, CombatVehicle parent, Vector2 position, float direction)
         {
             PhysicalObject.ServerInitialize(bullet, position, direction);
             bullet.startPosition.Value = position;
+            bullet.parent.Value = parent;
         }
 
-        public static Bullet BulletFactory(GameObjectCollection collection, Vector2 position, float direction)
+        public static Bullet BulletFactory(GameObjectCollection collection, CombatVehicle parent, Vector2 position, float direction)
         {
             Bullet bullet = new Bullet(collection);
             collection.Add(bullet);
-            Bullet.ServerInitialize(bullet, position, direction);
+            Bullet.ServerInitialize(bullet, parent, position, direction);
             return bullet;
         }
 
@@ -69,8 +72,15 @@ namespace MyGame.materiel.GameObjects
             List<Vehicle> hitList = ObjectIntersectionSearch<Vehicle>.GetObjects(this.Collection, this);
             if (hitList.Count > 0)
             {
-                this.Destroy();
-                hitList[0].TakeDamage();
+                foreach (Vehicle vic in hitList)
+                {
+                    if (!this.parent.CanDereference || vic != this.parent.Value)
+                    {
+                        this.Destroy();
+                        hitList[0].TakeDamage();
+                        break;
+                    }
+                }
             }
         }
 

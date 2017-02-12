@@ -93,14 +93,20 @@ namespace MyGame.materiel.GameObjects
         public void DrawScreen(GameTime gameTime, DrawingUtils.MyGraphicsClass graphics, Camera camera, Color color, float depth)
         {
 
-            foreach (Vehicle vic in this.combatVehicles.Value)
+            foreach (GameObjectReference<CombatVehicle> vicRef in this.combatVehicles.Value)
             {
-                vic.DrawScreen(gameTime, graphics, camera, color, depth);
+                if (vicRef.CanDereference)
+                {
+                    vicRef.Dereference().DrawScreen(gameTime, graphics, camera, color, depth);
+                }
             }
 
-            foreach (Vehicle vic in this.transportVehicles.Value)
+            foreach (GameObjectReference<Transport> vicRef in this.transportVehicles.Value)
             {
-                vic.DrawScreen(gameTime, graphics, camera, color, depth);
+                if (vicRef.CanDereference)
+                {
+                    vicRef.Dereference().DrawScreen(gameTime, graphics, camera, color, depth);
+                }
             }
 
             if (supplyPoint.Value != null)

@@ -76,7 +76,7 @@ namespace MyGame.materiel.GameObjects
                 bulletPosition = bulletPosition + Utils.Vector2Utils.RotateVector2(new Vector2(-5, 0), this.Direction);// add the position of the turret on the vehicle
                 bulletPosition = bulletPosition + Utils.Vector2Utils.RotateVector2(new Vector2(27, 0), this.Direction + this.turretAngle);// add the position of the end of the turret
 
-                Bullet.BulletFactory(this.Collection, bulletPosition, this.Direction + this.turretAngle);
+                Bullet.BulletFactory(this.Collection, this, bulletPosition, this.Direction + this.turretAngle);
                 this.gunCoolDown.Value = 1f;
             }
         }
